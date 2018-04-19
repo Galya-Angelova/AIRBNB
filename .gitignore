@@ -27,3 +27,4 @@ airbnb/.project
 airbnb/.classpath
 airbnb/bin
 airbnb/build/
+airbnb/WebContent/META-INF/MANIFEST.MF
