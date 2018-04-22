@@ -7,13 +7,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import exceptions.InvalidArgumentException;
-import places.Address;
+import exceptions.InvalidUserException;
 import places.Place;
 
 public class User {
 	private static final int POSITIVE = 0;
-	private long id;
+	private int id;
 	private String email;
 	private boolean isMale;
 	private String firstName;
@@ -21,15 +20,15 @@ public class User {
 	private String password;
 	private LocalDate birthdate;
 	private String phoneNumber;
-	private Address address;
+	private int address_id;
 	private boolean isHost;
 	private boolean deleted;
 	private List<Place> visitedPlaces;
 	private List<Place> myPlaces;
 
-	public User(long id, String email,String password, boolean isMale, String firstName, String lastName, int day, int month, int year,
-			String phoneNumber, String country, String city, String street, int streetNumber)
-			throws InvalidArgumentException {
+	public User(int id, String email, String password, boolean isMale, String firstName, String lastName, int day,
+			int month, int year, String phoneNumber, int address_id)
+					throws InvalidUserException {
 		setId(id);
 		setEmail(email);
 		createPassword(password);
@@ -38,49 +37,49 @@ public class User {
 		setLastName(lastName);
 		setBirthdate(day, month, year);
 		changePhoneNumber(phoneNumber);
-		setAddress(country, city, street, streetNumber);
+		setAddress(address_id);
 		this.visitedPlaces = new ArrayList<>();
 		this.myPlaces = new ArrayList<>();
 	}
 
-	public void changePhoneNumber(String phoneNumber) throws InvalidArgumentException {
+	public void changePhoneNumber(String phoneNumber) throws InvalidUserException {
 		if (phoneNumber == null || phoneNumber.trim().length() == POSITIVE) {
-			throw new InvalidArgumentException("Empty phone number.");
+			throw new InvalidUserException("Empty phone number.");
 		} else {
 			if (validatePhoneNumber(phoneNumber)) {
 				this.phoneNumber = phoneNumber;
 			} else {
-				throw new InvalidArgumentException("Invalid phone number, please enter correct phone number.");
+				throw new InvalidUserException("Invalid phone number, please enter correct phone number.");
 			}
 		}
 	}
 
-	private void createPassword(String password) throws InvalidArgumentException {
-		if (password.isEmpty() || password == null) {
-			throw new InvalidArgumentException("Empty password");
+	private void createPassword(String password) throws InvalidUserException {
+		if (password == null || password.isEmpty()) {
+			throw new InvalidUserException("Empty password");
 		} else {
 			if (validatePassword(password)) {
 				this.password = password;
 			} else {
-				throw new InvalidArgumentException(
-						"Your password should be at least 8 characters, one Upper case letter and one Lower case and contains at least one character.");
+				throw new InvalidUserException(
+						"Your password should be at least 8 characters and must contains at least: one diggit, one upper case letter,one lower case letter and one special character(@#$%^&+=).");
 			}
 		}
 	}
 
-	private void setId(long id) throws InvalidArgumentException {
-		if (id > POSITIVE) {
+	private void setId(int id) throws InvalidUserException {
+		if (id >= POSITIVE) {
 			this.id = id;
 		} else {
-			throw new InvalidArgumentException("Invalid id for address.");
+			throw new InvalidUserException("Invalid id.");
 		}
 	}
 
-	private void setEmail(String email) throws InvalidArgumentException {
+	private void setEmail(String email) throws InvalidUserException {
 		if (validateEmail(email)) {
 			this.email = email;
 		} else {
-			throw new InvalidArgumentException("Invalid email.");
+			throw new InvalidUserException("Invalid email.");
 		}
 	}
 
@@ -88,44 +87,52 @@ public class User {
 		this.isMale = isMale;
 	}
 
-	private void setFirstName(String firstName) throws InvalidArgumentException {
+	private void setFirstName(String firstName) throws InvalidUserException {
 		if (validateStringText(firstName)) {
 			this.firstName = firstName;
 		} else {
-			throw new InvalidArgumentException("Invalid name.");
+			throw new InvalidUserException("Invalid name.");
 		}
 	}
 
-	private void setLastName(String lastName) throws InvalidArgumentException {
+	private void setLastName(String lastName) throws InvalidUserException {
 		if (validateStringText(lastName)) {
-			this.firstName = lastName;
+			this.lastName = lastName;
 		} else {
-			throw new InvalidArgumentException("Invalid name.");
+			throw new InvalidUserException("Invalid name.");
 		}
 	}
 
-	private void setBirthdate(int day, int month, int year) throws InvalidArgumentException {
+	private void setBirthdate(int day, int month, int year) throws InvalidUserException {
 		try {
 			LocalDate date = LocalDate.of(year, month, day);
 			this.birthdate = date;
 		} catch (DateTimeException e) {
-			throw new InvalidArgumentException("Invalid birthdate.");
+			throw new InvalidUserException("Invalid birthdate.");
 		}
 	}
 
-	private void setAddress(String country, String city, String street, int streetNumber)
-			throws InvalidArgumentException {
-		this.address = new Address(0, country, city, street, streetNumber);
+	private void setAddress(int address_id)
+			throws InvalidUserException {
+		if (address_id >= POSITIVE) {
+			this.address_id = address_id;
+		} else {
+			throw new InvalidUserException("Invalid id for address.");
+		}
 	}
 
 	public void deleteAccount() {
 		this.deleted = true;
 	}
 
+	public void restoreAccount() {
+		this.deleted = false;
+	}
+
 	// validations
 	private boolean validateStringText(String text) {
 		String str = text.trim();
-		return (!(str.isEmpty()) && (str != null) && (str.matches("[A-Za-z ]*") && (str.equals(text))));
+		return ((str != null) && !(str.isEmpty()) && (str.matches("[A-Za-z ]*") && (str.equals(text))));
 	}
 
 	private boolean validateEmail(String email) {
@@ -160,4 +167,46 @@ public class User {
 		String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!-_@#$%^&+=])(?=\\S+$).{8,}";
 		return password.matches(pattern);
 	}
+//	Getters
+
+	public int getId() {
+		return this.id;
+	}
+
+	public String getEmail() {
+		return this.email;
+	}
+
+	public boolean isMale() {
+		return this.isMale;
+	}
+
+	public String getFirstName() {
+		return this.firstName;
+	}
+
+	public String getLastName() {
+		return this.lastName;
+	}
+
+	public String getPassword() {
+		return this.password;
+	}
+
+	public LocalDate getBirthdate() {
+		return this.birthdate;
+	}
+
+	public String getPhoneNumber() {
+		return this.phoneNumber;
+	}
+
+	public int getAddress_id() {
+		return this.address_id;
+	}
+
+	public boolean isHost() {
+		return this.isHost;
+	}
+	
 }
