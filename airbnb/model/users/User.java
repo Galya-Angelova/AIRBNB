@@ -20,14 +20,14 @@ public class User {
 	private String password;
 	private LocalDate birthdate;
 	private String phoneNumber;
-	private int address_id;
+	//private int address_id;
 	private boolean isHost;
 	private boolean deleted;
 	private List<Place> visitedPlaces;
 	private List<Place> myPlaces;
 
 	public User(int id, String email, String password, boolean isMale, String firstName, String lastName, int day,
-			int month, int year, String phoneNumber, int address_id)
+			int month, int year, String phoneNumber)
 					throws InvalidUserException {
 		setId(id);
 		setEmail(email);
@@ -37,11 +37,16 @@ public class User {
 		setLastName(lastName);
 		setBirthdate(day, month, year);
 		changePhoneNumber(phoneNumber);
-		setAddress(address_id);
+		//setAddress(address_id);
 		this.visitedPlaces = new ArrayList<>();
 		this.myPlaces = new ArrayList<>();
 	}
 
+	public void addToMyPlaces(int idPlace) {
+		if(idPlace > POSITIVE) {
+			//TODO method to convert from idPlace to Place object
+		}
+	}
 	public void changePhoneNumber(String phoneNumber) throws InvalidUserException {
 		if (phoneNumber == null || phoneNumber.trim().length() == POSITIVE) {
 			throw new InvalidUserException("Empty phone number.");
@@ -112,14 +117,14 @@ public class User {
 		}
 	}
 
-	private void setAddress(int address_id)
+	/*private void setAddress(int address_id)
 			throws InvalidUserException {
 		if (address_id >= POSITIVE) {
 			this.address_id = address_id;
 		} else {
 			throw new InvalidUserException("Invalid id for address.");
 		}
-	}
+	}*/
 
 	public void deleteAccount() {
 		this.deleted = true;
@@ -201,9 +206,9 @@ public class User {
 		return this.phoneNumber;
 	}
 
-	public int getAddress_id() {
+	/*public int getAddress_id() {
 		return this.address_id;
-	}
+	}*/
 
 	public boolean isHost() {
 		return this.isHost;

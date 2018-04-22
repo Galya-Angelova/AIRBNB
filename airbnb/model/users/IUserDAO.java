@@ -9,4 +9,6 @@ public interface IUserDAO {
 	public int register(User user)throws InvalidUserException;
 	
 	public User userFromId(int user_id)throws InvalidUserException;
+	
+	public User getUserFromEmailAndPassword(String email,String password) throws InvalidUserException;
 }

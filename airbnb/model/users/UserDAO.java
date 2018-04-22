@@ -1,41 +1,52 @@
 package users;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import dbconnector.DBConnectionTest;
+import exceptions.DBException;
 import exceptions.InvalidUserException;
 
 public class UserDAO implements IUserDAO {
+	private static final String GET_USERS = "SELECT id FROM users;";
 	private static final String LOGIN_USER_SQL = "SELECT * FROM users WHERE email=? and password = sha1(?)";
-	private static final String USER_FROM_ID_SQL = "SELECT * FROM users WHERE idUser=?";
+	private static final String USER_FROM_ID_SQL = "SELECT * FROM users WHERE id=?";
 	private static final String REGISTER_USER_SQL = "INSERT INTO users VALUES (null, ?, ? ,?, ?, ?, ?, false, false, sha1(?), ?)";
+	private static UserDAO instance;
+	private static Connection connection;
 
-	private static Connection con;
-
-	static {
+	private UserDAO() throws DBException {
 		try {
-			con = DBConnectionTest.getInstance().getConnection();
+			connection = DBConnectionTest.getInstance().getConnection();
 		} catch (ClassNotFoundException | SQLException e) {
-			// e.printStackTrace();
-			System.out.println("Something went wrong with the database");
+			throw new DBException("Error! ", e);
 		}
+	}
+
+	public static UserDAO getInstance() throws DBException {
+		if (instance == null) {
+			instance = new UserDAO();
+		}
+		return instance;
 	}
 
 	@Override
 	public int login(String email, String password) throws InvalidUserException {
-		try (PreparedStatement ps = con.prepareStatement(LOGIN_USER_SQL)) {
+		try (PreparedStatement ps = connection.prepareStatement(LOGIN_USER_SQL, Statement.RETURN_GENERATED_KEYS)) {
 			ps.setString(1, email);
 			ps.setString(2, password);
 
 			ResultSet rs = ps.executeQuery();
 
 			if (rs.next()) {
-				return rs.getInt("idUser");
+				return rs.getInt("id");
 			}
 
 			throw new InvalidUserException("Wrong email or password, try again!");
@@ -47,15 +58,15 @@ public class UserDAO implements IUserDAO {
 
 	@Override
 	public int register(User user) throws InvalidUserException {
-		try (PreparedStatement ps = con.prepareStatement(REGISTER_USER_SQL, Statement.RETURN_GENERATED_KEYS)) {
+		try (PreparedStatement ps = connection.prepareStatement(REGISTER_USER_SQL, Statement.RETURN_GENERATED_KEYS)) {
 			ps.setString(1, user.getEmail());
 			ps.setBoolean(2, user.isMale());
 			ps.setString(3, user.getFirstName());
 			ps.setString(4, user.getLastName());
-			ps.setDate(5, java.sql.Date.valueOf(user.getBirthdate()));
+			ps.setDate(5, Date.valueOf(user.getBirthdate()));
 			ps.setString(6, user.getPhoneNumber());
 			ps.setString(7, user.getPassword());
-			ps.setInt(8, user.getAddress_id());
+			// ps.setInt(8, user.getAddress_id());
 			ps.executeUpdate();
 
 			ResultSet rs = ps.getGeneratedKeys();
@@ -70,7 +81,7 @@ public class UserDAO implements IUserDAO {
 
 	@Override
 	public User userFromId(int user_id) throws InvalidUserException {
-		try (PreparedStatement ps = con.prepareStatement(USER_FROM_ID_SQL)) {
+		try (PreparedStatement ps = connection.prepareStatement(USER_FROM_ID_SQL)) {
 			ps.setInt(1, user_id);
 
 			ResultSet rs = ps.executeQuery();
@@ -88,10 +99,9 @@ public class UserDAO implements IUserDAO {
 				int month = birthdate.getMonthValue();
 				int year = birthdate.getYear();
 				String phoneNumber = rs.getString("phone");
-				int address_id = rs.getInt("locations_id");
+				// int address_id = rs.getInt("locations_id");
 
-				return new User(id, email, password, isMale, firstName, lastName, day, month, year, phoneNumber,
-						address_id);
+				return new User(id, email, password, isMale, firstName, lastName, day, month, year, phoneNumber);
 			}
 
 			throw new InvalidUserException("There is no user with that id!");
@@ -99,6 +109,43 @@ public class UserDAO implements IUserDAO {
 			// e.printStackTrace();
 			throw new InvalidUserException("Invalid statement", e);
 		}
+	}
+
+	public List<User> getAll() throws SQLException {
+		Statement s = connection.createStatement();
+		ResultSet set = s.executeQuery(GET_USERS);
+		List<User> all = new ArrayList<User>();
+		while (set.next()) {
+			try {
+				all.add(userFromId(set.getInt("id")));
+			} catch (InvalidUserException e) {
+				e.printStackTrace();
+			}
+		}
+		return all;
+	}
+
+	@Override
+	public User getUserFromEmailAndPassword(String email, String password) throws InvalidUserException {
+		String sql = "SELECT id,name,pass FROM users;";
+		Statement s;
+		try {
+			s = connection.createStatement();
+			ResultSet set = s.executeQuery(sql);
+
+			if (set.next()) {
+				User user = new User(set.getInt("id"), set.getString("email"), set.getString("password"),
+						set.getBoolean("isMale"), set.getString("firstName"), set.getString("lastName"),
+						set.getDate("birthdate").toLocalDate().getDayOfMonth(),
+						set.getDate("birthdate").toLocalDate().getMonthValue(),
+						set.getDate("birthdate").toLocalDate().getYear(), set.getString("phone"));
+				return user;
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+
+		throw new InvalidUserException("No user with these email or password!");
 	}
 
 }

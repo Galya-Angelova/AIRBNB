@@ -1,4 +1,4 @@
-package places;
+package address;
 
 import exceptions.InvalidAddressException;
 
