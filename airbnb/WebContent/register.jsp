@@ -1,44 +1,49 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Register</title>
-</head>
-<body>
-	<h1>Register</h1>
-	<form>
-		<table>
-			<tr>
-				<td>Email</td>
-				<td><input type="email" required></td>
-			</tr>
-			<tr>
-				<td>Password</td>
-				<td><input type="password" required></td>
-			</tr>
-			<tr>
-				<td>Confirm password</td>
-				<td><input type="password" required></td>
-			</tr>
-			<tr>
-				<td>Email</td>
-				<td><input type="email" required></td>
-			</tr>
-			<tr>
-				<td>Gender</td>
-				<td><select style="width: 152px" required>
-				
-						
+	pageEncoding="ISO-8859-1"%>
+<jsp:include page="header.jsp"></jsp:include>
+<h1>Register</h1>
+<form method="post" action="register">
+	<table>
+		<tr>
+			<td>Email</td>
+			<td><input name="email" type="email" required></td>
+		</tr>
+		<tr>
+			<td>Password</td>
+			<td><input name="password" type="password" required></td>
+		</tr>
+		<tr>
+			<td>Confirm password</td>
+			<td><input name="confirm password" type="password" required></td>
+		</tr>
+		<tr>
+			<td>Gender</td>
+			<td><select name="gender" style="width: 152px" required>
+					<option value="true">Male</option>
+					<option value="false">Female</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>First name</td>
+			<td><input name="first name" type="text" required></td>
+		</tr>
+		<tr>
+			<td>Last name</td>
+			<td><input name="last name" type="text" required></td>
+		</tr>
+		<tr>
+			<td>Birthday</td>
+			<td><input type="date" name="bday" min="1900-01-02"
+				max="2018-05-10" required></td>
+		</tr>
+		<tr>
+			<td>Phone number</td>
+			<td><input type="tel" name="phone" required></td>
+	</table>
 
-				</select></td>
-			</tr>
-		</table>
+	<br> <input type="submit" value="Register"> <br>
+	Already have an account?<a href="index.jsp"> Login here</a>
 
-		<br> <input type="submit" value="Register"> <br>
-		Already have an account?<a href="index.jsp"> Login here</a>
-
-	</form>
+</form>
 </body>
 </html>

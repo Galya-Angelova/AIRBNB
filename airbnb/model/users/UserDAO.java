@@ -15,10 +15,12 @@ import exceptions.DBException;
 import exceptions.InvalidUserException;
 
 public class UserDAO implements IUserDAO {
+	
+	private static final String SAVE_USER = "INSERT INTO users(id,email,isMale,firstName,lastName,birthdate,phone,isHost,deleted,password) VALUES (null,?,?,?,?,?,?,?,?,sha(?);";
 	private static final String GET_USERS = "SELECT id FROM users;";
 	private static final String LOGIN_USER_SQL = "SELECT * FROM users WHERE email=? and password = sha1(?)";
 	private static final String USER_FROM_ID_SQL = "SELECT * FROM users WHERE id=?";
-	private static final String REGISTER_USER_SQL = "INSERT INTO users VALUES (null, ?, ? ,?, ?, ?, ?, false, false, sha1(?), ?)";
+	private static final String REGISTER_USER_SQL = "INSERT INTO users VALUES (null, ?, ? ,?, ?, ?, ?, false, false, sha1(?))";
 	private static UserDAO instance;
 	private static Connection connection;
 
@@ -58,7 +60,7 @@ public class UserDAO implements IUserDAO {
 
 	@Override
 	public int register(User user) throws InvalidUserException {
-		try (PreparedStatement ps = connection.prepareStatement(REGISTER_USER_SQL, Statement.RETURN_GENERATED_KEYS)) {
+		try (PreparedStatement ps = connection.prepareStatement(REGISTER_USER_SQL)) {
 			ps.setString(1, user.getEmail());
 			ps.setBoolean(2, user.isMale());
 			ps.setString(3, user.getFirstName());
@@ -72,6 +74,7 @@ public class UserDAO implements IUserDAO {
 			ResultSet rs = ps.getGeneratedKeys();
 			rs.next();
 
+			saveUser(user);
 			return rs.getInt(1);
 		} catch (SQLException e) {
 			// e.printStackTrace();
@@ -148,4 +151,20 @@ public class UserDAO implements IUserDAO {
 		throw new InvalidUserException("No user with these email or password!");
 	}
 
+	@Override
+	public void saveUser(User user) throws SQLException {
+		PreparedStatement ps = connection.prepareStatement(SAVE_USER);
+		ps.setString(1, user.getEmail());
+		ps.setBoolean(2, user.isMale());
+		ps.setString(3, user.getFirstName());
+		ps.setString(4, user.getLastName());
+		ps.setDate(5, Date.valueOf(user.getBirthdate()));
+		ps.setString(6, user.getPhoneNumber());
+		ps.setBoolean(7, user.isHost());
+		ps.setBoolean(8, user.isDeleted());
+		ps.setString(9, user.getPassword());
+		ps.executeUpdate();
+	}
+
+	
 }

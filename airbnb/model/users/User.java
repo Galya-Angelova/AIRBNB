@@ -26,13 +26,17 @@ public class User {
 	private List<Place> visitedPlaces;
 	private List<Place> myPlaces;
 
-	public User(int id, String email, String password, boolean isMale, String firstName, String lastName, int day,
-			int month, int year, String phoneNumber)
-					throws InvalidUserException {
-		setId(id);
+	
+	public User(String email, String password, boolean isMale) throws InvalidUserException {
 		setEmail(email);
 		createPassword(password);
 		setIsMale(isMale);
+	}
+	public User(int id, String email, String password, boolean isMale, String firstName, String lastName, int day,
+			int month, int year, String phoneNumber)
+					throws InvalidUserException {
+		this(email,password,isMale);
+		setId(id);
 		setFirstName(firstName);
 		setLastName(lastName);
 		setBirthdate(day, month, year);
@@ -135,12 +139,9 @@ public class User {
 	}
 
 	// validations
-	private boolean validateStringText(String text) {
-		String str = text.trim();
-		return ((str != null) && !(str.isEmpty()) && (str.matches("[A-Za-z ]*") && (str.equals(text))));
-	}
+	
 
-	private boolean validateEmail(String email) {
+	public static boolean validateEmail(String email) {
 		String regex = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
 
 		Pattern pattern = Pattern.compile(regex);
@@ -213,5 +214,12 @@ public class User {
 	public boolean isHost() {
 		return this.isHost;
 	}
+	public boolean isDeleted() {
+		return deleted;
+	}
 	
+	private boolean validateStringText(String text) {
+		String str = text.trim();
+		return ((str != null) && !(str.isEmpty()) && (str.matches("[A-Za-z ]*") && (str.equals(text))));
+	}
 }

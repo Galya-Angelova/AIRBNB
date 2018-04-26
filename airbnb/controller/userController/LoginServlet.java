@@ -16,6 +16,7 @@ import users.UserDAO;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
+	private static final int MAX_TIME = 1800;//seconds
 	private static final long serialVersionUID = 1L;
    
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -25,7 +26,8 @@ public class LoginServlet extends HttpServlet {
 			User u = UserDAO.getInstance().getUserFromEmailAndPassword(email, password);
 			if(u != null) {
 				request.getSession().setAttribute("user",u);
-				request.getRequestDispatcher("index.jsp").forward(request, response);
+				request.getSession().setMaxInactiveInterval(MAX_TIME);
+				request.getRequestDispatcher("WebContent/WEB-INF/jsp/home.jsp").forward(request, response);
 			}else {
 				throw new InvalidUserException("invalid username or password");
 			}
