@@ -10,12 +10,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.airbnb.exceptions.InvalidPlaceException;
 import com.airbnb.exceptions.InvalidUserException;
@@ -26,25 +23,21 @@ import com.airbnb.model.place.PlaceDAO;
 public class UserDAO implements IUserDAO {
 
 	private static final String GET_USERS_ID = "SELECT id FROM users;";
-	private static final String LOGIN_USER_SQL = "SELECT * FROM users WHERE email=? and password = sha1(?)";
+	private static final String LOGIN_USER_SQL = "SELECT * FROM users WHERE email=?";
 	private static final String USER_FROM_ID_SQL = "SELECT * FROM users WHERE id=?";
 	private static final String REGISTER_USER_SQL = "INSERT INTO users VALUES (null, ?, ? ,?, ?, ?, ?, false, false, sha1(?))";
 	private static final String BECAME_A_HOST = "UPDATE users SET isHost = 1 WHERE id = ?;";
 
 	// TODO change with DBConnection
 	@Autowired
-	private  DBConnectionTest dbConnection;
+	private DBConnectionTest dbConnection;
 
+	private Connection connection;
 
-	private  Connection connection;
-
-	/*static {
-		try {
-			dbConnection = new DBConnectionTest();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}*/
+	/*
+	 * static { try { dbConnection = new DBConnectionTest(); } catch (Exception e) {
+	 * e.printStackTrace(); } }
+	 */
 
 	@Autowired
 	public UserDAO(DBConnectionTest dbConnection) {
@@ -54,72 +47,68 @@ public class UserDAO implements IUserDAO {
 
 	@Override
 	public int login(String email, String password) throws InvalidUserException {
-		try {
-			connection.setAutoCommit(false);
-			PreparedStatement ps = connection.prepareStatement(LOGIN_USER_SQL);
-			
+		try (PreparedStatement ps = connection.prepareStatement(LOGIN_USER_SQL)) {
+
 			ps.setString(1, email);
-			ps.setString(2, password);
 
 			ResultSet rs = ps.executeQuery();
 
-			connection.commit();
-
-			ps.close();
 			if (rs.next()) {
-				return rs.getInt("id");
+				int id = rs.getInt("id");
+				User user = userFromId(id);
+				if (BCrypt.checkpw(password, user.getPassword())) {
+					return id;
+				}
 			}
 
 			throw new InvalidUserException("Wrong email or password, try again!");
 		} catch (SQLException e) {
-			// e.printStackTrace();
-			throw new InvalidUserException("Invalid statement", e);
-		}finally {
-			try {
-				connection.setAutoCommit(false);
-			} catch (SQLException e) {
-				throw new InvalidUserException("Invalid statement", e);
-			}
+			e.printStackTrace();
+			throw new InvalidUserException("Invalid statement" + e.getMessage(), e);
 		}
 	}
 
 	@Override
 	public int register(User user) throws InvalidUserException {
-		try  {
+		PreparedStatement ps = null;
+		try {
 			connection.setAutoCommit(false);
-			PreparedStatement ps = connection.prepareStatement(REGISTER_USER_SQL, Statement.RETURN_GENERATED_KEYS);
+			ps = connection.prepareStatement(REGISTER_USER_SQL, Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, user.getEmail());
-			ps.setBoolean(2,user.isMale());
+			ps.setBoolean(2, user.isMale());
 			ps.setString(3, user.getFirstName());
 			ps.setString(4, user.getLastName());
 			ps.setDate(5, Date.valueOf(user.getBirthdate()));
 			ps.setString(6, user.getPhoneNumber());
-			
-			ps.setString(7,user.getPassword());
+			String hashed = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+			ps.setString(7, hashed);
 			// ps.setInt(8, user.getAddress_id());
 			ps.executeUpdate();
 
 			ResultSet rs = ps.getGeneratedKeys();
 			rs.next();
-			
+
 			connection.commit();
-			ps.close();
 
 			return rs.getInt(1);
 		} catch (SQLException e) {
-			// e.printStackTrace();
+			e.printStackTrace();
 			try {
 				connection.rollback();
 			} catch (SQLException e1) {
-				throw new InvalidUserException("Invalid statement", e1);
+				e.printStackTrace();
+				throw new InvalidUserException("Invalid statement" + e1.getMessage(), e1);
 			}
 			System.out.println(e.getMessage());
-			throw new InvalidUserException("Invalid statement, try with another email.", e);
-		}finally {
+			throw new InvalidUserException("Invalid statement, try with another credentials.Reason:" + e.getMessage(),
+					e);
+		} finally {
 			try {
 				connection.setAutoCommit(false);
+				ps.close();
 			} catch (SQLException e) {
-				throw new InvalidUserException("Invalid statement", e);
+				e.printStackTrace();
+				throw new InvalidUserException("Invalid statement" + e.getMessage(), e);
 			}
 		}
 	}
@@ -151,7 +140,7 @@ public class UserDAO implements IUserDAO {
 
 			throw new InvalidUserException("There is no user with that id!");
 		} catch (SQLException e) {
-			// e.printStackTrace();
+			e.printStackTrace();
 			throw new InvalidUserException("Invalid statement", e);
 		}
 	}
@@ -170,15 +159,15 @@ public class UserDAO implements IUserDAO {
 	@Override
 	public void becameAHost(int userId) throws InvalidUserException {
 		User user = userFromId(userId);
-		if(user.isHost()) {
+		if (user.isHost()) {
 			throw new InvalidUserException("Already a host.");
 		}
 		user.becameAHost();
-		try(PreparedStatement ps = connection.prepareStatement(BECAME_A_HOST)){
+		try (PreparedStatement ps = connection.prepareStatement(BECAME_A_HOST)) {
 			ps.setInt(1, userId);
 			ps.executeUpdate();
-		}catch(SQLException e) {
-			throw new InvalidUserException("Invalid statement.",e);
+		} catch (SQLException e) {
+			throw new InvalidUserException("Invalid statement.", e);
 		}
 	}
 
@@ -190,7 +179,7 @@ public class UserDAO implements IUserDAO {
 		try {
 			dao.createPlace(streetName, countryName, placeTypeName, user.getEmail());
 		} catch (InvalidPlaceException e) {
-			throw new InvalidUserException("Couldn't add new place.",e);
+			throw new InvalidUserException("Couldn't add new place.", e);
 		}
 	}
 
