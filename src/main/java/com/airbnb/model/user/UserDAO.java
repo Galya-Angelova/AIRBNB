@@ -171,16 +171,4 @@ public class UserDAO implements IUserDAO {
 		}
 	}
 
-	@Override
-	public void addNewPlace(String streetName, String countryName, String placeTypeName, int userId)
-			throws InvalidUserException {
-		PlaceDAO dao = new PlaceDAO(dbConnection);
-		User user = userFromId(userId);
-		try {
-			dao.createPlace(streetName, countryName, placeTypeName, user.getEmail());
-		} catch (InvalidPlaceException e) {
-			throw new InvalidUserException("Couldn't add new place.", e);
-		}
-	}
-
 }

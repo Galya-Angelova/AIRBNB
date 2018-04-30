@@ -4,32 +4,35 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.airbnb.exceptions.InvalidAddressException;
 import com.airbnb.exceptions.InvalidPlaceException;
-import com.airbnb.exceptions.InvalidReviewException;
 import com.airbnb.exceptions.InvalidUserException;
+import com.airbnb.model.address.AddressDAO;
 import com.airbnb.model.db.DBConnectionTest;
-import com.airbnb.model.review.ReviewDAO;
-import com.airbnb.model.user.User;
 
 public class PlaceDAO implements IPlaceDAO {
+	private static final String ALL_PLACE_TYPES = "SELECT * FROM placetype;";
+	private static final String GET_ADDRESS = "SELECT * FROM locations JOIN countries ON locations.country_id = countries.id JOIN cities ON locations.city_id = cities.id WHERE cities.name = ? and countries.name = ?;";
 	private static final String PLACE_FROM_ID = "SELECT * FROM users WHERE id=?";
-	private static final String CHECK_COUNTRY = "SELECT count(*) FROM countries WHERE countries.name = ?;";
+	
 	private static final String CHECK_PLACE_TYPE = "SELECT count(*) FROM placetype WHERE placetype.name = ?;";
 	private static final String CHECK_EMAIL = "SELECT count(*) FROM users WHERE users.email = ?;";
-	private static final String ADD_PLACE = "INSERT INTO place VALUES(null,?,?,(SELECT countries.id FROM countries WHERE countries.name = ?),(SELECT placetype.id FROM placetype where placetype.name = ?),(SELECT users.id FROM users WHERE users.email = ?));";
+	private static final String ADD_PLACE = "INSERT INTO place VALUES(null,?,false,?,(SELECT placetype.id FROM placetype where placetype.name = ?),(SELECT users.id FROM users WHERE users.email = ?));";
 	// private static final String INSERT_REVIEW = "INSERT INTO place
 	// VALUES(null,'Street',1,(select countries.id from countries where
 	// countries.name = 'Bulgaria'),(select placetype.id from placetype where
 	// placetype.name = 'House'),(select users.id from users where users.email =
 	// 'mail@bg.bg'));";
 	private static final int EMPTY_NAME = 0;
-
-	private static final String ADD_COUNTRY = "INSERT INTO countries VALUES(null,?);";
+	
 	private static final String ADD_PLACE_TYPE = "INSERT INTO placetype VALUES(null,?);";
+	
 	/*@Autowired
 	private static DBConnectionTest dbConnection;
 	private static Connection connection;
@@ -47,6 +50,8 @@ public class PlaceDAO implements IPlaceDAO {
 	}*/
 
 	@Autowired
+	private AddressDAO addressDAO;
+	@Autowired
 	private  DBConnectionTest dbConnection;
 	private  Connection connection;
 	
@@ -56,27 +61,17 @@ public class PlaceDAO implements IPlaceDAO {
 		connection = this.dbConnection.getConnection();
 	}
 	@Override
-	public int createPlace(String streetName, String countryName, String placeTypeName, String userEmail)
+	public int createPlace(String name,String streetName,int streetNumber,String city, String countryName, String placeTypeName, String userEmail)
 			throws InvalidPlaceException {
-		if (streetName != null && countryName != null && placeTypeName != null && userEmail != null
-				&& !(streetName.isEmpty() || countryName.isEmpty() || placeTypeName.isEmpty() || userEmail.isEmpty())) {
+		if (name != null && streetName != null && countryName != null && city != null && placeTypeName != null && userEmail != null
+				&& !(name.isEmpty() || streetName.isEmpty() || countryName.isEmpty() || city.isEmpty() || placeTypeName.isEmpty() || userEmail.isEmpty())) {
+			
 			// PreparedStatement statement = connection.prepareStatement(CHECK_COUNTRY);
 			PreparedStatement ps = null;
 			PreparedStatement ps2 = null;
 			try {
-				ps = connection.prepareStatement(CHECK_COUNTRY);
-				ps.setString(1, countryName);
-				ResultSet set = ps.executeQuery();
-				int count = 0;
-				if (set.next()) {
-					count = set.getInt(1);
-				}
-				// ps.close();
-
-				if (count == EMPTY_NAME) {
-					ps = connection.prepareStatement(ADD_COUNTRY);
-					ps.setString(1, countryName);
-				}
+				int locationId = addressDAO.addAddress(streetName, streetNumber, countryName, city);
+				
 				// ps2.close();
 				ps = connection.prepareStatement(CHECK_PLACE_TYPE);
 				ps.setString(1, placeTypeName);
@@ -95,8 +90,8 @@ public class PlaceDAO implements IPlaceDAO {
 				}
 
 				connection.setAutoCommit(false);
-				ps.setString(1, streetName);
-				ps.setString(2, countryName);
+				ps.setString(1, name);
+				ps.setInt(2, locationId);
 				ps.setString(3, placeTypeName);
 				ps.setString(3, userEmail);
 
@@ -117,6 +112,8 @@ public class PlaceDAO implements IPlaceDAO {
 				throw new InvalidPlaceException("Invalid statement", e);
 			} catch (InvalidUserException e) {
 				throw new InvalidPlaceException("Invalid user", e);
+			} catch (InvalidAddressException e) {
+				throw new InvalidPlaceException("Invalid address", e);
 			} finally {
 
 				try {
@@ -128,7 +125,7 @@ public class PlaceDAO implements IPlaceDAO {
 				}
 			}
 		} else {
-			throw new InvalidPlaceException("Please insert street, country, place type and email.");
+			throw new InvalidPlaceException("Please insert street,street number, city, country, place type and email.");
 		}
 	}
 
@@ -158,5 +155,28 @@ public class PlaceDAO implements IPlaceDAO {
 			throw new InvalidPlaceException("Invalid statement", e);
 		}
 	}
-
+	@Override
+	public List<String> getAllPlaceTypes() throws InvalidPlaceException {
+		List<String> result = new ArrayList<>();
+		Statement st;
+		try {
+			st = connection.createStatement();
+			ResultSet set = st.executeQuery(ALL_PLACE_TYPES);
+			while(set.next()) {
+				int id = set.getInt("id");
+				String name = set.getString("name");
+				
+				//PlaceType placeType = PlaceType.fromString(name);
+				result.add(name);
+			}
+			if(result.isEmpty()) {
+				throw new InvalidPlaceException("No such place types.");
+			}else {
+				return result;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new InvalidPlaceException("Oops , something went wrong. Reason: "  +e.getMessage());
+		}
+	}
 }

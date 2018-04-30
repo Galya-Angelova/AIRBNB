@@ -31,9 +31,9 @@ public class CountryDAO implements ICountryDAO{
 	}
 
 	@Override
-	public int addCountry(Country country) throws InvalidCountryException {
+	public int addCountry(String country) throws InvalidCountryException {
 		try (PreparedStatement ps = connection.prepareStatement(ADD_COUNTRY_SQL, Statement.RETURN_GENERATED_KEYS)) {
-			ps.setString(1, country.getName());
+			ps.setString(1, country);
 			ps.executeUpdate();
 
 			ResultSet rs = ps.getGeneratedKeys();

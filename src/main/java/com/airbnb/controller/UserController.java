@@ -1,4 +1,4 @@
-package com.airbnb.controller.user;
+package com.airbnb.controller;
 
 import java.io.IOException;
 import java.sql.Date;

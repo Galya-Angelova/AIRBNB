@@ -20,5 +20,6 @@ public interface IUserDAO {
 //	public void saveUser(User user) throws SQLException;
 	public void becameAHost(int userId) throws InvalidUserException;
 	
-	public void addNewPlace(String streetName, String countryName, String placeTypeName, int userId) throws InvalidUserException;
+	//public void addNewPlace(String streetName, String countryName, String placeTypeName, int userId) throws InvalidUserException;
+	
 }

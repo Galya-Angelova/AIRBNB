@@ -29,9 +29,9 @@ public class CityDAO implements ICityDAO{
 	}
 
 	@Override
-	public int addCity(City city) throws InvalidCityException {
+	public int addCity(String city) throws InvalidCityException {
 		try (PreparedStatement ps = connection.prepareStatement(ADD_CITY_SQL, Statement.RETURN_GENERATED_KEYS)) {
-			ps.setString(1, city.getName());
+			ps.setString(1, city);
 			ps.executeUpdate();
 
 			ResultSet rs = ps.getGeneratedKeys();

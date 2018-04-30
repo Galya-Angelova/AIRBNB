@@ -1,5 +1,7 @@
 package com.airbnb.model.place;
 
+import java.util.List;
+
 public class Place {
 	 enum PlaceType {
 		HOUSE(1,"house"), ONE_ROOM(2,"one room"), TWO_ROOMS(3,"two rooms"), STUDIO(4,"studio");
@@ -37,6 +39,7 @@ public class Place {
 	private int locationID;
 	private PlaceType placeType;
 	private int ownerId;
+	private List<String> photoes;
 	
 	public Place(int id, String name, boolean busied, int locationID,String placeTypeName, int ownerId) {
 		this.id = id;
