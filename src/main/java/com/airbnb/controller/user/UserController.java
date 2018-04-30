@@ -7,11 +7,14 @@ import java.time.LocalDate;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.airbnb.exceptions.InvalidUserException;
 import com.airbnb.model.user.User;
@@ -24,50 +27,69 @@ public class UserController {
 	@Autowired
 	private UserDAO dao;
 
-	@RequestMapping(method = RequestMethod.POST, value = "/login")
-	public String userLogin(HttpServletRequest request, HttpServletResponse response)
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	public String loginPage() {
+		return "index";
+	}
+
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	public String userLogin(Model model, HttpSession session, @RequestParam String email, @RequestParam String password)
 			throws ServletException, IOException {
 		try {
-			String email = (String) request.getAttribute("email");
-			String password = (String) request.getAttribute("password");
+
 			int userId = dao.login(email, password);
 			User user = null;
 			if (userId > 0) {
 				user = dao.userFromId(userId);
 			}
 			if (user != null) {
-				request.getSession().setAttribute("user", user);
-				request.getSession().setMaxInactiveInterval(MAX_TIME);
+				session.setAttribute("user", user);
+				session.setMaxInactiveInterval(MAX_TIME);
 				return "home";
 			} else {
-				throw new InvalidUserException("invalid username or password");
+				throw new InvalidUserException("Invalid username or password");
 			}
 		} catch (InvalidUserException e) {
-			request.setAttribute("exception", e);
+			model.addAttribute("exception", e);
+			return "error";
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("exception", e);
 			return "error";
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/register")
-	protected String userRegister(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		try {
-			String email = (String) request.getParameter("email");
-			String password = (String) request.getParameter("password");
-			String passwordConfirm = (String) request.getParameter("confirm password");
-			boolean isMale = Boolean.valueOf(String.valueOf(request.getAttribute("gender")));
-			String firstName = (String) request.getParameter("first name");
-			String lastName = (String) request.getParameter("last name");
+	@RequestMapping(value = "/register", method = RequestMethod.GET)
+	public String getRegisterPage() {
+		return "register";
+	}
 
-			String birthdate = request.getParameter("bday");
-			Date date = Date.valueOf(birthdate);
+	@RequestMapping(value = "/register", method = RequestMethod.POST)
+	protected String userRegister(Model model, HttpSession session, @RequestParam String email,
+			@RequestParam boolean isMale, @RequestParam String firstName, @RequestParam String lastName,
+			@RequestParam Date bday, @RequestParam String phone, @RequestParam String password,
+			@RequestParam String confirmPassword) throws ServletException, IOException {
+		try {
+
+			/*
+			 * String email = (String) request.getParameter("email"); String password =
+			 * (String) request.getParameter("password"); String passwordConfirm = (String)
+			 * request.getParameter("confirm password"); boolean isMale =
+			 * Boolean.valueOf(String.valueOf(request.getAttribute("gender"))); String
+			 * firstName = (String) request.getParameter("first name"); String lastName =
+			 * (String) request.getParameter("last name");
+			 * 
+			 * String birthdate = request.getParameter("bday");
+			 */
+			Date date = bday;
 			LocalDate localDate = date.toLocalDate();
 			int month = localDate.getMonthValue();
 			int day = localDate.getDayOfMonth();
 			int year = localDate.getYear();
 
+			// String phone = request.getParameter("phone");
 			System.out.println(localDate.toString());
-			if (!password.equals(passwordConfirm)) {
+			if (!password.equals(confirmPassword)) {
 				throw new InvalidUserException("Password mismatch");
 			}
 			if (!User.validateEmail(email)) {
@@ -77,19 +99,21 @@ public class UserController {
 				throw new InvalidUserException("Invalid name, your name should contains only characters.");
 			}
 
-			User user = new User(0, email, password, isMale, firstName, lastName, day, month, year, "");
+			User user = new User(0, email, password, isMale, firstName, lastName, day, month, year, phone);
 
 			dao.register(user);
 
+			session.setAttribute("user", user);
+			session.setMaxInactiveInterval(MAX_TIME);
 			return "index";
 
 		} catch (InvalidUserException e) {
 			e.printStackTrace();
-			request.setAttribute("exception", e);
+			model.addAttribute("exception", e);
 			return "error";
 		} catch (Exception e) {
 			e.printStackTrace();
-			request.setAttribute("exception", e);
+			model.addAttribute("exception", e);
 			return "error";
 		}
 	}

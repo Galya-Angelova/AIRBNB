@@ -14,16 +14,19 @@ import com.airbnb.exceptions.DBException;
 
 @Component
 public class DBConnectionTest {
-	private static final String DB_NAME;
-	private static final String HOST;
-	private static final String PORT;
-	private static final String DB_USERNAME;
-	private static final String DB_PASSWORD;
+	private static final String DB_NAME = "/airbnbtestdb";
+	private static final String HOST = "localhost";
+	private static final String PORT = "3306";
+	private static final String DB_USERNAME = "root";
+	private static final String DB_PASSWORD = "1234t";
 	private Connection connection;
 
-	static {
+	
+
+
+	/*static {
 		Properties prop = new Properties();
-		try (InputStream input = new FileInputStream("src/main/resources/airbnbTestDB.properties")) {
+		try (InputStream input = new FileInputStream("airbnbTestDB.properties")) {
 			prop.load(input);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -34,7 +37,7 @@ public class DBConnectionTest {
 		DB_PASSWORD = prop.getProperty("DB_PASSWORD");
 		PORT = prop.getProperty("PORT");
 	}
-
+*/
 	public DBConnectionTest() throws DBException {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
@@ -42,7 +45,8 @@ public class DBConnectionTest {
 			throw new DBException("Driver not loaded.",e);
 		}
 		try {
-			connection = DriverManager.getConnection("jdbc:mysql://" + HOST + ":" + PORT +"/"+ DB_NAME, DB_USERNAME,
+			
+			connection = DriverManager.getConnection("jdbc:mysql://" + HOST + ":" + PORT + DB_NAME, DB_USERNAME,
 					DB_PASSWORD);
 		} catch (SQLException e) {
 			throw new DBException("Wrong credentials",e);

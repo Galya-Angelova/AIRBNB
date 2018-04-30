@@ -10,11 +10,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sql.DataSource;
+import javax.servlet.http.HttpSession;
 
-import org.apache.catalina.core.ApplicationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.airbnb.exceptions.InvalidPlaceException;
 import com.airbnb.exceptions.InvalidUserException;
@@ -32,21 +33,23 @@ public class UserDAO implements IUserDAO {
 
 	// TODO change with DBConnection
 	@Autowired
-	private static DBConnectionTest dbConnection;
+	private  DBConnectionTest dbConnection;
 
 
-	private static Connection connection;
+	private  Connection connection;
 
-	static {
+	/*static {
 		try {
 			dbConnection = new DBConnectionTest();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
-	public UserDAO() {
-		connection = UserDAO.dbConnection.getConnection();
+	@Autowired
+	public UserDAO(DBConnectionTest dbConnection) {
+		this.dbConnection = dbConnection;
+		connection = this.dbConnection.getConnection();
 	}
 
 	@Override
@@ -86,12 +89,13 @@ public class UserDAO implements IUserDAO {
 			connection.setAutoCommit(false);
 			PreparedStatement ps = connection.prepareStatement(REGISTER_USER_SQL, Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, user.getEmail());
-			ps.setBoolean(2, user.isMale());
+			ps.setBoolean(2,user.isMale());
 			ps.setString(3, user.getFirstName());
 			ps.setString(4, user.getLastName());
 			ps.setDate(5, Date.valueOf(user.getBirthdate()));
 			ps.setString(6, user.getPhoneNumber());
-			ps.setString(7, user.getPassword());
+			
+			ps.setString(7,user.getPassword());
 			// ps.setInt(8, user.getAddress_id());
 			ps.executeUpdate();
 
@@ -109,7 +113,8 @@ public class UserDAO implements IUserDAO {
 			} catch (SQLException e1) {
 				throw new InvalidUserException("Invalid statement", e1);
 			}
-			throw new InvalidUserException("Invalid statement", e);
+			System.out.println(e.getMessage());
+			throw new InvalidUserException("Invalid statement, try with another email.", e);
 		}finally {
 			try {
 				connection.setAutoCommit(false);
@@ -180,7 +185,7 @@ public class UserDAO implements IUserDAO {
 	@Override
 	public void addNewPlace(String streetName, String countryName, String placeTypeName, int userId)
 			throws InvalidUserException {
-		PlaceDAO dao = new PlaceDAO();
+		PlaceDAO dao = new PlaceDAO(dbConnection);
 		User user = userFromId(userId);
 		try {
 			dao.createPlace(streetName, countryName, placeTypeName, user.getEmail());

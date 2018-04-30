@@ -3,6 +3,7 @@ package com.airbnb.model.user;
 import java.sql.SQLException;
 import java.util.List;
 
+
 import com.airbnb.exceptions.InvalidUserException;
 
 public interface IUserDAO {

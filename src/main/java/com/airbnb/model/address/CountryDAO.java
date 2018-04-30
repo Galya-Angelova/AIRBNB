@@ -16,10 +16,19 @@ public class CountryDAO implements ICountryDAO{
 	private static final String GIVE_COUNTRY_SQL = "SELECT * FROM countries WHERE name= ?";
 	private static final String COUNTRY_FROM_ID_SQL = "SELECT * FROM countries WHERE id=?";
 
-	@Autowired
+	/*@Autowired
 	private static DBConnectionTest dbConnection;
 
-	private static Connection connection = dbConnection.getConnection();
+	private static Connection connection = dbConnection.getConnection();*/
+	@Autowired
+	private  DBConnectionTest dbConnection;
+	private  Connection connection;
+	
+	@Autowired
+	public CountryDAO(DBConnectionTest dbConnection) {
+		this.dbConnection = dbConnection;
+		connection = this.dbConnection.getConnection();
+	}
 
 	@Override
 	public int addCountry(Country country) throws InvalidCountryException {

@@ -30,7 +30,7 @@ public class PlaceDAO implements IPlaceDAO {
 
 	private static final String ADD_COUNTRY = "INSERT INTO countries VALUES(null,?);";
 	private static final String ADD_PLACE_TYPE = "INSERT INTO placetype VALUES(null,?);";
-	@Autowired
+	/*@Autowired
 	private static DBConnectionTest dbConnection;
 	private static Connection connection;
 
@@ -44,8 +44,17 @@ public class PlaceDAO implements IPlaceDAO {
 
 	public PlaceDAO() {
 		connection = PlaceDAO.dbConnection.getConnection();
-	}
+	}*/
 
+	@Autowired
+	private  DBConnectionTest dbConnection;
+	private  Connection connection;
+	
+	@Autowired
+	public PlaceDAO(DBConnectionTest dbConnection) {
+		this.dbConnection = dbConnection;
+		connection = this.dbConnection.getConnection();
+	}
 	@Override
 	public int createPlace(String streetName, String countryName, String placeTypeName, String userEmail)
 			throws InvalidPlaceException {

@@ -1,15 +1,27 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+	pageEncoding="ISO-8859-1"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <jsp:include page="header.jsp"></jsp:include>
 
 <h1>Login</h1>
-	<form>
+<form action="login" method="post">
 
-		email <input type="text"><br><br>
-		Password <input type="password"><br>
-		 <input type="submit" value="Login"><br>
-		 Don't have an account?<a href="register.jsp"> Register here</a>
-
-	</form>
+	<table>
+		<tr>
+			<td>Enter email</td>
+			<td><input type="email" name="email" required></td>
+		</tr>
+		<tr>
+			<td>Enter password</td>
+			<td><input type="password" name="password" required></td>
+		</tr>
+	</table>
+	<input type="submit" value="login"><br> Don't have an
+	account?
+	<c:url var="URL" value="register">
+		<c:param name="param" value="${parameter}" />
+	</c:url>
+	<a href="<c:out value="${URL}"/>">Register here</a>
+</form>
 </body>
 </html>

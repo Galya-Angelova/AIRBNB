@@ -51,7 +51,7 @@ public class User {
 		}
 	}
 	public void changePhoneNumber(String phoneNumber) throws InvalidUserException {
-		if (phoneNumber == null || phoneNumber.trim().length() == POSITIVE) {
+		if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
 			throw new InvalidUserException("Empty phone number.");
 		} else {
 			if (validatePhoneNumber(phoneNumber)) {

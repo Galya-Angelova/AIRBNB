@@ -15,10 +15,19 @@ public class AddressDAO implements IAddressDAO{
 	private static final String ADDRESS_FROM_ID_SQL = "SELECT * FROM locations WHERE id=?";
 	private static final String ADD_ADDRESS_SQL = "INSERT INTO locations VALUES (null, ?, ?, ?, ?)";
 
-	@Autowired
+	/*@Autowired
 	private static DBConnectionTest dbConnection;
 
-	private static Connection connection = dbConnection.getConnection();
+	private static Connection connection = dbConnection.getConnection();*/
+	@Autowired
+	private  DBConnectionTest dbConnection;
+	private  Connection connection;
+	
+	@Autowired
+	public AddressDAO(DBConnectionTest dbConnection) {
+		this.dbConnection = dbConnection;
+		connection = this.dbConnection.getConnection();
+	}
 
 	@Override
 	public int addAddress(Address address) throws InvalidAddressException {

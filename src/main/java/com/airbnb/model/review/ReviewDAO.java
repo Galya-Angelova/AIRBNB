@@ -18,7 +18,7 @@ public class ReviewDAO implements IReviewDAO {
 	// private static final String INSERT_REVIEW = "INSERT INTO review
 	// values(null,'Title','Text',1);";
 	private static final String INSERT_REVIEW = "INSERT INTO review values(null,?,?,((SELECT place.id FROM place WHERE place.name = ?));";
-	@Autowired
+	/*@Autowired
 	private static DBConnectionTest dbConnection;
 	private static Connection connection;
 
@@ -33,7 +33,16 @@ public class ReviewDAO implements IReviewDAO {
 	public ReviewDAO() {
 		connection = ReviewDAO.dbConnection.getConnection();
 	}
-
+*/
+	@Autowired
+	private  DBConnectionTest dbConnection;
+	private  Connection connection;
+	
+	@Autowired
+	public ReviewDAO(DBConnectionTest dbConnection) {
+		this.dbConnection = dbConnection;
+		connection = this.dbConnection.getConnection();
+	}
 	@Override
 	public int createReview(String title, String text, String placeName) throws InvalidReviewException {
 		if (title != null && text != null && placeName != null

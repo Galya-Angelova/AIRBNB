@@ -19,9 +19,14 @@ public class CityDAO implements ICityDAO{
 	private static final String CITY_FROM_ID_SQL = "SELECT * FROM cities WHERE id=?";
 
 	@Autowired
-	private static DBConnectionTest dbConnection;
-
-	private static Connection connection = dbConnection.getConnection();
+	private  DBConnectionTest dbConnection;
+	private  Connection connection;
+	
+	@Autowired
+	public CityDAO(DBConnectionTest dbConnection) {
+		this.dbConnection = dbConnection;
+		connection = this.dbConnection.getConnection();
+	}
 
 	@Override
 	public int addCity(City city) throws InvalidCityException {
