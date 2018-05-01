@@ -12,11 +12,7 @@ import com.airbnb.exceptions.DBException;
 public class Test {
 	public static void main(String[] args) {
 		DBConnectionTest db=null;
-		try {
-			db = new DBConnectionTest();
-		} catch (DBException e) {
-			System.out.println(e.getMessage());
-		}
+		db = new DBConnectionTest();
 		Connection con = db.getConnection();
 			try (PreparedStatement ps = con.prepareStatement("INSERT INTO users VALUES (null, ?, ? ,?, ?, ?, ?, false, false, sha1(?))", Statement.RETURN_GENERATED_KEYS)) {
 				ps.setString(1, "k@safa.das");

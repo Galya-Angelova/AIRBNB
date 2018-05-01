@@ -153,7 +153,7 @@ public class User {
 		return matcher.matches();
 	}
 
-	private boolean validatePhoneNumber(String number) {
+	public static boolean validatePhoneNumber(String number) {
 		// validate phone numbers of format "1234567890"
 		if (number.matches("\\d{10}"))
 			return true;
@@ -172,7 +172,7 @@ public class User {
 
 	}
 
-	private boolean validatePassword(String password) {
+	public static boolean validatePassword(String password) {
 		String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!-_@#$%^&+=])(?=\\S+$).{8,}";
 		return password.matches(pattern);
 	}
