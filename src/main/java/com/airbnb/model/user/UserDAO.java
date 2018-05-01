@@ -14,10 +14,8 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.airbnb.exceptions.InvalidPlaceException;
 import com.airbnb.exceptions.InvalidUserException;
 import com.airbnb.model.db.DBConnectionTest;
-import com.airbnb.model.place.PlaceDAO;
 
 @Component
 public class UserDAO implements IUserDAO {

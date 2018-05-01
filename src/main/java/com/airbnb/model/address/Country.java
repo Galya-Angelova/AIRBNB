@@ -4,6 +4,7 @@ import com.airbnb.exceptions.InvalidCountryException;
 
 public class Country {
 	private static final int POSITIVE = 0;
+	
 	private int id;
 	private String name;
 
@@ -11,7 +12,8 @@ public class Country {
 		setId(id);
 		setName(name);
 	}
-
+	
+//	Setters
 	private void setId(int id) throws InvalidCountryException {
 		if (id >= POSITIVE) {
 			this.id = id;
@@ -27,7 +29,8 @@ public class Country {
 			this.name = name;
 		}
 	}
-
+	
+//	Getters
 	public int getId() {
 		return this.id;
 	}

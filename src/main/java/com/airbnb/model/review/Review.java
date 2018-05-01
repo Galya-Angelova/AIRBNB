@@ -1,8 +1,10 @@
 package com.airbnb.model.review;
 
-import com.airbnb.model.place.Place;
+import com.airbnb.exceptions.InvalidReviewException;
 
 public class Review {
+	private static final int POSITIVE = 0;
+	
 	private int id;
 	private String title;
 	private String text;
@@ -15,38 +17,54 @@ public class Review {
 		this.placeId = placeId;
 	}
 
-	public int getId() {
-		return id;
+//	Setters
+	public void setId(int id) throws InvalidReviewException {
+		if (id >= POSITIVE) {
+			this.id = id;
+		} else {
+			throw new InvalidReviewException("Invalid id for review.");
+		}
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setTitle(String title) throws InvalidReviewException {
+		if (title == null || (title.trim().isEmpty())) {
+			throw new InvalidReviewException("Empty title.");
+		} else {
+			this.title = title;
+		}
+	}
+
+	public void setText(String text) throws InvalidReviewException {
+		if (text == null || (text.trim().isEmpty())) {
+			throw new InvalidReviewException("Empty text.");
+		} else {
+			this.text = text;
+		}
+	}
+
+	public void setPlace(int placeId) throws InvalidReviewException {
+		if (placeId >= POSITIVE) {
+			this.placeId = placeId;
+		} else {
+			throw new InvalidReviewException("Invalid id for review's place.");
+		}
+	}
+	
+//	Getters
+	public int getId() {
+		return this.id;
 	}
 
 	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
+		return this.title;
 	}
 
 	public String getText() {
-		return text;
-	}
-
-	public void setText(String text) {
-		this.text = text;
+		return this.text;
 	}
 
 	public int getPlace() {
-		return placeId;
+		return this.placeId;
 	}
 
-	public void setPlace(int placeId) {
-		
-		this.placeId = placeId;
-	}
-	
-	
 }

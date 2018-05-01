@@ -7,10 +7,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.airbnb.exceptions.InvalidCountryException;
 import com.airbnb.model.db.DBConnectionTest;
 
+@Component
 public class CountryDAO implements ICountryDAO{
 	private static final String ADD_COUNTRY_SQL = "INSERT INTO countries VALUES (null, ?)";
 	private static final String GIVE_COUNTRY_SQL = "SELECT * FROM countries WHERE name= ?";
@@ -30,10 +32,26 @@ public class CountryDAO implements ICountryDAO{
 		connection = this.dbConnection.getConnection();
 	}
 
+//	@Override
+//	public int addCountry(String country) throws InvalidCountryException {
+//		try (PreparedStatement ps = connection.prepareStatement(ADD_COUNTRY_SQL, Statement.RETURN_GENERATED_KEYS)) {
+//			ps.setString(1, country);
+//			ps.executeUpdate();
+//
+//			ResultSet rs = ps.getGeneratedKeys();
+//			rs.next();
+//
+//			return rs.getInt(1);
+//		} catch (SQLException e) {
+//			// e.printStackTrace();
+//			throw new InvalidCountryException("Invalid statement", e);
+//		}
+//	}
+	
 	@Override
-	public int addCountry(String country) throws InvalidCountryException {
+	public int addCountry(Country country) throws InvalidCountryException {
 		try (PreparedStatement ps = connection.prepareStatement(ADD_COUNTRY_SQL, Statement.RETURN_GENERATED_KEYS)) {
-			ps.setString(1, country);
+			ps.setString(1, country.getName());
 			ps.executeUpdate();
 
 			ResultSet rs = ps.getGeneratedKeys();
@@ -45,7 +63,6 @@ public class CountryDAO implements ICountryDAO{
 			throw new InvalidCountryException("Invalid statement", e);
 		}
 	}
-
 	@Override
 	public int giveCountryId(String country) throws InvalidCountryException {
 		try (PreparedStatement ps = connection.prepareStatement(GIVE_COUNTRY_SQL)) {

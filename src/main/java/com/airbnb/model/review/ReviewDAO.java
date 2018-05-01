@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.airbnb.exceptions.InvalidReviewException;
-import com.airbnb.exceptions.InvalidUserException;
 import com.airbnb.model.db.DBConnectionTest;
 
 @Component

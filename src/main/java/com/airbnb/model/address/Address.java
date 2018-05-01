@@ -4,6 +4,7 @@ import com.airbnb.exceptions.InvalidAddressException;
 
 public class Address {
 	private static final int POSITIVE = 0;
+	
 	private int id;
 	private int country_id;
 	private int city_id;
@@ -18,7 +19,8 @@ public class Address {
 		setStreet(street);
 		setStreetNumber(streetNumber);
 	}
-
+	
+//	Setters
 	private void setId(int id) throws InvalidAddressException {
 		if (id >= POSITIVE) {
 			this.id = id;
@@ -28,7 +30,7 @@ public class Address {
 	}
 
 	private void setCountry(int country_id) throws InvalidAddressException {
-		if (country_id  <=0) {
+		if (country_id  <=POSITIVE) {
 			throw new InvalidAddressException("Empty country.");
 		} else {
 			this.country_id = country_id;
@@ -36,7 +38,7 @@ public class Address {
 	}
 
 	private void setCity(int city_id) throws InvalidAddressException {
-		if (city_id <=0) {
+		if (city_id <=POSITIVE) {
 			throw new InvalidAddressException("Empty city.");
 		} else {
 			this.city_id = city_id;
@@ -58,7 +60,8 @@ public class Address {
 			throw new InvalidAddressException("Invalid street number.");
 		}
 	}
-
+	
+//	Getters
 	public int getId() {
 		return this.id;
 	}

@@ -12,6 +12,7 @@ import com.airbnb.model.place.Place;
 
 public class User {
 	private static final int POSITIVE = 0;
+	
 	private int id;
 	private String email;
 	private boolean isMale;
@@ -50,6 +51,8 @@ public class User {
 			//TODO method to convert from idPlace to Place object
 		}
 	}
+	
+//	Setters
 	public void changePhoneNumber(String phoneNumber) throws InvalidUserException {
 		if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
 			throw new InvalidUserException("Empty phone number.");
@@ -142,7 +145,6 @@ public class User {
 	}
 
 	// validations
-	
 
 	public static boolean validateEmail(String email) {
 		String regex = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
@@ -175,6 +177,11 @@ public class User {
 	public static boolean validatePassword(String password) {
 		String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!-_@#$%^&+=])(?=\\S+$).{8,}";
 		return password.matches(pattern);
+	}
+
+	public static boolean validateStringText(String text) {
+		String str = text.trim();
+		return ((str != null) && !(str.isEmpty()) && (str.matches("[A-Za-z ]*") && (str.equals(text))));
 	}
 //	Getters
 
@@ -221,8 +228,4 @@ public class User {
 		return this.deleted;
 	}
 	
-	public static boolean validateStringText(String text) {
-		String str = text.trim();
-		return ((str != null) && !(str.isEmpty()) && (str.matches("[A-Za-z ]*") && (str.equals(text))));
-	}
 }
