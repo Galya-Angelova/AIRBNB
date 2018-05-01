@@ -4,6 +4,7 @@ import com.airbnb.exceptions.InvalidCityException;
 
 public class City {
 	private static final int POSITIVE = 0;
+	
 	private int id;
 	private String name;
 
@@ -11,7 +12,8 @@ public class City {
 		setId(id);
 		setName(name);
 	}
-
+	
+//	Setters
 	private void setId(int id) throws InvalidCityException {
 		if (id >= POSITIVE) {
 			this.id = id;
@@ -27,7 +29,8 @@ public class City {
 			this.name = name;
 		}
 	}
-
+	
+//	Getters
 	public int getId() {
 		return this.id;
 	}

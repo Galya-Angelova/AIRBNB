@@ -43,7 +43,7 @@ public class DBConnection {
 	private static final String HOST = "localhost";
 	private static final String PORT = "3306";
 	private static final String DB_USERNAME = "root";
-	private static final String DB_PASSWORD = "1234t";
+	private static final String DB_PASSWORD = "Kp.9205056346";
 	private Connection connection;
 
 	public DBConnection() throws DBException {
