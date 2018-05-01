@@ -26,6 +26,7 @@ public class UserDAO implements IUserDAO {
 	private static final String LOGIN_USER_SQL = "SELECT * FROM users WHERE email=?";
 	private static final String USER_FROM_ID_SQL = "SELECT * FROM users WHERE id=?";
 	private static final String REGISTER_USER_SQL = "INSERT INTO users VALUES (null, ?, ? ,?, ?, ?, ?, false, false,?)";
+
 	private static final String BECAME_A_HOST = "UPDATE users SET isHost = 1 WHERE id = ?;";
 
 	// TODO change with DBConnection
