@@ -25,7 +25,7 @@ public class UserDAO implements IUserDAO {
 	private static final String GET_USERS_ID = "SELECT id FROM users;";
 	private static final String LOGIN_USER_SQL = "SELECT * FROM users WHERE email=?";
 	private static final String USER_FROM_ID_SQL = "SELECT * FROM users WHERE id=?";
-	private static final String REGISTER_USER_SQL = "INSERT INTO users VALUES (null, ?, ? ,?, ?, ?, ?, false, false, sha1(?))";
+	private static final String REGISTER_USER_SQL = "INSERT INTO users VALUES (null, ?, ? ,?, ?, ?, ?, false, false,?)";
 	private static final String BECAME_A_HOST = "UPDATE users SET isHost = 1 WHERE id = ?;";
 
 	// TODO change with DBConnection
@@ -56,8 +56,7 @@ public class UserDAO implements IUserDAO {
 			if (rs.next()) {
 				int id = rs.getInt("id");
 				User user = userFromId(id);
-				String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-				if (password.equals(hashedPassword)) {
+				if (BCrypt.checkpw(password, user.getPassword())) {
 					return id;
 				}
 			}
@@ -177,10 +176,10 @@ public class UserDAO implements IUserDAO {
 
 		if (User.validatePassword(newPass)) {
 			String hashedPassword = BCrypt.hashpw(newPass, BCrypt.gensalt());
-			String confirmHashedPassword = BCrypt.hashpw(newPass, BCrypt.gensalt());
-			if (!hashedPassword.equals(confirmHashedPassword)) {
+			if (!BCrypt.checkpw(newPassConfirm, hashedPassword)) {
 				throw new InvalidUserException("Passwords mismatch.");
 			}
+
 			try {
 				this.connection.setAutoCommit(false);
 				PreparedStatement ps = this.connection.prepareStatement(CHANGE_PASSWORD);
@@ -216,14 +215,14 @@ public class UserDAO implements IUserDAO {
 	public boolean comparePasswords(int userId, String password) throws InvalidUserException {
 		User user = userFromId(userId);
 		String passwordInDB = user.getPassword();
-		String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-		return passwordInDB.equals(hashedPassword);
+		
+		return BCrypt.checkpw(password, passwordInDB);
 	}
 
 	public void changePhoneNumber(int userId, String phoneNumber) throws InvalidUserException {
 
 		try (PreparedStatement ps = connection.prepareStatement(CHANGE_PHONE)) {
-			if(!User.validatePhoneNumber(phoneNumber)) {
+			if (!User.validatePhoneNumber(phoneNumber)) {
 				throw new InvalidUserException("Invalid phone number");
 			}
 			ps.setString(1, phoneNumber);
