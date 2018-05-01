@@ -78,7 +78,7 @@ public class PlaceController {
 //	}
 //	
 	
-	@RequestMapping(value = "/addPlace", method = RequestMethod.POST)
+	@RequestMapping(value = "/createPlace", method = RequestMethod.POST)
 	public String create(Model model, @RequestParam String name, @RequestParam String placeTypeName,
 			@RequestParam String street, @RequestParam int streetNumber, @RequestParam String city,
 			@RequestParam String country, HttpSession session) throws ServletException, IOException {

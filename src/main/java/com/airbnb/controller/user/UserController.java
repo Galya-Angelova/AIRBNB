@@ -129,6 +129,10 @@ public class UserController {
 
 	}
 
+	@RequestMapping(value = "/updateSettings", method = RequestMethod.GET)
+	public String settingsPage() {
+		return "settings";
+	}
 	@RequestMapping(value = "/updateSettings", method = RequestMethod.POST)
 	public String changeSettings(Model model, HttpSession session, @RequestParam String email,
 			@RequestParam String phoneNumber, @RequestParam String firstName, @RequestParam String lastName,
