@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -46,8 +47,8 @@ public class ReviewDAO implements IReviewDAO {
 	public int createReview(String title, String text, String placeName) throws InvalidReviewException {
 		if (title != null && text != null && placeName != null
 				&& !(title.isEmpty() || text.isEmpty() || placeName.isEmpty())) {
-			try (PreparedStatement ps = connection.prepareStatement(INSERT_REVIEW)) {
-				connection.setAutoCommit(false);
+			try (PreparedStatement ps = connection.prepareStatement(INSERT_REVIEW, Statement.RETURN_GENERATED_KEYS)) {
+//				connection.setAutoCommit(false);
 				ps.setString(1, title);
 				ps.setString(2, text);
 				ps.setString(3, placeName);
@@ -55,24 +56,24 @@ public class ReviewDAO implements IReviewDAO {
 				ResultSet rs = ps.getGeneratedKeys();
 				rs.next();
 
-				connection.commit();
-				ps.close();
+//				connection.commit();
+//				ps.close();
 
 				return rs.getInt(1);
 
 			}catch (SQLException e) {
-				try {
-					connection.rollback();
-				} catch (SQLException e1) {
-					throw new InvalidReviewException("Oops something went wrong.", e1);
-				}
+//				try {
+//					connection.rollback();
+//				} catch (SQLException e1) {
+//					throw new InvalidReviewException("Oops something went wrong.", e1);
+//				}
 				throw new InvalidReviewException("Invalid statement", e);
-			}finally {
-				try {
-					connection.setAutoCommit(false);
-				} catch (SQLException e) {
-					throw new InvalidReviewException("Set auto commit false error", e);
-				}
+//			}finally {
+//				try {
+//					connection.setAutoCommit(false);
+//				} catch (SQLException e) {
+//					throw new InvalidReviewException("Set auto commit false error", e);
+//				}
 			}
 		}else {
 			throw new InvalidReviewException("Please insert title, text and place name.");

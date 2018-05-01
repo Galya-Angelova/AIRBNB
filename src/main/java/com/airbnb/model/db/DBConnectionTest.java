@@ -27,7 +27,7 @@ public class DBConnectionTest {
 /*
 	static {
 		Properties prop = new Properties();
-		try (InputStream input = new FileInputStream("config.properties")) {
+		try (InputStream input = new FileInputStream("src/main/resources/config.properties")) {
 			prop.load(input);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -39,7 +39,7 @@ public class DBConnectionTest {
 		PORT = prop.getProperty("PORT");
 	}*/
 
-	public DBConnectionTest() throws DBException {
+	private DBConnectionTest() throws DBException {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
