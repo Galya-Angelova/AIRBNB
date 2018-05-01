@@ -66,15 +66,10 @@ public class User {
 	}
 
 	private void createPassword(String password) throws InvalidUserException {
-		if (password == null || password.isEmpty()) {
+		if (password == null || password.trim().isEmpty()) {
 			throw new InvalidUserException("Empty password");
 		} else {
-			if (validatePassword(password)) {
 				this.password = password;
-			} else {
-				throw new InvalidUserException(
-						"Your password should be at least 8 characters and must contains at least: one diggit, one upper case letter,one lower case letter and one special character(@#$%^&+=).");
-			}
 		}
 	}
 
@@ -171,10 +166,9 @@ public class User {
 		// return false if nothing matches the input
 		else
 			return false;
-
 	}
 
-	private boolean validatePassword(String password) {
+	public static boolean validatePassword(String password) {
 		String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!-_@#$%^&+=])(?=\\S+$).{8,}";
 		return password.matches(pattern);
 	}
