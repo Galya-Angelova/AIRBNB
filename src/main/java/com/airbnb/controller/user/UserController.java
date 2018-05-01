@@ -90,7 +90,8 @@ public class UserController {
 			if (!password.equals(confirmPassword)) {
 				throw new InvalidUserException("Password mismatch");
 			}
-			if(!User.validatePassword(password)){
+			if(!User.validatePassword(password)) {
+
 				throw new InvalidUserException("Your password should be at least 8 characters and must contains at least: one diggit, one upper case letter,one lower case letter and one special character(@#$%^&+=).");
 			}
 			if (!User.validateEmail(email)) {
