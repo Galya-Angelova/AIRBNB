@@ -1,15 +1,31 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<<<<<<< HEAD
 <title>Settings</title>
 <jsp:include page="navigation.jsp"></jsp:include>
+=======
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+>>>>>>> ef9b8aa13062a17b6ccdc90129321e5f11b99a3b
 <title>Settings</title>
 </head>
 <body>
 	<h1>Settings</h1>
-	<form action="/updateSettings" method="post">
+	<form action="updateProfile" method="post">
 		<div class="panel-body">
+		
+			<div class="row row-condensed space-4">
+				<label class="text-right col-sm-3" for="user_email">
+					E-mail </label>
+				<div class="col-sm-9">
 
+					<input id="user_email" name="email" size="30" type="text"
+						value="${user.getEmail}" />
+				</div>
+			</div>
 			<div class="row row-condensed space-4">
 				<label class="text-right col-sm-3" for="user_first_name">
 					First Name </label>
@@ -53,9 +69,11 @@
 				<label class="text-right col-sm-3" for="user_new_phone_number">
 					Phone number </label>
 				<div class="col-sm-9">
-					<input type="tel" name="phoneNumber" size="30">
+					<input type="tel" name="phoneNumber" size="30"
+					value="${user.getPhoneNumber}" />
 				</div>
 			</div>
+
 			<!-- <div class="row row-condensed space-4">
 				<div class="col-sm-9">
 					<input type="submit" name="updateProfile" value="Update profile">
@@ -63,6 +81,7 @@
 			</div> -->
 			<button type="submit" class="btn btn-primary btn-large">
 				Save</button>
+<!-- <br> <input type="submit" value="SaveProfil"> <br> -->			
 	</form>
 
 

@@ -105,8 +105,8 @@ public class UserController {
 
 			userDAO.register(user);
 
-			session.setAttribute("user", user);
-			session.setMaxInactiveInterval(MAX_TIME);
+//			session.setAttribute("user", user);
+//			session.setMaxInactiveInterval(MAX_TIME);
 			return "index";
 
 		} catch (InvalidUserException e) {
@@ -133,22 +133,30 @@ public class UserController {
 	public String settingsPage() {
 		return "settings";
 	}
-	@RequestMapping(value = "/updateSettings", method = RequestMethod.POST)
+	//@RequestMapping(value = "/updateSettings", method = RequestMethod.POST)
+	@RequestMapping(value = "/updateProfile", method = RequestMethod.POST)
 	public String changeSettings(Model model, HttpSession session, @RequestParam String email,
 			@RequestParam String phoneNumber, @RequestParam String firstName, @RequestParam String lastName,
 			@RequestParam String oldPassword, @RequestParam String newPassword,
 			@RequestParam String newPasswordConfirm) {
 		try {
 			User user = (User) session.getAttribute("user");
-			if (!email.equals(user.getEmail())) {
-				throw new InvalidUserException("Invalid email.");
-			}
+			
 			if(!userDAO.comparePasswords(user.getId(), oldPassword)) {
 				throw new InvalidUserException("Wrong password.");
 			}
-			userDAO.changePassword(newPassword,newPasswordConfirm, user.getId());
+//			s tova proverqvam ako e vuvedena nova parola dali suvpadat dvete novi inache ako ne e vuvedena nova proverkata ostava samo za starta
+			String password=oldPassword;
+			if((newPassword.trim().length()>0)||(newPasswordConfirm.trim().length()>0)){
+				if((newPassword.equals(newPasswordConfirm))&& User.validatePassword(newPassword)){
+					password=newPassword;
+				}else{
+					throw new InvalidUserException("Wrong new password confirmation.");
+				}
+			}
 			
-			userDAO.changePhoneNumber(user.getId(), phoneNumber);
+			User u = new User(user.getId(), email, password, false, firstName, lastName, 0, 0, 0, phoneNumber);
+			userDAO.updateProfil(u);
 			
 			return "home";
 		} catch (InvalidUserException e) {
