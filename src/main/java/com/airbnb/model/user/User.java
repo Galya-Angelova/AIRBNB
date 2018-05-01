@@ -150,7 +150,7 @@ public class User {
 		return matcher.matches();
 	}
 
-	private boolean validatePhoneNumber(String number) {
+	public static boolean validatePhoneNumber(String number) {
 		// validate phone numbers of format "1234567890"
 		if (number.matches("\\d{10}"))
 			return true;

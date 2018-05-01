@@ -10,14 +10,14 @@ public class DBProperties {
 
 		Properties prop = new Properties();
 
-		try (OutputStream output = new FileOutputStream("src/main/resources/airbnbDB.properties")){
+		try (OutputStream output = new FileOutputStream("config.properties")){
 
 			// set the properties value
-			prop.setProperty("DB_NAME", "/airbnb");
+			prop.setProperty("DB_NAME", "/airbnbTestDB");
 			prop.setProperty("HOST", "localhost");
 			prop.setProperty("PORT", "3306");
 			prop.setProperty("DB_USERNAME", "root");
-			prop.setProperty("DB_PASSWORD", "Kp.9205056346");
+			prop.setProperty("DB_PASSWORD", "1234t");
 
 			// save properties to project root folder
 			prop.store(output, null);
