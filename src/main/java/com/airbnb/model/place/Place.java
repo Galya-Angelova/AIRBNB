@@ -1,39 +1,13 @@
 package com.airbnb.model.place;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import com.airbnb.exceptions.InvalidPlaceException;
 
 public class Place {
-//	 enum PlaceType {
-//		HOUSE(1,"house"), ONE_ROOM(2,"one room"), TWO_ROOMS(3,"two rooms"), STUDIO(4,"studio");
-//			
-//			private String name;
-//			private int typeId;
-//			
-//			PlaceType(int id,String name) {
-//				this.typeId = id;
-//				if(name != null) {
-//					this.name = name;
-//				}
-//			}
-//			
-//			public static PlaceType fromString(String text) {
-//				for (PlaceType place : PlaceType.values()) {
-//					if (place.name.equalsIgnoreCase(text)) {
-//						return place;
-//					}
-//				}
-//				return null;
-//			}
-//			public String getName() {
-//				return this.name;
-//			}
-//			public int getId() {
-//				return this.typeId;
-//			}
-//			
-//		}
 	 
 	 public enum PlaceType {
 			HOUSE("House"), ONE_ROOM("One room"), TWO_ROOMS("Two rooms"), STUDIO("Studio");
@@ -66,8 +40,11 @@ public class Place {
 	private int addressID;
 	private PlaceType placeType;
 	private int ownerId;
-	private List<String> photoes;
+	private List<MultipartFile> photoes;
 	
+	public Place() {
+		
+	}
 	public Place(int id, String name, boolean busied, int addressID ,String placeTypeName, int ownerId) throws InvalidPlaceException {
 		setId(id);
 		setName(name);
@@ -75,6 +52,7 @@ public class Place {
 		setAddressID(addressID);
 		setPlaceType(placeTypeName);
 		this.ownerId = ownerId;
+		this.photoes = new ArrayList<>();
 	}
 
 //	Setters
@@ -121,6 +99,9 @@ public class Place {
 			throw new InvalidPlaceException("Invalid id for place' owner.");
 		}
 	}
+	public void setImages(List<MultipartFile> images) {
+        this.photoes = images;
+    }
 	
 //	Getters
 	public int getId() {
@@ -150,6 +131,10 @@ public class Place {
 //	public int getPlaceTypeID() {
 //	return this.placeType.typeId;
 //}
+	
+	public List<MultipartFile> getPhotoes() {
+		return photoes;
+	}
 	
 	public int getOwnerId() {
 		return ownerId;

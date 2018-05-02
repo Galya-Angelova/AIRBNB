@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <jsp:include page="navigation.jsp"></jsp:include>
 
@@ -8,16 +9,17 @@
 <body>
 	<h3>Add new place</h3>
 	<br>
-	<form action="createPlace" method="post">
+	<form:form action="createPlace" method="post">
 		<table>
 			<tr>
-				<td>Place name <input type="text" name="name"
-					placeholder="place name" required>
-				</td>
+				<td>Place name</td>
+				<td><input type="text" name="name" placeholder="place name"
+					required></td>
 			</tr>
 
 			<tr>
-				<td><br> Place type: <select name="placeTypeName">
+				<td><br> Place type:</td>
+				<td><select name="placeTypeName">
 						<c:forEach items="${ placeTypes }" var="placeTypeName">
 							<option value="${placeTypeName.name}">${ placeTypeName.name }</option>
 						</c:forEach>
@@ -26,23 +28,38 @@
 			<br>
 
 			<tr>
-				<td>Street: <input type="text" name="street"
-					placeholder="Street" required>
+				<td>Street:</td>
+				<td><input type="text" name="street" placeholder="Street"
+					required></td>
+			</tr>
+			<tr>
+				<td>Street number:</td>
+				<td><input type="number" min="1" name="streetNumber"
+					placeholder="Street number" required></td>
+			</tr>
+			<tr>
+				<td>City :</td>
+				<td><input type="text" name="city" placeholder="City" required>
 				</td>
 			</tr>
 			<tr>
-				<td>Street number: <input type="number" name="streetNumber"
-					placeholder="Street number" required>
-				</td>
+				<td>Country :</td>
+				<td><input type="text" name="country" placeholder="Country"
+					required></td>
 			</tr>
+
 			<tr>
-				<td>City : <input type="text" name="city" placeholder="City"
-					required>
-				</td>
-			</tr>
-			<tr>
-				<td>Country : <input type="text" name="country"
-					placeholder="Country" required>
+				<td>Photos</td>
+				<td>
+					<!-- <form method="POST" action="uploadFile"
+						enctype="multipart/form-data">
+						File to upload: <input type="file" name="file"><br />
+						Name: <input type="text" name="name"><br /> <br /> <input
+							type="submit" value="Upload"> Press here to upload the
+						file!
+					</form> -->
+					<td><form method="post" enctype="multipart/form-data"  action="upload.php" >
+						<input type="file" name="images" id="images" multiple  required/>
 				</td>
 			</tr>
 
@@ -50,6 +67,6 @@
 		</table>
 		<br>
 		<button type="submit">Add new place</button>
-	</form>
+	</form:form>
 </body>
 </html>

@@ -23,7 +23,7 @@
 				<a class="navbar-brand" href="<c:out value="${URL}"/>"> AIRBNB</a>
 			</div>
 			<ul class="nav navbar-nav">
-				<li class="active"><c:url var="URL" value="index">
+				<li class="active"><c:url var="URL" value="home">
 						<c:param name="param" value="${parameter}" />
 					</c:url> <a href="<c:out value="${URL}"/>">Home</a></li>
 
