@@ -22,6 +22,7 @@ import com.airbnb.model.address.CityDAO;
 import com.airbnb.model.address.Country;
 import com.airbnb.model.address.CountryDAO;
 import com.airbnb.model.place.Place;
+import com.airbnb.model.place.Place.PlaceType;
 import com.airbnb.model.place.PlaceDAO;
 import com.airbnb.model.user.User;
 
@@ -41,7 +42,7 @@ public class PlaceController {
 	public String createPlace(Model model) {
 		try {
 
-			List<String> placeTypes = placeDAO.getAllPlaceTypes();
+			List<PlaceType> placeTypes = placeDAO.getAllPlaceTypes();
 
 			model.addAttribute("placeTypes", placeTypes);
 

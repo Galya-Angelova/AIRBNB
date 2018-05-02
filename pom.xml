@@ -11,6 +11,16 @@
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
+		<resources>
+			<!-- Placeholders that are found from the files located in the configured 
+				resource directories are replaced with the property values found from the 
+				profile specific configuration file. -->
+			<resource>
+				<filtering>false</filtering>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+		
 		<plugins>
 			<!-- <plugin> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-maven-plugin</artifactId> 
 				</plugin> -->
@@ -81,13 +91,12 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
-		    <groupId>org.mindrot</groupId>
-		    <artifactId>jbcrypt</artifactId>
-		    <version>0.3m</version>
-</dependency>
+			<groupId>org.mindrot</groupId>
+			<artifactId>jbcrypt</artifactId>
+			<version>0.3m</version>
+		</dependency>
 	</dependencies>
 
 

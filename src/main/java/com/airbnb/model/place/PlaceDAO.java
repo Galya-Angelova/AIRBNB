@@ -50,7 +50,7 @@ public class PlaceDAO implements IPlaceDAO {
 	public PlaceDAO() {
 		connection = PlaceDAO.dbConnection.getConnection();
 	}*/
-	private static final String ADD_PLACE_SQL = "INSERT INTO places VALUES (null, ?,false,?,?,?)";
+	private static final String ADD_PLACE_SQL = "INSERT INTO place VALUES (null, ?,false,?,?,?)";
 	private static final String ADD_PLACETYPE_SQL = "INSERT INTO placetype VALUES (null, ?)";
 	private static final String GIVE_PLACETYPE_SQL = "SELECT * FROM placetype WHERE name= ?";
 	private static final String PLACETYPE_FROM_ID_SQL = "SELECT * FROM placetype WHERE id=?";
@@ -244,18 +244,18 @@ public class PlaceDAO implements IPlaceDAO {
 	}
 	
 	@Override
-	public List<String> getAllPlaceTypes() throws InvalidPlaceException {
-		List<String> result = new ArrayList<>();
+	public List<PlaceType> getAllPlaceTypes() throws InvalidPlaceException {
+		List<PlaceType> result = new ArrayList<>();
 		Statement st;
 		try {
 			st = connection.createStatement();
 			ResultSet set = st.executeQuery(ALL_PLACE_TYPES);
 			while(set.next()) {
-				int id = set.getInt("id");
+				//int id = set.getInt("id");
 				String name = set.getString("name");
 				
-				//PlaceType placeType = PlaceType.fromString(name);
-				result.add(name);
+				PlaceType placeType = PlaceType.fromString(name);
+				result.add(placeType);
 			}
 			if(result.isEmpty()) {
 				throw new InvalidPlaceException("No such place types.");

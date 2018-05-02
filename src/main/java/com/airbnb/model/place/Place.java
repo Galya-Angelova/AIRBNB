@@ -35,8 +35,8 @@ public class Place {
 //			
 //		}
 	 
-	 enum PlaceType {
-			HOUSE("house"), ONE_ROOM("one room"), TWO_ROOMS("two rooms"), STUDIO("studio");
+	 public enum PlaceType {
+			HOUSE("House"), ONE_ROOM("One room"), TWO_ROOMS("Two rooms"), STUDIO("Studio");
 				
 				private String name;
 				

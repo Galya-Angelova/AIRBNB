@@ -15,5 +15,5 @@ public interface IPlaceDAO {
 	
 	
 	public Place placeFromId(int placeId) throws InvalidPlaceException;
-	public List<String> getAllPlaceTypes() throws InvalidPlaceException;
+	public List<PlaceType> getAllPlaceTypes() throws InvalidPlaceException;
 }

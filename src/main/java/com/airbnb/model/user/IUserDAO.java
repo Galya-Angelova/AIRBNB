@@ -24,5 +24,5 @@ public interface IUserDAO {
 //	public void changePassword(String newPass,String newPassConfirm, int userId) throws InvalidUserException;
 	public boolean comparePasswords(int userId, String password) throws InvalidUserException;
 
-	void updateProfil(User user) throws InvalidUserException;
+	void updateProfile(User user) throws InvalidUserException;
 }

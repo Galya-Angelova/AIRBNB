@@ -215,7 +215,7 @@ public class User {
 		return this.address_id;
 	}*/
 
-	public boolean isHost() {
+	public boolean getIsHost() {
 		return this.isHost;
 	}
 	public boolean isDeleted() {

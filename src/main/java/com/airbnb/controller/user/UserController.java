@@ -3,6 +3,7 @@ package com.airbnb.controller.user;
 import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.airbnb.exceptions.InvalidUserException;
+import com.airbnb.model.place.PlaceDAO;
+import com.airbnb.model.place.Place.PlaceType;
 import com.airbnb.model.user.User;
 import com.airbnb.model.user.UserDAO;
 
@@ -22,6 +25,8 @@ import com.airbnb.model.user.UserDAO;
 public class UserController {
 	private static final int MAX_TIME = 1800;// seconds
 
+	@Autowired
+	private PlaceDAO placeDAO;
 	@Autowired
 	private UserDAO userDAO;
 
@@ -68,17 +73,6 @@ public class UserController {
 			@RequestParam Date bday, @RequestParam String phone, @RequestParam String password,
 			@RequestParam String confirmPassword) throws ServletException, IOException {
 		try {
-
-			/*
-			 * String email = (String) request.getParameter("email"); String password =
-			 * (String) request.getParameter("password"); String passwordConfirm = (String)
-			 * request.getParameter("confirm password"); boolean isMale =
-			 * Boolean.valueOf(String.valueOf(request.getAttribute("gender"))); String
-			 * firstName = (String) request.getParameter("first name"); String lastName =
-			 * (String) request.getParameter("last name");
-			 * 
-			 * String birthdate = request.getParameter("bday");
-			 */
 			Date date = bday;
 			LocalDate localDate = date.toLocalDate();
 			int month = localDate.getMonthValue();
@@ -90,9 +84,10 @@ public class UserController {
 			if (!password.equals(confirmPassword)) {
 				throw new InvalidUserException("Password mismatch");
 			}
-			if(!User.validatePassword(password)) {
+			if (!User.validatePassword(password)) {
 
-				throw new InvalidUserException("Your password should be at least 8 characters and must contains at least: one diggit, one upper case letter,one lower case letter and one special character(@#$%^&+=).");
+				throw new InvalidUserException(
+						"Your password should be at least 8 characters and must contains at least: one diggit, one upper case letter,one lower case letter and one special character(@#$%^&+=).");
 			}
 			if (!User.validateEmail(email)) {
 				throw new InvalidUserException("You should try with valid email.");
@@ -105,8 +100,8 @@ public class UserController {
 
 			userDAO.register(user);
 
-//			session.setAttribute("user", user);
-//			session.setMaxInactiveInterval(MAX_TIME);
+			// session.setAttribute("user", user);
+			// session.setMaxInactiveInterval(MAX_TIME);
 			return "index";
 
 		} catch (InvalidUserException e) {
@@ -133,39 +128,65 @@ public class UserController {
 	public String settingsPage() {
 		return "settings";
 	}
-	//@RequestMapping(value = "/updateSettings", method = RequestMethod.POST)
-	@RequestMapping(value = "/updateProfile", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/updateSettings", method = RequestMethod.POST)
+	// @RequestMapping(value = "/updateProfile", method = RequestMethod.POST)
 	public String changeSettings(Model model, HttpSession session, @RequestParam String email,
 			@RequestParam String phoneNumber, @RequestParam String firstName, @RequestParam String lastName,
 			@RequestParam String oldPassword, @RequestParam String newPassword,
 			@RequestParam String newPasswordConfirm) {
 		try {
 			User user = (User) session.getAttribute("user");
-			
-			if(!userDAO.comparePasswords(user.getId(), oldPassword)) {
+
+			if (!userDAO.comparePasswords(user.getId(), oldPassword)) {
 				throw new InvalidUserException("Wrong password.");
 			}
-//			s tova proverqvam ako e vuvedena nova parola dali suvpadat dvete novi inache ako ne e vuvedena nova proverkata ostava samo za starta
-			String password=oldPassword;
-			if((newPassword.trim().length()>0)||(newPasswordConfirm.trim().length()>0)){
-				if((newPassword.equals(newPasswordConfirm))&& User.validatePassword(newPassword)){
-					password=newPassword;
-				}else{
+			// s tova proverqvam ako e vuvedena nova parola dali suvpadat dvete novi inache
+			// ako ne e vuvedena nova proverkata ostava samo za starta
+			String password = oldPassword;
+			if ((newPassword.trim().length() > 0) || (newPasswordConfirm.trim().length() > 0)) {
+				if ((newPassword.equals(newPasswordConfirm)) && User.validatePassword(newPassword)) {
+					password = newPassword;
+				} else {
 					throw new InvalidUserException("Wrong new password confirmation.");
 				}
 			}
-			
-			User u = new User(user.getId(), email, password, false, firstName, lastName, 0, 0, 0, phoneNumber);
-			userDAO.updateProfil(u);
-			
+			LocalDate bday = user.getBirthdate();
+			int day = bday.getDayOfMonth();
+			int month = bday.getMonthValue();
+			int year = bday.getYear();
+			User u = new User(user.getId(), email, password, user.isMale(), firstName, lastName, day, month, year,
+					phoneNumber);
+			userDAO.updateProfile(u);
+			session.setAttribute("user", u);
+
 			return "home";
 		} catch (InvalidUserException e) {
 			model.addAttribute("exception", e);
 			return "error";
-		}catch(Exception e) {
+		} catch (Exception e) {
 			model.addAttribute("exception", e);
 			return "error";
 		}
-		
 	}
+
+	@RequestMapping(value = "/becameHost", method = RequestMethod.GET)
+	public String becameAHost(Model model, HttpSession session) {
+		User user = (User) session.getAttribute("user");
+		try {
+		/*	List<PlaceType> placeTypes = placeDAO.getAllPlaceTypes();
+
+			model.addAttribute("placeTypes", placeTypes);*/
+			userDAO.becameAHost(user.getId());
+			return "redirect:./createPlace";
+		} catch (InvalidUserException e) {
+			model.addAttribute("exception", e);
+			return "error";
+		} catch (Exception e) {
+			model.addAttribute("exception", e);
+			return "error";
+		}
+
+	}
+
 }

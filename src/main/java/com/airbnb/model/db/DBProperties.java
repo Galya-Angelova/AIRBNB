@@ -10,7 +10,7 @@ public class DBProperties {
 
 		Properties prop = new Properties();
 
-		try (OutputStream output = new FileOutputStream("src/main/resources/config.properties")){
+		try (OutputStream output = new FileOutputStream("src/main/resources/airbnbTestDB.properties")){
 
 			// set the properties value
 			prop.setProperty("DB_NAME", "/airbnbTestDB");

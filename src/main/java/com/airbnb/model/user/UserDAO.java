@@ -162,7 +162,7 @@ public class UserDAO implements IUserDAO {
 	@Override
 	public void becameAHost(int userId) throws InvalidUserException {
 		User user = userFromId(userId);
-		if (user.isHost()) {
+		if (user.getIsHost()) {
 			throw new InvalidUserException("Already a host.");
 		}
 		user.becameAHost();
@@ -223,7 +223,7 @@ public class UserDAO implements IUserDAO {
 	}
 	
 	@Override
-	public void updateProfil(User user) throws InvalidUserException {
+	public void updateProfile(User user) throws InvalidUserException {
 		try (PreparedStatement ps =  connection.prepareStatement(UPDATE_USER_PROFIL_SQL)){
 			ps.setString(1, user.getEmail());
 			ps.setString(2, user.getFirstName());

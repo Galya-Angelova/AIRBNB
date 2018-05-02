@@ -1,6 +1,5 @@
 package com.airbnb.model.db;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -15,15 +14,28 @@ import com.airbnb.exceptions.DBException;
 @Component
 public class DBConnectionTest {
 
-	private static final String DB_NAME = "/airbnbtestdb";
-	private static final String HOST = "localhost";
-	private static final String PORT = "3306";
-	private static final String DB_USERNAME = "root";
-	private static final String DB_PASSWORD = "1234t";
+	private static final String DB_NAME;
+	private static final String HOST;
+	private static final String PORT;
+	private static final String DB_USERNAME;
+	private static final String DB_PASSWORD;
 	private Connection connection;
 
-	
-
+	static {
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		
+		Properties prop = new Properties();
+		try (InputStream input = classLoader.getResourceAsStream("airbnbTestDB.properties");) {
+			prop.load(input);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		DB_NAME = prop.getProperty("DB_NAME");
+		HOST = prop.getProperty("HOST");
+		PORT = prop.getProperty("PORT");
+		DB_USERNAME = prop.getProperty("DB_USERNAME");
+		DB_PASSWORD = prop.getProperty("DB_PASSWORD");
+	}
 /*
 	static {
 		Properties prop = new Properties();

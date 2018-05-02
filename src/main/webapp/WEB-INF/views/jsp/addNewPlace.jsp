@@ -11,15 +11,15 @@
 	<form action="createPlace" method="post">
 		<table>
 			<tr>
-				<td>Place name <input type="text" name="placeName"
+				<td>Place name <input type="text" name="name"
 					placeholder="place name" required>
 				</td>
 			</tr>
 
 			<tr>
-				<td><br> Place type: <select name="placeTypes">
-						<c:forEach items="${ placeTypes }" var="p">
-							<option value="p">${ p }</option>
+				<td><br> Place type: <select name="placeTypeName">
+						<c:forEach items="${ placeTypes }" var="placeTypeName">
+							<option value="${placeTypeName.name}">${ placeTypeName.name }</option>
 						</c:forEach>
 				</select></td>
 			</tr>
@@ -33,6 +33,11 @@
 			<tr>
 				<td>Street number: <input type="number" name="streetNumber"
 					placeholder="Street number" required>
+				</td>
+			</tr>
+			<tr>
+				<td>City : <input type="text" name="city" placeholder="City"
+					required>
 				</td>
 			</tr>
 			<tr>
