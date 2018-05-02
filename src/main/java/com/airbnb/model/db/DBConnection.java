@@ -23,7 +23,7 @@ public class DBConnection {
 ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		
 		Properties prop = new Properties();
-		try (InputStream input = classLoader.getResourceAsStream("airbnbTestDB.properties");) {
+		try (InputStream input = classLoader.getResourceAsStream("airbnbDB.properties");) {
 			prop.load(input);
 		} catch (IOException e) {
 			e.printStackTrace();

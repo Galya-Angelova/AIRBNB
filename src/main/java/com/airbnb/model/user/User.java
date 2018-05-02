@@ -45,7 +45,11 @@ public class User {
 		this.visitedPlaces = new ArrayList<>();
 		this.myPlaces = new ArrayList<>();
 	}
-
+	public User(int id, String email, String password, boolean isMale, String firstName, String lastName, int day,
+			int month, int year, String phoneNumber,boolean isHost)throws InvalidUserException{
+		this(id,email,password,isMale,firstName,lastName,day,month,year,phoneNumber);
+		this.isHost=isHost;
+	}
 	public void addToMyPlaces(int idPlace) {
 		if(idPlace > POSITIVE) {
 			//TODO method to convert from idPlace to Place object
@@ -118,7 +122,7 @@ public class User {
 		}
 	}
 	
-	public void becameAHost() {
+	public void becomeAHost() {
 		this.isHost = true;
 	}
 
