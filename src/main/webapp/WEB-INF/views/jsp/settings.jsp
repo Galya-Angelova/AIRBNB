@@ -41,7 +41,7 @@
 				<label class="text-right col-sm-3" for="user_old_password">
 					Old password </label>
 				<div class="col-sm-9">
-					<input type="password" name="oldPassword" size="30" value="">
+					<input type="password" name="oldPassword" size="30" value="" required>
 				</div>
 			</div>
 			<div class="row row-condensed space-4">

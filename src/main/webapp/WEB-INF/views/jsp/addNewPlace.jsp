@@ -36,6 +36,7 @@
 				<td>Street number:</td>
 				<td><input type="number" min="1" name="streetNumber"
 					placeholder="Street number" required></td>
+
 			</tr>
 			<tr>
 				<td>City :</td>

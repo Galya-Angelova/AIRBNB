@@ -41,7 +41,7 @@
 							</c:url> <a href="<c:out value="${URL}"/>">Add new place</a></li> --%>
 							
 			<%-- <c:if test="${theBooleanVariable ne true}">It's false!</c:if> --%>
-				 <c:set var="isHost"  scope="session"  value="${user.isHost}" />
+			<%-- 	 <c:set var="isHost"  scope="session"  value="${user.isHost}" />--%>
 				<c:choose>
 					<c:when test="${user.isHost}">
 
@@ -50,9 +50,9 @@
 							</c:url> <a href="<c:out value="${URL}"/>">Add new place</a></li>
 					</c:when>
 					<c:otherwise>
-						<li class="active"><c:url var="URL" value="becameHost">
+						<li class="active"><c:url var="URL" value="becomeHost">
 								<c:param name="param" value="${parameter}" />
-							</c:url> <a href="<c:out value="${URL}"/>">Became a host</a></li>
+							</c:url> <a href="<c:out value="${URL}"/>">Become a host</a></li>
 					</c:otherwise>
 				</c:choose> 
 			</ul>

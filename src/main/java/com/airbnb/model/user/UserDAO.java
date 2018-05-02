@@ -27,7 +27,7 @@ public class UserDAO implements IUserDAO {
 	private static final String USER_FROM_ID_SQL = "SELECT * FROM users WHERE id=?";
 	private static final String REGISTER_USER_SQL = "INSERT INTO users VALUES (null, ?, ? ,?, ?, ?, ?, false, false,?)";
 
-	private static final String BECAME_A_HOST = "UPDATE users SET isHost = 1 WHERE id = ?;";
+	private static final String BECOME_A_HOST = "UPDATE users SET isHost = 1 WHERE id = ?;";
 	private static final String UPDATE_USER_PROFIL_SQL = "UPDATE users SET email = ? , firstName = ? , lastName = ? , phone = ? , password = ? WHERE id = ?;";
 
 	// TODO change with DBConnection
@@ -137,8 +137,8 @@ public class UserDAO implements IUserDAO {
 				int year = birthdate.getYear();
 				String phoneNumber = rs.getString("phone");
 				// int address_id = rs.getInt("locations_id");
-
-				return new User(id, email, password, isMale, firstName, lastName, day, month, year, phoneNumber);
+				boolean isHost=rs.getBoolean("isHost");
+				return new User(id, email, password, isMale, firstName, lastName, day, month, year, phoneNumber,isHost);
 			}
 
 			throw new InvalidUserException("There is no user with that id!");
@@ -160,14 +160,13 @@ public class UserDAO implements IUserDAO {
 	}
 
 	@Override
-	public void becameAHost(int userId) throws InvalidUserException {
-		User user = userFromId(userId);
+	public void becomeAHost(User user) throws InvalidUserException {
 		if (user.getIsHost()) {
 			throw new InvalidUserException("Already a host.");
 		}
-		user.becameAHost();
-		try (PreparedStatement ps = connection.prepareStatement(BECAME_A_HOST)) {
-			ps.setInt(1, userId);
+		user.becomeAHost();
+		try (PreparedStatement ps = connection.prepareStatement(BECOME_A_HOST)) {
+			ps.setInt(1, user.getId());
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			throw new InvalidUserException("Invalid statement.", e);

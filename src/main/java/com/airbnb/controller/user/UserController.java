@@ -3,7 +3,6 @@ package com.airbnb.controller.user;
 import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.airbnb.exceptions.InvalidUserException;
-import com.airbnb.model.place.PlaceDAO;
-import com.airbnb.model.place.Place.PlaceType;
 import com.airbnb.model.user.User;
 import com.airbnb.model.user.UserDAO;
 
@@ -25,8 +22,6 @@ import com.airbnb.model.user.UserDAO;
 public class UserController {
 	private static final int MAX_TIME = 1800;// seconds
 
-	@Autowired
-	private PlaceDAO placeDAO;
 	@Autowired
 	private UserDAO userDAO;
 
@@ -170,14 +165,11 @@ public class UserController {
 		}
 	}
 
-	@RequestMapping(value = "/becameHost", method = RequestMethod.GET)
-	public String becameAHost(Model model, HttpSession session) {
+	@RequestMapping(value = "/becomeHost", method = RequestMethod.GET)
+	public String becomeAHost(Model model, HttpSession session) {
 		User user = (User) session.getAttribute("user");
 		try {
-		/*	List<PlaceType> placeTypes = placeDAO.getAllPlaceTypes();
-
-			model.addAttribute("placeTypes", placeTypes);*/
-			userDAO.becameAHost(user.getId());
+			userDAO.becomeAHost(user);
 			return "redirect:./createPlace";
 		} catch (InvalidUserException e) {
 			model.addAttribute("exception", e);

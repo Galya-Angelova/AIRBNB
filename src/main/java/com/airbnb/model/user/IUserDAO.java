@@ -18,7 +18,7 @@ public interface IUserDAO {
 //	public User getUserFromEmailAndPassword(String email, String password) throws InvalidUserException;
 
 //	public void saveUser(User user) throws SQLException;
-	public void becameAHost(int userId) throws InvalidUserException;
+	public void becomeAHost(User user) throws InvalidUserException;
 	
 	//public void addNewPlace(String streetName, String countryName, String placeTypeName, int userId) throws InvalidUserException;
 //	public void changePassword(String newPass,String newPassConfirm, int userId) throws InvalidUserException;

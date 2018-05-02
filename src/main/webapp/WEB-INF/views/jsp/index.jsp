@@ -17,7 +17,7 @@
 			<td><input type="password" name="password" required></td>
 		</tr>
 	</table>
-	<input type="submit" value="login"><br> Don't have an
+	<input type="submit" value="Login"><br> Don't have an
 	account?
 	<c:url var="URL" value="register">
 		<c:param name="param" value="${parameter}" />
