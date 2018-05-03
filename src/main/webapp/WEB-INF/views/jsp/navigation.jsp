@@ -1,8 +1,45 @@
 <!DOCTYPE html>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
 <html lang="en">
 <head>
-<link rel="shortcut icon" type="image/png" href="img/favicon.ico"/>
+<!-- <style>
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+
+.navbar a:hover, .dropdown:hover .dropbtn {
+	background-color: black;
+}
+
+.dropdown-content {
+	display: none;
+	position: absolute;
+	background-color: #f9f9f9;
+	min-width: 160px;
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+	z-index: 1;
+}
+
+.dropdown-content a {
+	float: none;
+	color: black;
+	padding: 12px 16px;
+	text-decoration: none;
+	display: block;
+	text-align: left;
+}
+
+.dropdown-content a:hover {
+	background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+</style> -->
+
+<link rel="shortcut icon" type="image/png" href="img/favicon.ico" />
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet"
@@ -35,13 +72,13 @@
 
 			</ul>
 			<ul class="nav navbar-nav">
-			
-	<%-- 		<li class="active"><c:url var="URL" value="createPlace">
+
+				<%-- 		<li class="active"><c:url var="URL" value="createPlace">
 								<c:param name="param" value="${parameter}" />
 							</c:url> <a href="<c:out value="${URL}"/>">Add new place</a></li> --%>
-							
-			<%-- <c:if test="${theBooleanVariable ne true}">It's false!</c:if> --%>
-			<%-- 	 <c:set var="isHost"  scope="session"  value="${user.isHost}" />--%>
+
+				<%-- <c:if test="${theBooleanVariable ne true}">It's false!</c:if> --%>
+				<%-- 	 <c:set var="isHost"  scope="session"  value="${user.isHost}" />--%>
 				<c:choose>
 					<c:when test="${user.isHost}">
 
@@ -54,8 +91,29 @@
 								<c:param name="param" value="${parameter}" />
 							</c:url> <a href="<c:out value="${URL}"/>">Become a host</a></li>
 					</c:otherwise>
-				</c:choose> 
+				</c:choose>
 			</ul>
+
+			<ul class="nav navbar-nav">
+				<li class="active"><c:url var="URL" value="myPlaces">
+						<c:param name="param" value="${parameter}" />
+					</c:url> <a href="<c:out value="${URL}"/>">My places</a></li>
+
+			</ul>
+			
+			<ul class="nav navbar-nav">
+				<li class="active"><c:url var="URL" value="visitedPlaces">
+						<c:param name="param" value="${parameter}" />
+					</c:url> <a href="<c:out value="${URL}"/>">Visited places</a></li>
+
+			</ul>
+			<ul class="nav navbar-nav">
+				<li class="active"><c:url var="URL" value="allPlaces">
+						<c:param name="param" value="${parameter}" />
+					</c:url> <a href="<c:out value="${URL}"/>">All places</a></li>
+
+			</ul>
+			
 			<form class="navbar-form navbar-left" action="/action_page.php">
 				<div class="input-group">
 					<input type="text" class="form-control" placeholder="Search">

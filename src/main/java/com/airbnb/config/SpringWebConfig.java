@@ -3,6 +3,8 @@ package com.airbnb.config;
 import java.util.Locale;
 
 import javax.servlet.MultipartConfigElement;
+
+import org.springframework.boot.context.embedded.MultipartConfigFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -66,17 +68,17 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 	}
 	
 	//Configuration Class: Use of MultipartConfigElement Bean
-	   /*@Bean
+	   @Bean
 	    public MultipartConfigElement multipartConfigElement() {
 	        MultipartConfigFactory factory = new MultipartConfigFactory();
 	        factory.setMaxFileSize("128KB");
 	        factory.setMaxRequestSize("128KB");
 	        return factory.createMultipartConfig();
-	    }*/
+	    }
 	    @Bean  
 	    public UrlBasedViewResolver setupViewResolver() {  
 	        UrlBasedViewResolver resolver = new UrlBasedViewResolver();  
-	        resolver.setPrefix("/views/");  
+	        resolver.setPrefix("/views/jsp/");  
 	        resolver.setSuffix(".jsp");  
 	        resolver.setViewClass(JstlView.class);
 	        return resolver;  

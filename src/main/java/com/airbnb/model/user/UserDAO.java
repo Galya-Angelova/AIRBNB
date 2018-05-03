@@ -19,9 +19,6 @@ import com.airbnb.model.db.DBConnectionTest;
 
 @Component
 public class UserDAO implements IUserDAO {
-//	private static final String CHANGE_PHONE = "UPDATE users SET phone= ? WHERE id =? ";
-//	private static final String GET_PASSWORD = "SELECT password FROM users WHERE id = ?";
-//	private static final String CHANGE_PASSWORD = "UPDATE users SET password = ? WHERE id = ?";
 	private static final String GET_USERS_ID = "SELECT id FROM users;";
 	private static final String LOGIN_USER_SQL = "SELECT * FROM users WHERE email=?";
 	private static final String USER_FROM_ID_SQL = "SELECT * FROM users WHERE id=?";
@@ -35,11 +32,6 @@ public class UserDAO implements IUserDAO {
 	private DBConnectionTest dbConnection;
 
 	private Connection connection;
-
-	/*
-	 * static { try { dbConnection = new DBConnectionTest(); } catch (Exception e) {
-	 * e.printStackTrace(); } }
-	 */
 
 	@Autowired
 	public UserDAO(DBConnectionTest dbConnection) {
@@ -173,47 +165,6 @@ public class UserDAO implements IUserDAO {
 		}
 	}
 
-//	@Override
-//	public void changePassword(String newPass, String newPassConfirm, int userId) throws InvalidUserException {
-//
-//		if (User.validatePassword(newPass)) {
-//			String hashedPassword = BCrypt.hashpw(newPass, BCrypt.gensalt());
-//			if (!BCrypt.checkpw(newPassConfirm, hashedPassword)) {
-//				throw new InvalidUserException("Passwords mismatch.");
-//			}
-//
-//			try {
-//				this.connection.setAutoCommit(false);
-//				PreparedStatement ps = this.connection.prepareStatement(CHANGE_PASSWORD);
-//				ps.setString(1, hashedPassword);
-//				ps.setInt(2, userId);
-//				ps.executeUpdate();
-//				this.connection.commit();
-//				ps.close();
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//				try {
-//					this.connection.rollback();
-//				} catch (SQLException e1) {
-//					throw new InvalidUserException("Invalid credentials," + e1.getMessage());
-//				}
-//				throw new InvalidUserException(e);
-//			} finally {
-//				try {
-//					this.connection.setAutoCommit(true);
-//				} catch (SQLException e) {
-//					e.printStackTrace();
-//					throw new InvalidUserException("Something went wrong...," + e.getMessage());
-//				}
-//			}
-//		} else {
-//			throw new InvalidUserException(
-//					"Your password should be at least 8 characters and must contains at least: one diggit, one upper case letter,one lower case letter and one special character(@#$%^&+=).");
-//		}
-//
-//	}
-
-
 	@Override
 	public boolean comparePasswords(int userId, String password) throws InvalidUserException {
 		User user = userFromId(userId);
@@ -237,21 +188,4 @@ public class UserDAO implements IUserDAO {
 			throw new InvalidUserException("Something went wrong...," + e.getMessage());
 		}
 	}
-//
-//	public void changePhoneNumber(int userId, String phoneNumber) throws InvalidUserException {
-//
-//		try (PreparedStatement ps = connection.prepareStatement(CHANGE_PHONE)) {
-//			if (!User.validatePhoneNumber(phoneNumber)) {
-//				throw new InvalidUserException("Invalid phone number");
-//			}
-//			ps.setString(1, phoneNumber);
-//			ps.setInt(2, userId);
-//			ps.executeUpdate();
-//
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//				throw new InvalidUserException("Invalid statement" + e.getMessage(), e);
-//		}
-//	}
-
 }

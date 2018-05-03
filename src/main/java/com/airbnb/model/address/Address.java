@@ -10,7 +10,9 @@ public class Address {
 	private int city_id;
 	private String street;
 	private int streetNumber;
-
+	private City city;
+	private Country country;
+	
 	public Address(int id, int country_id, int city_id, String street, int streetNumber)
 			throws InvalidAddressException {
 		setId(id);
@@ -66,11 +68,11 @@ public class Address {
 		return this.id;
 	}
 
-	public int getCountry() {
+	public int getCountryId() {
 		return this.country_id;
 	}
 
-	public int getCity() {
+	public int getCityId() {
 		return this.city_id;
 	}
 
@@ -80,5 +82,18 @@ public class Address {
 
 	public int getStreetNumber() {
 		return this.streetNumber;
+	}
+	public City getCity() {
+		return city;
+	}
+	public Country getCountry() {
+		return country;
+	}
+	
+	public void setCity(City city) {
+		this.city = city;
+	}
+	public void setCountry(Country country) {
+		this.country = country;
 	}
 }
