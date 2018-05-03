@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <html lang="en">
 <head>
-
+<link rel="shortcut icon" type="image/png" href="img/favicon.ico"/>
 <title>AIRBNB</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">

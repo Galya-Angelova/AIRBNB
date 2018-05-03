@@ -59,15 +59,25 @@
 							type="submit" value="Upload"> Press here to upload the
 						file!
 					</form> -->
-					<td><form method="post" enctype="multipart/form-data"  action="upload.php" >
-						<input type="file" name="images" id="images" multiple  required/>
-				</td>
+				<td></td>
+				<tr>
+				           <td>Select a file to upload</td>
+				           <td><input type="file" name="files" /></td>
+				       </tr>
+				        <tr>
+				           <td>Select a file to upload</td>
+				           <td><input type="file" name="files" /></td>
+				       </tr>
+				        <tr>
+				           <td>Select a file to upload</td>
+				           <td><input type="file" name="files" /></td>
+				       </tr>
 			</tr>
 
 
 		</table>
 		<br>
-		<button type="submit">Add new place</button>
+		<button type="submit" value="create">Add new place</button>
 	</form:form>
 </body>
 </html>

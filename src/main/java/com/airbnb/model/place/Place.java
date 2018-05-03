@@ -1,6 +1,7 @@
 package com.airbnb.model.place;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -40,7 +41,8 @@ public class Place {
 	private int addressID;
 	private PlaceType placeType;
 	private int ownerId;
-	private List<MultipartFile> photoes;
+	private List<String> photosURLs;
+	
 	
 	public Place() {
 		
@@ -52,7 +54,7 @@ public class Place {
 		setAddressID(addressID);
 		setPlaceType(placeTypeName);
 		this.ownerId = ownerId;
-		this.photoes = new ArrayList<>();
+		this.photosURLs = new ArrayList<>();
 	}
 
 //	Setters
@@ -99,9 +101,7 @@ public class Place {
 			throw new InvalidPlaceException("Invalid id for place' owner.");
 		}
 	}
-	public void setImages(List<MultipartFile> images) {
-        this.photoes = images;
-    }
+	
 	
 //	Getters
 	public int getId() {
@@ -131,9 +131,12 @@ public class Place {
 //	public int getPlaceTypeID() {
 //	return this.placeType.typeId;
 //}
-	
-	public List<MultipartFile> getPhotoes() {
-		return photoes;
+	public List<String> getPhotosUrls() {
+		return Collections.unmodifiableList(this.photosURLs);
+	}
+
+	public void setPhotosUrls(List<String> photosURLs) {
+		this.photosURLs = new ArrayList<String> (photosURLs);
 	}
 	
 	public int getOwnerId() {

@@ -1,9 +1,11 @@
 package com.airbnb.controller.place;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.StringJoiner;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -12,13 +14,13 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.airbnb.example.controller.Product;
 import com.airbnb.exceptions.InvalidCityException;
 import com.airbnb.exceptions.InvalidCountryException;
 import com.airbnb.model.address.Address;
@@ -51,7 +53,7 @@ public class PlaceController {
 			List<PlaceType> placeTypes = placeDAO.getAllPlaceTypes();
 
 			model.addAttribute("placeTypes", placeTypes);
-			 model.addAttribute("place", new Place());
+			model.addAttribute("place", new Place());
 			return "addNewPlace";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -63,9 +65,12 @@ public class PlaceController {
 	@RequestMapping(value = "/createPlace", method = RequestMethod.POST)
 	public String create(Model model, @RequestParam String name, @RequestParam String placeTypeName,
 			@RequestParam String street, @RequestParam int streetNumber, @RequestParam String city,
-			@RequestParam String country, @RequestParam("files") MultipartFile files, HttpSession session) throws ServletException, IOException {
+			@RequestParam String country, @RequestParam("files") MultipartFile[] files, ModelMap modelMap,
+			HttpServletRequest request) throws ServletException, IOException {
 		try {
-			
+			HttpSession session = request.getSession();
+			User user = (User) session.getAttribute("user");
+
 			int country_id = 0;
 			try {
 				country_id = countryDAO.giveCountryId(country);
@@ -83,12 +88,52 @@ public class PlaceController {
 			Address address = new Address(0, country_id, city_id, street, streetNumber);
 			int addressId = addressDAO.addAddress(address);
 
-			User user = (User) session.getAttribute("user");
 			Place place = new Place(0, name, false, addressId, placeTypeName, user.getId());
-			placeDAO.addPlace(place);
 			
-			String imageUrl = this.placeDAO.saveImageURL(files, place.getId());
 
+			// String imageUrl = this.placeDAO.saveImageURL(files, place.getId());
+
+			for (MultipartFile f : files) {
+				if (f.isEmpty()) {
+					continue;
+				}
+				try {
+					System.out.println(f.getInputStream().toString());
+					System.out.println("IMA FAIL");
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			placeDAO.addPlace(place);
+			/*StringJoiner sj = new StringJoiner(" , ");
+
+			for (MultipartFile file : files) {
+
+				if (file.isEmpty()) {
+					continue; // next pls
+				}
+
+				try {
+
+					byte[] bytes = file.getBytes();
+					Path path = Paths.get(placeDAO.IMAGE_PATH + file.getOriginalFilename());
+					Files.write(path, bytes);
+
+					sj.add(file.getOriginalFilename());
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			String uploadedFileName = sj.toString();
+			if (StringUtils.isEmpty(uploadedFileName)) {
+				redirectAttributes.addFlashAttribute("message", "Please select a file to upload");
+			} else {
+				redirectAttributes.addFlashAttribute("message", "You successfully uploaded '" + uploadedFileName + "'");
+			}
+*/
 			return "viewPlace";// or more-places
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -96,37 +141,26 @@ public class PlaceController {
 			return "error";
 		}
 	}
-	
 
-/*	 @RequestMapping("/save-place")
-	    public String uploadResources( HttpServletRequest servletRequest,
-	                                 @ModelAttribute Place place,
-	                                 Model model)
-	    {
-	        //Get the uploaded files and store them
-	        List<MultipartFile> files = place.getPhotoes();
-	        List<String> fileNames = new ArrayList<String>();
-	        if (null != files && files.size() > 0)
-	        {
-	            for (MultipartFile multipartFile : files) {
-	 
-	                String fileName = multipartFile.getOriginalFilename();
-	                fileNames.add(fileName);
-	 
-	                File imageFile = new File(servletRequest.getServletContext().getRealPath("/image"), fileName);
-	                try
-	                {
-	                    multipartFile.transferTo(imageFile);
-	                } catch (IOException e)
-	                {
-	                    e.printStackTrace();
-	                }
-	            }
-	        }
-	 
-	        // Here, you can save the product details in database
-	         
-	        model.addAttribute("place", place);
-	        return "viewPlace";
-	    }*/
+	/*
+	 * @RequestMapping("/save-place") public String uploadResources(
+	 * HttpServletRequest servletRequest,
+	 * 
+	 * @ModelAttribute Place place, Model model) { //Get the uploaded files and
+	 * store them List<MultipartFile> files = place.getPhotoes(); List<String>
+	 * fileNames = new ArrayList<String>(); if (null != files && files.size() > 0) {
+	 * for (MultipartFile multipartFile : files) {
+	 * 
+	 * String fileName = multipartFile.getOriginalFilename();
+	 * fileNames.add(fileName);
+	 * 
+	 * File imageFile = new
+	 * File(servletRequest.getServletContext().getRealPath("/image"), fileName); try
+	 * { multipartFile.transferTo(imageFile); } catch (IOException e) {
+	 * e.printStackTrace(); } } }
+	 * 
+	 * // Here, you can save the product details in database
+	 * 
+	 * model.addAttribute("place", place); return "viewPlace"; }
+	 */
 }

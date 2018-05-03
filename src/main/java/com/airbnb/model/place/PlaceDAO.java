@@ -54,7 +54,7 @@ public class PlaceDAO implements IPlaceDAO {
 	private static final String GIVE_PLACETYPE_SQL = "SELECT * FROM placetype WHERE name= ?";
 	private static final String PLACETYPE_FROM_ID_SQL = "SELECT * FROM placetype WHERE id=?";
 	private static final String ADD_PICTURES = "INSERT INTO pictures VALUES(null,?,?);";
-	private static final String IMAGE_PATH = "D:\\uploaded\\dir";
+	public static final String IMAGE_PATH = "D:\\uploaded\\dir";
 	private static final String EXTENTION = ".jpg";
 	private static int COUNT = 0;
 	// @Autowired
@@ -71,7 +71,9 @@ public class PlaceDAO implements IPlaceDAO {
 
 	@Override
 	public int addPlace(Place place) throws InvalidPlaceException {
-		try (PreparedStatement ps = connection.prepareStatement(ADD_PLACE_SQL, Statement.RETURN_GENERATED_KEYS)) {
+		PreparedStatement ps = null;
+		try {
+			ps = connection.prepareStatement(ADD_PLACE_SQL, Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, place.getName());
 			ps.setInt(2, place.getAddressID());
 			int placeTypeId = 0;
@@ -86,11 +88,26 @@ public class PlaceDAO implements IPlaceDAO {
 
 			ResultSet rs = ps.getGeneratedKeys();
 			rs.next();
+			place.setId(rs.getInt(1));
+			
+			for (String imagePath : place.getPhotosUrls()) {
+				ps = connection.prepareStatement(ADD_PICTURES);
+				ps.setString(1, imagePath);
+				ps.setInt(2, place.getId());
+				ps.executeUpdate();
+			}
 
 			return rs.getInt(1);
 		} catch (SQLException e) {
 			// e.printStackTrace();
-			throw new InvalidPlaceException("Invalid statement", e);
+			throw new InvalidPlaceException("Invalid statement in DB", e);
+		}finally {
+			try {
+				ps.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new InvalidPlaceException("Invalid statement in DB", e);
+			}
 		}
 	}
 
