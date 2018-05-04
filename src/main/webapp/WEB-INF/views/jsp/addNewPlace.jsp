@@ -21,7 +21,7 @@
 				<td><br> Place type:</td>
 				<td><select name="placeTypeName">
 						<c:forEach items="${ placeTypes }" var="placeTypeName">
-							<option value="${placeTypeName.name}">${ placeTypeName.name }</option>
+							<option value="${placeTypeName}">${ placeTypeName }</option>
 						</c:forEach>
 				</select></td>
 			</tr>

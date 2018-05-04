@@ -33,6 +33,7 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
     	registry.addResourceHandler("/img/**").addResourceLocations("/static/images/");
         registry.addResourceHandler("/css/**").addResourceLocations("/static/css/");
         registry.addResourceHandler("/pdfs/**").addResourceLocations("/static/pdf/");
+        registry.addResourceHandler("/js/**").addResourceLocations("/static/js/");
     }
 	
 	@Bean
@@ -78,7 +79,7 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 	    @Bean  
 	    public UrlBasedViewResolver setupViewResolver() {  
 	        UrlBasedViewResolver resolver = new UrlBasedViewResolver();  
-	        resolver.setPrefix("/views/jsp/");  
+	        resolver.setPrefix("/WEB-INF/views/jsp/");  
 	        resolver.setSuffix(".jsp");  
 	        resolver.setViewClass(JstlView.class);
 	        return resolver;  

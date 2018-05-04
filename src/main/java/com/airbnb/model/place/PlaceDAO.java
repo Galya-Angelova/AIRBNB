@@ -5,7 +5,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,19 +23,30 @@ import com.airbnb.model.place.Place.PlaceType;
 
 @Component
 public class PlaceDAO implements IPlaceDAO {
+
+	private static final String MIN_AND_MAX_PLACE_PRICES_SQL = "SELECT MIN(price) AS minPrice, MAX(price) maxPrice from place";
+	private static final double DEFAULT_MIN_PLACE_PRICE = 20.0;
+	private static final double DEFAULT_MAX_PLACE_PRICE = 500.0;
+	private static final String FILTERED_PLACES_SQL = "SELECT pl.id, pl.name AS name, pl.price AS price, c.name AS city,  pt.name AS placeType FROM place AS pl INNER JOIN addresses AS adr ON(pl.address_id = adr.id) INNER JOIN cities AS c ON(c.id = adr.city_id) INNER JOIN placetype AS pt ON(pl.placeType_id = pt.id) WHERE (pl.name IS NULL OR pl.name LIKE ?) AND (pl.price IS NULL OR (pl.price >= ? AND pl.price <= ?)) AND (c.name IS NULL OR c.name LIKE ?) AND";
+	private static final String DEFAULT_FILTER_ORDER = "name";
+
 	private static final String ALL_PLACE_TYPES = "SELECT * FROM placetype;";
+	private static final String ALL_PLACES = "SELECT * FROM place order by name ;";
 	// private static final String GET_ADDRESS = "SELECT * FROM locations JOIN
 	// countries ON locations.country_id = countries.id JOIN cities ON
-	// locations.city_id = cities.id WHERE cities.name = ? and countries.name = ?;";
-	private static final String PLACE_FROM_ID = "SELECT * FROM users WHERE id=?";
+	// locations.city_id = cities.id WHERE cities.name = ? and countries.name =
+	// ?;";
+	private static final String PLACE_FROM_ID = "SELECT * FROM place WHERE id=?";
 
 	// private static final String CHECK_PLACE_TYPE = "SELECT count(*) FROM
 	// placetype WHERE placetype.name = ?;";
-	// private static final String CHECK_EMAIL = "SELECT count(*) FROM users WHERE
+	// private static final String CHECK_EMAIL = "SELECT count(*) FROM users
+	// WHERE
 	// users.email = ?;";
 	// private static final String ADD_PLACE = "INSERT INTO place
 	// VALUES(null,?,false,?,(SELECT placetype.id FROM placetype where
-	// placetype.name = ?),(SELECT users.id FROM users WHERE users.email = ?));";
+	// placetype.name = ?),(SELECT users.id FROM users WHERE users.email =
+	// ?));";
 
 	// private static final int EMPTY_NAME = 0;
 
@@ -44,8 +54,8 @@ public class PlaceDAO implements IPlaceDAO {
 	 * @Autowired private static DBConnectionTest dbConnection; private static
 	 * Connection connection;
 	 * 
-	 * static { try { dbConnection = new DBConnectionTest(); } catch (Exception e) {
-	 * e.printStackTrace(); } }
+	 * static { try { dbConnection = new DBConnectionTest(); } catch (Exception
+	 * e) { e.printStackTrace(); } }
 	 * 
 	 * public PlaceDAO() { connection = PlaceDAO.dbConnection.getConnection(); }
 	 */
@@ -89,7 +99,7 @@ public class PlaceDAO implements IPlaceDAO {
 			ResultSet rs = ps.getGeneratedKeys();
 			rs.next();
 			place.setId(rs.getInt(1));
-			
+
 			for (String imagePath : place.getPhotosUrls()) {
 				ps = connection.prepareStatement(ADD_PICTURES);
 				ps.setString(1, imagePath);
@@ -101,7 +111,7 @@ public class PlaceDAO implements IPlaceDAO {
 		} catch (SQLException e) {
 			// e.printStackTrace();
 			throw new InvalidPlaceException("Invalid statement in DB", e);
-		}finally {
+		} finally {
 			try {
 				ps.close();
 			} catch (SQLException e) {
@@ -192,8 +202,8 @@ public class PlaceDAO implements IPlaceDAO {
 	}
 
 	@Override
-	public List<PlaceType> getAllPlaceTypes() throws InvalidPlaceException {
-		List<PlaceType> result = new ArrayList<>();
+	public List<String> getAllPlaceTypes() throws InvalidPlaceException {
+		List<String> result = new ArrayList<>();
 		Statement st;
 		try {
 			st = connection.createStatement();
@@ -201,9 +211,7 @@ public class PlaceDAO implements IPlaceDAO {
 			while (set.next()) {
 				// int id = set.getInt("id");
 				String name = set.getString("name");
-
-				PlaceType placeType = PlaceType.fromString(name);
-				result.add(placeType);
+				result.add(name);
 			}
 			if (result.isEmpty()) {
 				throw new InvalidPlaceException("No such place types.");
@@ -254,7 +262,100 @@ public class PlaceDAO implements IPlaceDAO {
 			} catch (IOException e) {
 				throw new InvalidPlaceException("Can't create a file.", e);
 			}
-
 		}
+	}
+
+	@Override
+	public PlaceSearchInfo getDefaultFilter() throws InvalidPlaceException {
+		String orderBy = DEFAULT_FILTER_ORDER;
+		List<String> placeTypes = this.getAllPlaceTypes();
+		try (Statement st = connection.createStatement()) {
+			ResultSet set = st.executeQuery(MIN_AND_MAX_PLACE_PRICES_SQL);
+			double minPrice = 0;
+			double maxPrice = 0;
+			if (set.next()) {
+				minPrice = set.getDouble("minPrice");
+				maxPrice = set.getDouble("maxPrice");
+			}
+			if (maxPrice < DEFAULT_MAX_PLACE_PRICE) {
+				if (minPrice > DEFAULT_MIN_PLACE_PRICE) {
+					return new PlaceSearchInfo(null, null, placeTypes, DEFAULT_MIN_PLACE_PRICE, DEFAULT_MAX_PLACE_PRICE,
+							true, orderBy);
+				} else {
+					return new PlaceSearchInfo(null, null, placeTypes, set.getDouble("minPrice"),
+							DEFAULT_MAX_PLACE_PRICE, true, orderBy);
+				}
+			} else {
+				if (minPrice > DEFAULT_MIN_PLACE_PRICE) {
+					return new PlaceSearchInfo(null, null, placeTypes, DEFAULT_MIN_PLACE_PRICE,
+							set.getDouble("maxPrice"), true, orderBy);
+				} else {
+					return new PlaceSearchInfo(null, null, placeTypes, set.getDouble("minPrice"),
+							set.getDouble("maxPrice"), true, orderBy);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new InvalidPlaceException("Invalid statement", e);
+		}
+
+	}
+
+	@Override
+	public List<Place> getAllPlaces() throws InvalidPlaceException {
+		List<Place> places = new ArrayList<>();
+		Statement st;
+		try {
+			st = connection.createStatement();
+			ResultSet set = st.executeQuery(ALL_PLACES);
+			while (set.next()) {
+				int placeTypeID = set.getInt("placeType_id");
+				String placeTypeName = this.placeTypeFromId(placeTypeID);
+				places.add(new Place(set.getInt("id"), set.getString("name"), set.getBoolean("busied"),
+						set.getInt("address_id"), placeTypeName, set.getInt("user_id")));
+			}
+			if (places.isEmpty()) {
+				throw new InvalidPlaceException("There are no cities.");
+			}
+			return places;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new InvalidPlaceException("Oops , something went wrong. Reason: " + e.getMessage());
+		}
+	}
+
+	@Override
+	public List<Place> getFilteredPlaces(PlaceSearchInfo filter) throws InvalidPlaceException {
+		List<Place> filteredPlaces = new ArrayList<Place>();
+		StringBuilder sql = new StringBuilder(FILTERED_PLACES_SQL);
+		if (filter.getPlaceTypes().isEmpty()) {
+			sql.append("(pt.name IS NULL or pt.name like \"%%\")");
+		} else {
+			sql.append("(pt.name IS NULL");
+			for (String placeType : filter.getPlaceTypes()) {
+				sql.append(" OR pt.name LIKE ?");
+			}
+			sql.append(")");
+		}
+		sql.append(" ORDER BY " + filter.getOrderedBy() + " " + (filter.getIsAscending() ? "ASC" : "DESC"));
+		try (PreparedStatement ps = connection.prepareStatement(sql.toString())) {
+			int number = 1;
+			ps.setString(number++, filter.getPlaceName() != null ? "%" + filter.getPlaceName() + "%" : "%%");
+			ps.setDouble(number++, filter.getMinPriceForNight());
+			ps.setDouble(number++, filter.getMaxPriceForNight());
+			ps.setString(number++, filter.getCity() != null ? "%" + filter.getCity() + "%" : "%%");
+			for (String placeType : filter.getPlaceTypes()) {
+				ps.setString(number++, placeType);
+			}
+			ResultSet set = ps.executeQuery();
+			while (set.next()) {
+				filteredPlaces.add(placeFromId(set.getInt("id")));
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new InvalidPlaceException("Oops , something went wrong. Reason: " + e.getMessage());
+		}
+		return null;
 	}
 }
