@@ -20,11 +20,12 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+/.metadata/
 
 airbnb/.settings/
-airbnb/build/
-airbnb/.classpath
 airbnb/.project
-airbnb/target/
+airbnb/.classpath
+airbnb/bin
+airbnb/build/
 airbnb/WebContent/META-INF/MANIFEST.MF
-/target/
+/.recommenders/
