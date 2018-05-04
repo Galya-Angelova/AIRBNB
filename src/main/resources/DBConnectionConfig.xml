@@ -9,7 +9,7 @@
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://localhost:3306/airbnbTestDB" />
 		<property name="username" value="root" />
-		<property name="password" value="1234t" />
+		<property name="password" value="Kp.9205056346" />
 	</bean>
 
 </beans>

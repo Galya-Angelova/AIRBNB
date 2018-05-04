@@ -7,9 +7,11 @@
 .dropdown:hover .dropdown-content {
 	display: block;
 }
+
 .navbar a:hover, .dropdown:hover .dropbtn {
 	background-color: black;
 }
+
 .dropdown-content {
 	display: none;
 	position: absolute;
@@ -18,6 +20,7 @@
 	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
 	z-index: 1;
 }
+
 .dropdown-content a {
 	float: none;
 	color: black;
@@ -26,9 +29,11 @@
 	display: block;
 	text-align: left;
 }
+
 .dropdown-content a:hover {
 	background-color: #ddd;
 }
+
 .dropdown:hover .dropdown-content {
 	display: block;
 }
@@ -135,16 +140,7 @@
 					</c:url> <a href="<c:out value="${URL}"/>">Search</a></li>
 
 			</ul>
-			<form class="navbar-form navbar-left" action="/action_page.php">
-				<div class="input-group">
-					<input type="text" class="form-control" placeholder="Search">
-					<div class="input-group-btn">
-						<button class="btn btn-default" type="submit">
-							<i class="glyphicon glyphicon-search"></i>
-						</button>
-					</div>
-				</div>
-			</form>
+			
 			<ul class="nav navbar-nav navbar-right">
 
 				<li><c:url var="URL" value="logout">

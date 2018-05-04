@@ -25,7 +25,6 @@
 						</c:forEach>
 				</select></td>
 			</tr>
-			<br>
 
 			<tr>
 				<td>Street:</td>
@@ -48,7 +47,11 @@
 				<td><input type="text" name="country" placeholder="Country"
 					required></td>
 			</tr>
-
+			<tr>
+				<td>Price :</td>
+				<td><input type="number" name="price" placeholder="Price"
+					step="any" required></td>
+			</tr>
 			<tr>
 				<td>Photos</td>
 				<td>
@@ -60,21 +63,18 @@
 						file!
 					</form> -->
 				<td></td>
-				<tr>
-				           <td>Select a file to upload</td>
-				           <td><input type="file" name="files" /></td>
-				       </tr>
-				        <tr>
-				           <td>Select a file to upload</td>
-				           <td><input type="file" name="files" /></td>
-				       </tr>
-				        <tr>
-				           <td>Select a file to upload</td>
-				           <td><input type="file" name="files" /></td>
-				       </tr>
+			<!-- <tr>
+				<td>Select a file to upload</td>
+				<td><input type="file" name="files" /></td>
 			</tr>
-
-
+			<tr>
+				<td>Select a file to upload</td>
+				<td><input type="file" name="files" /></td>
+			</tr>
+			<tr>
+				<td>Select a file to upload</td>
+				<td><input type="file" name="files" /></td>
+			</tr> -->
 		</table>
 		<br>
 		<button type="submit" value="create">Add new place</button>

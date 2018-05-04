@@ -50,9 +50,11 @@ public class User {
 		this(id,email,password,isMale,firstName,lastName,day,month,year,phoneNumber);
 		this.isHost=isHost;
 	}
-	public void addToMyPlaces(int idPlace) {
-		if(idPlace > POSITIVE) {
-			//TODO method to convert from idPlace to Place object
+	public void addToMyPlaces(Place place) throws InvalidUserException {
+		if(place != null) {
+			this.myPlaces.add(place);
+		}else {
+			throw new InvalidUserException("Invalid place to add.");
 		}
 	}
 	

@@ -3,45 +3,50 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <jsp:include page="navigation.jsp"></jsp:include>
-<title>Places</title>
+<title>My places</title>
 </head>
 <body>
 
 	<br>
-	<form:form action="viewPlace" method="get">
+	<c:forEach items="${ userPlaces }" var="place">
+	<form:form action="myPlaces" method="get">
 		<table>
 			<tr>
 				<td>Place name</td>
-				<td><c:out value="${place.name}" /></td>
+				<td><c:out value="${place.name}"/></td>
 			</tr>
 
 			<tr>
-				<td><br> Place type:</td>
-				<td><c:out value="${place.placeType.name}" /></td>
+				<td> Place type:</td>
+				<td><c:out value="${place.placeTypeName}"/></td>
 			</tr>
 
 			<tr>
 				<td>Street:</td>
-				<td><c:out value="${place.address.street}" /></td>
+				<td><c:out value="${place.street}"/></td>
 			</tr>
 			<tr>
 				<td>Street number:</td>
-				<td><c:out value="${place.address.streetNumber}" /></td>
+				<td><c:out value="${place.streetNumber}"/></td>
 
 			</tr>
 			<tr>
 				<td>City :</td>
-				<td><c:out value="${place.address.city.name}" /></td>
+				<td><c:out value="${place.city}"/>
+				</td>
 			</tr>
 			<tr>
 				<td>Country :</td>
-				<td><c:out value="${place.address.country.name}" /></td>
+				<td><c:out value="${place.country}"/></td>
 			</tr>
 			<tr>
-				<td>Price:</td>
-				<td><c:out value="${place.price}" /></td>
+			<td>Price: </td>
+			<td> <c:out value="${place.price}"/> BGN</td>
 			</tr>
 		</table>
+		
 	</form:form>
+	<br>-------------------------------------------------------------------
+	</c:forEach>
 </body>
 </html>

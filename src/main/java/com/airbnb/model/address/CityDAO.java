@@ -32,21 +32,6 @@ public class CityDAO implements ICityDAO{
 		connection = this.dbConnection.getConnection();
 	}
 
-//	@Override
-//	public int addCity(String city) throws InvalidCityException {
-//		try (PreparedStatement ps = connection.prepareStatement(ADD_CITY_SQL, Statement.RETURN_GENERATED_KEYS)) {
-//			ps.setString(1, city);
-//			ps.executeUpdate();
-//
-//			ResultSet rs = ps.getGeneratedKeys();
-//			rs.next();
-//
-//			return rs.getInt(1);
-//		} catch (SQLException e) {
-//			// e.printStackTrace();
-//			throw new InvalidCityException("Invalid statement", e);
-//		}
-//	}
 	
 	@Override
 	public int addCity(City city) throws InvalidCityException {
@@ -59,7 +44,7 @@ public class CityDAO implements ICityDAO{
 
 			return rs.getInt(1);
 		} catch (SQLException e) {
-			// e.printStackTrace();
+			 e.printStackTrace();
 			throw new InvalidCityException("Invalid statement", e);
 		}
 	}
@@ -76,7 +61,7 @@ public class CityDAO implements ICityDAO{
 
 			throw new InvalidCityException("There is no city with that name in the database");
 		} catch (SQLException e) {
-			// e.printStackTrace();
+			 e.printStackTrace();
 			throw new InvalidCityException("Invalid statement", e);
 		}
 	}
@@ -97,7 +82,7 @@ public class CityDAO implements ICityDAO{
 			}
 			throw new InvalidCityException("There is no city with that id!");
 		} catch (SQLException e) {
-			// e.printStackTrace();
+			 e.printStackTrace();
 			throw new InvalidCityException("Invalid statement", e);
 		}
 	}

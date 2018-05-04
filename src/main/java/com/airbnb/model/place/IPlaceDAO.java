@@ -18,7 +18,8 @@ public interface IPlaceDAO {
 	public Place placeFromId(int placeId) throws InvalidPlaceException;
 	public List<String> getAllPlaceTypes() throws InvalidPlaceException;
 	public PlaceSearchInfo getDefaultFilter() throws InvalidPlaceException;
-	public List<Place> getAllPlaces() throws InvalidPlaceException;
+	public List<PlaceDTO> getAllPlaces() throws InvalidPlaceException;
 	public List<Place> getFilteredPlaces(PlaceSearchInfo filter) throws InvalidPlaceException;
+	public List<Place> getAllPlacesForSearch() throws InvalidPlaceException;
 	
 }
