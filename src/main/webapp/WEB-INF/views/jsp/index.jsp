@@ -20,7 +20,7 @@
 	<input type="submit" value="Login"><br> Don't have an
 	account?
 	<c:url var="URL" value="register">
-		<c:param name="param" value="${parameter}" />
+	<%-- 	<c:param name="param" value="${parameter}" /> --%>
 	</c:url>
 	<a href="<c:out value="${URL}"/>">Register here</a>
 </form>

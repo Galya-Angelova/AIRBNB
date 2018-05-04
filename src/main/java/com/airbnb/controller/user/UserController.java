@@ -25,6 +25,11 @@ public class UserController {
 	@Autowired
 	private UserDAO userDAO;
 
+	@RequestMapping(value = "/index", method = {RequestMethod.GET, RequestMethod.POST})
+	public String indexPage() {
+		return "index";
+	}
+	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String loginPage() {
 		return "index";
@@ -55,6 +60,11 @@ public class UserController {
 			model.addAttribute("exception", e);
 			return "error";
 		}
+	}
+
+	@RequestMapping(value = "/home", method = RequestMethod.GET)
+	public String homePage()  {
+		 return "home";
 	}
 
 	@RequestMapping(value = "/register", method = RequestMethod.GET)

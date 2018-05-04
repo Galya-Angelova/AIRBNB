@@ -6,7 +6,7 @@
 <title>Reservation</title>
 </head>
 <body>
-	<form:form action="makeReservation" method="post">
+	<form:form action="reservation" method="post">
 		<table>
 			<tr>
 				<td>From: </td>
@@ -17,6 +17,13 @@
 				<td>To: </td>
 				<td><input type="date" name="endDate" min="2018-04-05"
 					max="2019-05-10" required></td>
+			</tr>
+			<tr>
+			<td><input type="hidden" name="id" value="${place.id }"  required>
+			</td>
+			<td>
+			<c:out value="${place.id }"/>
+			</td>
 			</tr>
 		</table>
 		<br> <input type="submit" value="Make reservation"> <br>

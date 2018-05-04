@@ -74,20 +74,20 @@
 	<nav class="navbar navbar-inverse">
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<c:url var="URL" value="index">
-					<c:param name="param" value="${parameter}" />
+				<c:url var="URL" value="home">
+					<%-- <c:param name="param" value="${parameter}" /> --%>
 				</c:url>
 				<a class="navbar-brand" href="<c:out value="${URL}"/>"> AIRBNB</a>
 			</div>
 			<ul class="nav navbar-nav">
 				<li class="active"><c:url var="URL" value="home">
-						<c:param name="param" value="${parameter}" />
+						<%-- <c:param name="param" value="${parameter}" /> --%>
 					</c:url> <a href="<c:out value="${URL}"/>">Home</a></li>
 
 			</ul>
 			<ul class="nav navbar-nav">
 				<li class="active"><c:url var="URL" value="updateSettings">
-						<c:param name="param" value="${parameter}" />
+						<%-- <c:param name="param" value="${parameter}" /> --%>
 					</c:url> <a href="<c:out value="${URL}"/>">Settings</a></li>
 
 			</ul>
@@ -136,7 +136,7 @@
 			
 			<ul class="nav navbar-nav">
 				<li class="active"><c:url var="URL" value="search">
-						<c:param name="param" value="${parameter}" />
+						<%-- <c:param name="param" value="${parameter}" /> --%>
 					</c:url> <a href="<c:out value="${URL}"/>">Search</a></li>
 
 			</ul>
@@ -144,7 +144,7 @@
 			<ul class="nav navbar-nav navbar-right">
 
 				<li><c:url var="URL" value="logout">
-						<c:param name="param" value="${parameter}" />
+						<%-- <c:param name="param" value="${parameter}" /> --%>
 					</c:url> <a class="navbar-brand" href="<c:out value="${URL}"/>"><span
 						class="glyphicon glyphicon-log-out"></span> Log out</a></li>
 			</ul>

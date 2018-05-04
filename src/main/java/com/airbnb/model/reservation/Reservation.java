@@ -16,6 +16,7 @@ public class Reservation {
 	private int userId;
 	private int rating;
 
+	public Reservation() {};
 	public Reservation(int id, LocalDate startDate, LocalDate endDate, int placeId, int userId, int rating)
 			throws InvalidReservationException {
 		this.id = id;

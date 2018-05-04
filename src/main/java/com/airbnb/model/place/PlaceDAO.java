@@ -311,7 +311,7 @@ public class PlaceDAO implements IPlaceDAO {
 	@Override
 	public List<Place> getFilteredPlaces(PlaceSearchInfo filter) throws InvalidPlaceException {
 		List<Place> filteredPlaces = new ArrayList<Place>();
-		StringBuilder sql = new StringBuilder(FILTERED_PLACES_SQL);
+		StringBuffer sql = new StringBuffer(FILTERED_PLACES_SQL);
 		if (filter.getPlaceTypes().isEmpty()) {
 			sql.append("(pt.name IS NULL or pt.name like \"%%\")");
 		} else {
@@ -343,6 +343,7 @@ public class PlaceDAO implements IPlaceDAO {
 		return null;
 	}
 
+	@Override
 	public void fillFromDB() throws InvalidPlaceException {
 		try {
 			Statement statement = connection.createStatement();
@@ -394,6 +395,8 @@ public class PlaceDAO implements IPlaceDAO {
 
 	@Override
 	public Place placeFromId(int id) throws InvalidPlaceException {
+		this.allPlaces.clear();
+		fillFromDB();
 		if (this.allPlaces.containsKey(id)) {
 			return this.allPlaces.get(id);
 		} else {

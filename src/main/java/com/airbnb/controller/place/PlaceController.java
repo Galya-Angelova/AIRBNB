@@ -226,7 +226,7 @@ public class PlaceController {
 			List<Place> places= placeDAO.getAllPlacesForSearch();
 			List<String> placeTypes= placeDAO.getAllPlaceTypes();
 			Set<String> cities=cityDAO.getCities();
-			
+			System.out.println(editedFilter);
 			model.addAttribute("placeTypes", placeTypes);
 			model.addAttribute("cities", cities);
 			model.addAttribute("filter", filter);

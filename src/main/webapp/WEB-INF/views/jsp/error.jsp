@@ -11,11 +11,11 @@
 	<h2>
 		Reason :
 		<%=e.getMessage()%></h2>
-	<img src="D:\\AIRBNB\\error.jpg" />
+	<img src="img/error.png" />
 	<br>
-	<c:url var="URL" value="index">
+	<%-- <c:url var="URL" value="index">
 		<c:param name="param" value="${parameter}" />
 	</c:url>
-	<a href="<c:out value="${URL}"/>">Back to login</a>
+	<a href="<c:out value="${URL}"/>">Back to login</a> --%>
 </body>
 </html>

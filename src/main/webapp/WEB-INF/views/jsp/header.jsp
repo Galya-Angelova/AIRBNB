@@ -19,23 +19,23 @@
 		<div class="container-fluid">
 			<div class="navbar-header">
 				<c:url var="URL" value="index">
-					<c:param name="param" value="${parameter}" />
+					<%-- <c:param name="param" value="${parameter}" />  --%>
 				</c:url>
 				<a class="navbar-brand" href="<c:out value="${URL}"/>"> AIRBNB</a>
 			</div>
-			<ul class="nav navbar-nav">
-				<li class="active"><c:url var="URL" value="index">
+			<%-- <ul class="nav navbar-nav">
+				<li class="active"><c:url var="URL" value="home">
 						<c:param name="param" value="${parameter}" />
 					</c:url> <a href="<c:out value="${URL}"/>">Home</a></li>
 
-			</ul>
+			</ul> --%>
 			<ul class="nav navbar-nav navbar-right">
 				<li><c:url var="URL" value="register">
-						<c:param name="param" value="${parameter}" />
+						<%-- <c:param name="param" value="${parameter}" /> --%>
 					</c:url> <a href="<c:out value="${URL}"/>"><span
 						class="glyphicon glyphicon-user"></span> Sign Up</a></li>
 				<li><c:url var="URL" value="login">
-						<c:param name="param" value="${parameter}" />
+						<%-- <c:param name="param" value="${parameter}" /> --%>
 					</c:url> <a href="<c:out value="${URL}"/>"><span
 						class="glyphicon glyphicon-log-in"></span> Login</a></li>
 			</ul>

@@ -9,7 +9,7 @@
 	<h3>Search</h3>
 	<br>
 <div id="filters" class="w3-container w3-white w3-round-xxlarge menus w3-left" style="margin-left:2%; width:20%">
-	<form:form commandName="editedFilter">
+	<form:form modelAttribute="editedFilter">
 	
 	<div class="w3-panel">
 		<input class ="w3-margin"  type="submit" value="Filter" />

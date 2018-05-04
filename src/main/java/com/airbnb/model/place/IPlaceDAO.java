@@ -21,5 +21,6 @@ public interface IPlaceDAO {
 	public List<PlaceDTO> getAllPlaces() throws InvalidPlaceException;
 	public List<Place> getFilteredPlaces(PlaceSearchInfo filter) throws InvalidPlaceException;
 	public List<Place> getAllPlacesForSearch() throws InvalidPlaceException;
+	void fillFromDB() throws InvalidPlaceException;
 	
 }

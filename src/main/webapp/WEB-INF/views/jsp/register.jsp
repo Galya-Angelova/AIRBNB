@@ -47,7 +47,7 @@
 
 	Already have an account?
 	<c:url var="URL" value="index">
-		<c:param name="param" value="${parameter}" />
+		<%-- <c:param name="param" value="${parameter}" /> --%>
 	</c:url>
 	<a href="<c:out value="${URL}"/>">Login here</a>
 
