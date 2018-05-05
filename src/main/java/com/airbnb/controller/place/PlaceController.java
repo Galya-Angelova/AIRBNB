@@ -57,7 +57,10 @@ public class PlaceController {
 	private UserDAO userDAO;
 
 	@RequestMapping(value = "/createPlace", method = RequestMethod.GET)
-	public String createPlace(Model model) {
+	public String createPlace(Model model,HttpSession session) {
+		if (session.getAttribute("user") == null) {
+			return "redirect: ./logout";
+		}
 		try {
 
 			List<String> placeTypes = placeDAO.getAllPlaceTypes();
@@ -73,13 +76,13 @@ public class PlaceController {
 	}
 
 	@RequestMapping(value = "/createPlace", method = RequestMethod.POST)
-	public String create(Model model, HttpServletRequest request, @RequestParam String name,
+	public String create(Model model,HttpSession session, HttpServletRequest request, @RequestParam String name,
 			@RequestParam String country, @RequestParam String city, @RequestParam String placeTypeName,
 			@RequestParam String street, @RequestParam int streetNumber, @RequestParam double price,
 			@RequestParam("files") MultipartFile[] files) // @RequestParam("files") MultipartFile[] files,
-			throws ServletException, IOException {
+			throws ServletException {
+
 		try {
-			HttpSession session = request.getSession();
 			User user = (User) session.getAttribute("user");
 
 			if (user == null) {
@@ -100,17 +103,13 @@ public class PlaceController {
 				city_id = cityDAO.addCity(new City(0, city));
 			}
 			City cityObject = cityDAO.cityFromId(city_id);
-			Address address = new Address(0, country_id, city_id, street, Integer.valueOf(streetNumber));
-			address.setCity(cityObject);
-			address.setCountry(countryObject);
+
+			Address address = new Address(0, country_id, city_id, street, streetNumber,cityObject,countryObject);
 			int addressId = addressDAO.addAddress(address);
 
-			if(!this.isValid(files)) {
-				return "createPlace";
-			}
+
+			Place place = new Place(0, name, false, addressId, placeTypeName, user.getId(), Double.valueOf(price),address);
 			
-			Place place = new Place(0, name, false, addressId, placeTypeName, user.getId(), Double.valueOf(price));
-			place.setAddress(address);
 
 			// String imageUrl = this.placeDAO.saveImageURL(files, place.getId());
 
@@ -163,7 +162,8 @@ public class PlaceController {
 	public String getUserPlaces(Model model, HttpSession session) {
 		User user = (User) session.getAttribute("user");
 		if (user == null) {
-			return "redirect ./index";
+
+			return "redirect: ./logout";
 		}
 		try {
 			List<PlaceDTO> placesForUser = this.placeDAO.gettAllPlacesForUser(user.getId());
@@ -176,23 +176,26 @@ public class PlaceController {
 			return "error";
 		}
 	}
-
-	@RequestMapping(value = "/allPlaces", method = RequestMethod.GET)
-	public String showAllPlaces(Model model, HttpSession session) {
-		try {
-			model.addAttribute("allPlaces", this.placeDAO.getAllPlaces());
-			return "allPlaces";
-		} catch (InvalidPlaceException e) {
-			e.printStackTrace();
-			model.addAttribute("exception", e);
-			return "error";
-		} catch (Exception e) {
-			e.printStackTrace();
-			model.addAttribute("exception", e);
-			return "error";
-		}
-
-	}
+//
+//	@RequestMapping(value = "/allPlaces", method = RequestMethod.GET)
+//	public String showAllPlaces(Model model, HttpSession session) {
+//		if (session.getAttribute("user") == null) {
+//			return "redirect: ./logout";
+//		}
+//		try {
+//			model.addAttribute("allPlaces", this.placeDAO.getAllPlaces());
+//			return "allPlaces";
+//		} catch (InvalidPlaceException e) {
+//			e.printStackTrace();
+//			model.addAttribute("exception", e);
+//			return "error";
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			model.addAttribute("exception", e);
+//			return "error";
+//		}
+//
+//	}
 
 	/*
 	 * @RequestMapping("/save-place") public String uploadResources(
@@ -217,20 +220,21 @@ public class PlaceController {
 	 */
 
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
-	public String placeSearch(Model model) {
+	public String placeSearch(Model model ) {
 		try {
 			PlaceSearchInfo filter = placeDAO.getDefaultFilter();
 			PlaceSearchInfo editedFilter = placeDAO.getDefaultFilter();
 
-			List<Place> places = placeDAO.getAllPlacesForSearch();
-			List<String> placeTypes = placeDAO.getAllPlaceTypes();
-			Set<String> cities = cityDAO.getCities();
-			System.out.println(editedFilter);
+
+			Set<PlaceDTO> allPlaces= placeDAO.getAllPlaces();
+			List<String> placeTypes= placeDAO.getAllPlaceTypes();
+			Set<String> cities=cityDAO.getCities();
+			
 			model.addAttribute("placeTypes", placeTypes);
 			model.addAttribute("cities", cities);
 			model.addAttribute("filter", filter);
 			model.addAttribute("editedFilter", editedFilter);
-			model.addAttribute("places", places);
+			model.addAttribute("allPlaces", allPlaces);
 
 			return "placeSearch";
 		} catch (InvalidPlaceException e) {
@@ -255,7 +259,7 @@ public class PlaceController {
 			List<String> placeTypes = placeDAO.getAllPlaceTypes();
 			Set<String> cities = cityDAO.getCities();
 			PlaceSearchInfo filter = placeDAO.getDefaultFilter();
-			List<Place> places = placeDAO.getFilteredPlaces(editedFilter);
+			List<PlaceDTO> places = placeDAO.getFilteredPlaces(editedFilter);
 
 			model.addAttribute("placeTypes", placeTypes);
 			model.addAttribute("cities", cities);
@@ -271,7 +275,7 @@ public class PlaceController {
 		}
 	}
 
-	@RequestMapping(value = "/showPhoto", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/showPhoto", method = RequestMethod.GET)
 	public String showPhoto(Model model, HttpServletRequest req, HttpServletResponse resp,
 			@RequestParam() String path) {
 
@@ -286,6 +290,26 @@ public class PlaceController {
 						out.write(bytes);
 					}
 				}
+<<<<<<< HEAD
+=======
+				
+				List<String> placeTypes= placeDAO.getAllPlaceTypes();
+				Set<String> cities=cityDAO.getCities();
+				PlaceSearchInfo filter = placeDAO.getDefaultFilter();
+				List<PlaceDTO> allPlaces= placeDAO.getFilteredPlaces(editedFilter);
+				System.out.println(allPlaces);
+				model.addAttribute("placeTypes", placeTypes);
+				model.addAttribute("cities", cities);
+				model.addAttribute("filter", filter);
+				model.addAttribute("editedFilter", editedFilter);
+				model.addAttribute("allPlaces", allPlaces);
+
+				return "placeSearch";
+			} catch (InvalidPlaceException e) {
+				e.printStackTrace();
+				model.addAttribute("exception", e);
+				return "error";
+>>>>>>> 286604ccdf399cd85a470a27f274de26006ca218
 			}
 			return null;
 		} catch (IOException e) {
@@ -297,5 +321,5 @@ public class PlaceController {
 			model.addAttribute("exception", e);
 			return "error";
 		}
-	}
+	}*/
 }

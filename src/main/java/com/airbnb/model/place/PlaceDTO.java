@@ -2,8 +2,11 @@ package com.airbnb.model.place;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.airbnb.exceptions.InvalidPlaceException;
 
 public class PlaceDTO {
+	private static final int POSITIVE = 0;
+	
 	private int id;
 	private String name;
 	private String placeTypeName;
@@ -16,71 +19,122 @@ public class PlaceDTO {
 	private List<String> photosURLs;
 	
 	public PlaceDTO(int id, String name, String placeTypeName, boolean busied, String country, String city,
-			String street, int streetNumber,double price) {
-		this.id = id;
-		this.name = name;
-		this.placeTypeName = placeTypeName;
-		this.busied = busied;
-		this.country = country;
-		this.city = city;
-		this.street = street;
-		this.streetNumber = streetNumber;
-		this.setPhotosURLs(new ArrayList<>());
+			String street, int streetNumber,double price) throws InvalidPlaceException {
+		setId(id);
+		setName(name);
+		setPlaceTypeName(placeTypeName);
+		setBusied(busied);
+		setCountry(country);
+		setCity(city);
+		setStreet(street);
+		setStreetNumber(streetNumber);
+		setPrice(price);
 	}
-	public int getId() {
-		return id;
+	
+//	Setters
+	public void setId(int id) throws InvalidPlaceException {
+		if (id >= POSITIVE) {
+			this.id = id;
+		} else {
+			throw new InvalidPlaceException("Invalid id for place.");
+		}
 	}
-	public void setId(int id) {
-		this.id = id;
+	
+	public void setName(String name) throws InvalidPlaceException {
+		if (name == null || (name.trim().isEmpty())) {
+			throw new InvalidPlaceException("Empty name.");
+		} else {
+			this.name = name;
+		}
 	}
-	public String getName() {
-		return name;
+	
+	public void setPlaceTypeName(String placeTypeName) throws InvalidPlaceException {
+		if (placeTypeName == null || (placeTypeName.trim().isEmpty())) {
+			throw new InvalidPlaceException("Empty place type.");
+		} else {
+			this.placeTypeName = placeTypeName;
+		}
 	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getPlaceTypeName() {
-		return placeTypeName;
-	}
-	public void setPlaceTypeName(String placeTypeName) {
-		this.placeTypeName = placeTypeName;
-	}
-	public boolean isBusied() {
-		return busied;
-	}
+	
 	public void setBusied(boolean busied) {
 		this.busied = busied;
 	}
-	public String getCountry() {
-		return country;
-	}
-	public void setCountry(String country) {
-		this.country = country;
-	}
-	public String getCity() {
-		return city;
-	}
-	public void setCity(String city) {
-		this.city = city;
-	}
-	public String getStreet() {
-		return street;
-	}
-	public void setStreet(String street) {
-		this.street = street;
-	}
-	public int getStreetNumber() {
-		return streetNumber;
-	}
-	public void setStreetNumber(int streetNumber) {
-		this.streetNumber = streetNumber;
+	
+	public void setCountry(String country) throws InvalidPlaceException {
+		if (country == null || (country.trim().isEmpty())) {
+			throw new InvalidPlaceException("Empty country.");
+		} else {
+			this.country = country;
+		}
 	}
 	
-	public void setPrice(double price) {
-		this.price = price;
+	public void setCity(String city) throws InvalidPlaceException {
+		if (city == null || (city.trim().isEmpty())) {
+			throw new InvalidPlaceException("Empty city.");
+		} else {
+			this.city = city;
+		}
 	}
+	
+	public void setStreet(String street) throws InvalidPlaceException {
+		if (street == null || (street.trim().isEmpty())) {
+			throw new InvalidPlaceException("Empty street.");
+		} else {
+			this.street = street;
+		}
+	}
+	
+	public void setStreetNumber(int streetNumber) throws InvalidPlaceException {
+		if (streetNumber >= POSITIVE) {
+			this.streetNumber = streetNumber;
+		} else {
+			throw new InvalidPlaceException("Invalid street number.");
+		}
+	}
+	
+	public void setPrice(double price) throws InvalidPlaceException {
+		if (price >= POSITIVE) {
+			this.price = price;
+		} else {
+			throw new InvalidPlaceException("Invalid id for place.");
+		}
+	}
+	
+//	Getters
+	public int getId() {
+		return this.id;
+	}
+	
+	public String getName() {
+		return this.name;
+	}
+	
+	public String getPlaceTypeName() {
+		return this.placeTypeName;
+	}
+	
+	public boolean isBusied() {
+		return this.busied;
+	}
+	
+	public String getCountry() {
+		return this.country;
+	}
+	
+	public String getCity() {
+		return this.city;
+	}
+	
+	public String getStreet() {
+		return this.street;
+	}
+	
+	public int getStreetNumber() {
+		return this.streetNumber;
+	}
+	
 	public double getPrice() {
-		return price;
+		return this.price;
 	}
 	public List<String> getPhotosURLs() {
 		return photosURLs;

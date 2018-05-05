@@ -70,10 +70,7 @@ public class AddressDAO implements IAddressDAO{
 				int city_id = rs.getInt("city_id");
 				String street = rs.getString("street");
 				int streetNumber = rs.getInt("streetNumber");
-				Address result = new Address(id, country_id, city_id, street, streetNumber);
-				result.setCity(cityDAO.cityFromId(city_id));
-				result.setCountry(countryDAO.countryFromId(country_id));
-				return result;
+				return new Address(id, country_id, city_id, street, streetNumber,cityDAO.cityFromId(city_id),countryDAO.countryFromId(country_id));
 			}
 			throw new InvalidAddressException("There is no address with that id!");
 		} catch (SQLException e) {

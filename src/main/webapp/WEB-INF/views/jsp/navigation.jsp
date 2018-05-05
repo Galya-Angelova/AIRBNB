@@ -80,12 +80,6 @@
 				<a class="navbar-brand" href="<c:out value="${URL}"/>"> AIRBNB</a>
 			</div>
 			<ul class="nav navbar-nav">
-				<li class="active"><c:url var="URL" value="home">
-						<%-- <c:param name="param" value="${parameter}" /> --%>
-					</c:url> <a href="<c:out value="${URL}"/>">Home</a></li>
-
-			</ul>
-			<ul class="nav navbar-nav">
 				<li class="active"><c:url var="URL" value="updateSettings">
 						<%-- <c:param name="param" value="${parameter}" /> --%>
 					</c:url> <a href="<c:out value="${URL}"/>">Settings</a></li>
@@ -128,12 +122,12 @@
 					</c:url> <a href="<c:out value="${URL}"/>">Visited places</a></li>
 
 			</ul>
-			<ul class="nav navbar-nav">
+			<%-- <ul class="nav navbar-nav">
 				<li class="active"><c:url var="URL" value="allPlaces">
-						<%-- <c:param name="param" value="${parameter}" /> --%>
+						<c:param name="param" value="${parameter}" />
 					</c:url> <a href="<c:out value="${URL}"/>">All places</a></li>
 
-			</ul>
+			</ul>  --%>
 			
 			<ul class="nav navbar-nav">
 				<li class="active"><c:url var="URL" value="search">
