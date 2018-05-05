@@ -262,7 +262,7 @@ public class PlaceController {
 				Set<String> cities=cityDAO.getCities();
 				PlaceSearchInfo filter = placeDAO.getDefaultFilter();
 				List<PlaceDTO> allPlaces= placeDAO.getFilteredPlaces(editedFilter);
-				
+				System.out.println(allPlaces);
 				model.addAttribute("placeTypes", placeTypes);
 				model.addAttribute("cities", cities);
 				model.addAttribute("filter", filter);

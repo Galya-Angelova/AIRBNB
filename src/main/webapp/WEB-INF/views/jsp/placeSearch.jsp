@@ -36,7 +36,8 @@
 	<div class="w3-panel">
         <button type = "button" onclick="openOrCloseSection('cityNameSection')" class="w3-small w3-container w3-btn w3-block w3-theme-d6 w3-left-align">City Name</button>
     	<div id="cityNameSection" class="w3-container w3-show  w3-padding ">
-    		 <form:select path="city" >
+    		<form:select path="city" id="citySelector" class="w3-select w3-border w3-round-xxlarge" name="option">
+    		 	 <form:option value="All">All</form:option>
    				 <form:options items="${cities}" />
   			</form:select>
     	</div>

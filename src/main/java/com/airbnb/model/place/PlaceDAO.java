@@ -314,7 +314,7 @@ public class PlaceDAO implements IPlaceDAO {
 			ps.setString(number++, filter.getPlaceName() != null ? "%" + filter.getPlaceName() + "%" : "%%");
 			ps.setDouble(number++, filter.getMinPriceForNight());
 			ps.setDouble(number++, filter.getMaxPriceForNight());
-			ps.setString(number++, filter.getCity() != null ? "%" + filter.getCity() + "%" : "%%");
+			ps.setString(number++, filter.getCity().equalsIgnoreCase("All") ? "%" + filter.getCity() + "%" : "%%");
 			for (String placeType : filter.getPlaceTypes()) {
 				ps.setString(number++, placeType);
 			}
@@ -326,12 +326,11 @@ public class PlaceDAO implements IPlaceDAO {
 						place.isBusied(), address.getCountry().getName(), address.getCity().getName(),
 						address.getStreet(), address.getStreetNumber(), place.getPrice()));
 			}
-
+			return filteredPlaces;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new InvalidPlaceException("Oops , something went wrong. Reason: " + e.getMessage());
 		}
-		return null;
 	}
 
 	@Override
