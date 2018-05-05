@@ -21,10 +21,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.airbnb.exceptions.InvalidAddressException;
 import com.airbnb.exceptions.InvalidPlaceException;
+import com.airbnb.exceptions.InvalidUserException;
 import com.airbnb.model.address.Address;
 import com.airbnb.model.address.AddressDAO;
 import com.airbnb.model.db.DBConnectionTest;
 import com.airbnb.model.place.Place.PlaceType;
+import com.airbnb.model.user.User;
 
 @Component
 public class PlaceDAO implements IPlaceDAO {
@@ -207,7 +209,7 @@ public class PlaceDAO implements IPlaceDAO {
 			throw new InvalidPlaceException("Oops , something went wrong. Reason: " + e.getMessage());
 		}
 	}
-
+	@Override
 	public String saveImageURL(MultipartFile file, int placeId) throws InvalidPlaceException {
 		// D://uploaded//dir5//5.jpg
 		BufferedInputStream bis = null;
@@ -365,7 +367,8 @@ public class PlaceDAO implements IPlaceDAO {
 			throw new InvalidPlaceException("Something went wrong in DB", e);
 		}
 	}
-
+	
+	@Override
 	public List<PlaceDTO> getAllPlaces() throws InvalidPlaceException {
 		List<PlaceDTO> result = new ArrayList<>();
 		this.allPlaces.clear();
@@ -403,7 +406,8 @@ public class PlaceDAO implements IPlaceDAO {
 			throw new InvalidPlaceException("There is no place with that id!");
 		}
 	}
-
+	
+	@Override
 	public List<PlaceDTO> gettAllPlacesForUser(int userId) throws InvalidPlaceException {
 		List<PlaceDTO> result = new ArrayList<>();
 		try (PreparedStatement ps = connection.prepareStatement(GET_PLACE_FOR_USER)) {
@@ -433,4 +437,5 @@ public class PlaceDAO implements IPlaceDAO {
 			throw new InvalidPlaceException("Invalid address.", e);
 		}
 	}
+
 }

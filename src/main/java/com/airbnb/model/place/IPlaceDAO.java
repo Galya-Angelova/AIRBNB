@@ -3,6 +3,8 @@ package com.airbnb.model.place;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.airbnb.exceptions.InvalidPlaceException;
 import com.airbnb.model.place.Place.PlaceType;
 
@@ -21,6 +23,8 @@ public interface IPlaceDAO {
 	public List<PlaceDTO> getAllPlaces() throws InvalidPlaceException;
 	public List<Place> getFilteredPlaces(PlaceSearchInfo filter) throws InvalidPlaceException;
 	public List<Place> getAllPlacesForSearch() throws InvalidPlaceException;
-	void fillFromDB() throws InvalidPlaceException;
+	public void fillFromDB() throws InvalidPlaceException;
+	public String saveImageURL(MultipartFile file, int placeId) throws InvalidPlaceException;
+	public List<PlaceDTO> gettAllPlacesForUser(int userId) throws InvalidPlaceException;
 	
 }
