@@ -24,7 +24,7 @@ public interface IPlaceDAO {
 	public List<Place> getFilteredPlaces(PlaceSearchInfo filter) throws InvalidPlaceException;
 	public List<Place> getAllPlacesForSearch() throws InvalidPlaceException;
 	public void fillFromDB() throws InvalidPlaceException;
-	public String saveImageURL(MultipartFile file, int placeId) throws InvalidPlaceException;
+	//public String saveImageURL(MultipartFile file, int placeId) throws InvalidPlaceException;
 	public List<PlaceDTO> gettAllPlacesForUser(int userId) throws InvalidPlaceException;
 	
 }

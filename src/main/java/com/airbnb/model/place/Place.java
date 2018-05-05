@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.airbnb.exceptions.InvalidPlaceException;
 import com.airbnb.model.address.Address;
-
+import org.springframework.web.multipart.MultipartFile;
 public class Place {
 
 	public enum PlaceType {
@@ -45,7 +45,9 @@ public class Place {
 	private int ownerId;
 	private double price;
 	private List<String> photosURLs;
-
+	private String photoSrc;
+	private MultipartFile photo;
+	
 	public Place() {
 
 	}
@@ -107,8 +109,11 @@ public class Place {
 		}
 	}
 
-	public void setPhotosUrls(List<String> photosURLs) {
-		this.photosURLs = new ArrayList<String>(photosURLs);
+	public void setPhotoSrc(String photoSrc) {
+		if(photoSrc != null) {
+			this.photosURLs.add(photoSrc);
+		}
+		
 	}
 
 	public void setPrice(double price) throws InvalidPlaceException {
@@ -125,6 +130,10 @@ public class Place {
 		}else {
 			throw new InvalidPlaceException("Invalid address.");
 		}
+	}
+	
+	public void setPhoto(MultipartFile file) {
+		this.photo = file;
 	}
 	
 	// Getters
@@ -155,8 +164,8 @@ public class Place {
 	// public int getPlaceTypeID() {
 	// return this.placeType.typeId;
 	// }
-	public List<String> getPhotosUrls() {
-		return Collections.unmodifiableList(this.photosURLs);
+	public String getPhotoSrc() {
+		return photoSrc;
 	}
 
 	public int getOwnerId() {
@@ -168,5 +177,13 @@ public class Place {
 	}
 	public double getPrice() {
 		return this.price;
+	}
+
+	public List<String> getPhotosURLs() {
+		return photosURLs;
+	}
+
+	public void setPhotosURLs(List<String> photosURLs) {
+		this.photosURLs = photosURLs;
 	}
 }

@@ -23,7 +23,7 @@ public class UserDAO implements IUserDAO {
 	private static final String LOGIN_USER_SQL = "SELECT * FROM users WHERE email=?";
 	private static final String USER_FROM_ID_SQL = "SELECT * FROM users WHERE id=?";
 	private static final String REGISTER_USER_SQL = "INSERT INTO users VALUES (null, ?, ? ,?, ?, ?, ?, false, false,?)";
-
+	private static final String CHECK_FOR_EXISTS_EMAIL = "SELECT count(*) FROM users WHERE email = ?;";
 	private static final String BECOME_A_HOST = "UPDATE users SET isHost = 1 WHERE id = ?;";
 	private static final String UPDATE_USER_PROFIL_SQL = "UPDATE users SET email = ? , firstName = ? , lastName = ? , phone = ? , password = ? WHERE id = ?;";
 	private static final String USER_PLACES_SQL="SELECT id FROM place WHERE user_id=?;";
@@ -210,6 +210,24 @@ public class UserDAO implements IUserDAO {
 	@Override
 	public void addUserPlaceToUser(int placeID, User user) throws InvalidUserException{
 		user.addToMyPlaces(placeID);
-		this.becomeAHost(user);
+		if(!user.getIsHost()) {
+			this.becomeAHost(user);
+		}
+	}
+
+	@Override
+	public boolean alreadyExistsUset(String email) throws InvalidUserException{
+		try(PreparedStatement ps = connection.prepareStatement(CHECK_FOR_EXISTS_EMAIL)){
+			ps.setString(1, email);
+			ResultSet resultSet = ps.executeQuery();
+			if(resultSet.next()) {
+				return resultSet.getInt(1) > 0 ? true : false;
+			}else {
+				return false;
+			}
+			
+		}catch(SQLException e) {
+			throw new InvalidUserException("Already exist user with this email.");
+		}
 	}
 }

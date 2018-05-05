@@ -1,32 +1,29 @@
 package com.airbnb.controller.place;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Set;
-import java.util.StringJoiner;
+import java.util.UUID;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-
-import org.springframework.ui.ModelMap;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
-
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.airbnb.exceptions.InvalidCityException;
 import com.airbnb.exceptions.InvalidCountryException;
@@ -39,17 +36,15 @@ import com.airbnb.model.address.Country;
 import com.airbnb.model.address.CountryDAO;
 import com.airbnb.model.place.Place;
 import com.airbnb.model.place.PlaceDAO;
-
-import com.airbnb.model.place.PlaceSearchInfo;
-
 import com.airbnb.model.place.PlaceDTO;
+import com.airbnb.model.place.PlaceSearchInfo;
 import com.airbnb.model.user.User;
 import com.airbnb.model.user.UserDAO;
 
 @Controller
 @MultipartConfig
 public class PlaceController {
-
+	private static final String ALLOWED_FILE_EXTENSIONS = ".png .jpeg .jpg .bmp";
 	@Autowired
 	private PlaceDAO placeDAO;
 	@Autowired
@@ -60,7 +55,7 @@ public class PlaceController {
 	private AddressDAO addressDAO;
 	@Autowired
 	private UserDAO userDAO;
-	
+
 	@RequestMapping(value = "/createPlace", method = RequestMethod.GET)
 	public String createPlace(Model model) {
 		try {
@@ -78,15 +73,18 @@ public class PlaceController {
 	}
 
 	@RequestMapping(value = "/createPlace", method = RequestMethod.POST)
-	public String create(Model model, @RequestParam String name, @RequestParam String placeTypeName,
-			@RequestParam String street, @RequestParam int streetNumber, @RequestParam String city,
-			@RequestParam String country, @RequestParam double price, // @RequestParam("files") MultipartFile[] files,
-																		// ModelMap modelMap,
-			HttpServletRequest request) throws ServletException, IOException {
+	public String create(Model model, HttpServletRequest request, @RequestParam String name,
+			@RequestParam String country, @RequestParam String city, @RequestParam String placeTypeName,
+			@RequestParam String street, @RequestParam int streetNumber, @RequestParam double price,
+			@RequestParam("files") MultipartFile[] files) // @RequestParam("files") MultipartFile[] files,
+			throws ServletException, IOException {
 		try {
 			HttpSession session = request.getSession();
 			User user = (User) session.getAttribute("user");
 
+			if (user == null) {
+				return "index";
+			}
 			int country_id = 0;
 			try {
 				country_id = countryDAO.giveCountryId(country);
@@ -102,57 +100,39 @@ public class PlaceController {
 				city_id = cityDAO.addCity(new City(0, city));
 			}
 			City cityObject = cityDAO.cityFromId(city_id);
-			Address address = new Address(0, country_id, city_id, street, streetNumber);
+			Address address = new Address(0, country_id, city_id, street, Integer.valueOf(streetNumber));
 			address.setCity(cityObject);
 			address.setCountry(countryObject);
 			int addressId = addressDAO.addAddress(address);
 
-
-			Place place = new Place(0, name, false, addressId, placeTypeName, user.getId(), price);
-			place.setAddress(address);
+			if(!this.isValid(files)) {
+				return "createPlace";
+			}
 			
+			Place place = new Place(0, name, false, addressId, placeTypeName, user.getId(), Double.valueOf(price));
+			place.setAddress(address);
+
 			// String imageUrl = this.placeDAO.saveImageURL(files, place.getId());
 
-			/*
-			 * for (MultipartFile f : files) { if (f.isEmpty()) { continue; } try {
-			 * System.out.println(f.getInputStream().toString());
-			 * System.out.println("IMA FAIL"); } catch (IOException e) { // TODO
-			 * Auto-generated catch block e.printStackTrace(); } }
-			 */
+			UUID uuid = UUID.randomUUID();
+			String randomUUIDString = uuid.toString();
+			for (MultipartFile f : files) {
+				if (f.isEmpty()) {
+					continue;
+				}
+				try {
+					this.placeDAO.saveFileToDisk(place, f, randomUUIDString);
+				} catch (IOException e) {
+					e.printStackTrace();
+					return "redirect:error";
+				}
+	}
 
 			int placeID = placeDAO.addPlace(place);
 			userDAO.addUserPlaceToUser(placeID, user);
-			/*
-			 * StringJoiner sj = new StringJoiner(" , ");
-			 * 
-			 * for (MultipartFile file : files) {
-			 * 
-			 * if (file.isEmpty()) { continue; // next pls }
-			 * 
-			 * try {
-			 * 
-<<<<<<< HEAD
-			 * byte[] bytes = file.getBytes(); Path path =
-			 * Paths.get(placeDAO.IMAGE_PATH + file.getOriginalFilename());
-			 * Files.write(path, bytes);
-=======
-			 * byte[] bytes = file.getBytes(); Path path = Paths.get(placeDAO.IMAGE_PATH +
-			 * file.getOriginalFilename()); Files.write(path, bytes);
->>>>>>> 93c3c951f641611ba7941c286f1e823c0f42f0b3
-			 * 
-			 * sj.add(file.getOriginalFilename());
-			 * 
-			 * } catch (IOException e) { e.printStackTrace(); } }
-			 * 
-			 * String uploadedFileName = sj.toString(); if
-			 * (StringUtils.isEmpty(uploadedFileName)) {
-			 * redirectAttributes.addFlashAttribute("message",
-			 * "Please select a file to upload"); } else {
-<<<<<<< HEAD
-			 * redirectAttributes.addFlashAttribute("message",
-			 * "You successfully uploaded '" + uploadedFileName + "'"); }
-			 */
 
+			
+			request.setAttribute("place", place);
 			model.addAttribute("place", place);
 			return "redirect:./myPlaces";// or more-places
 		} catch (Exception e) {
@@ -162,11 +142,28 @@ public class PlaceController {
 		}
 	}
 
+	private boolean isValid(MultipartFile[] files) {
+		for (MultipartFile file : files) {
+			if (file.isEmpty()) {
+				continue;
+			}
+
+			String[] fileParts = file.getOriginalFilename().split("\\.");
+			String fileExtension = fileParts[fileParts.length - 1];
+
+			if (!ALLOWED_FILE_EXTENSIONS.contains(fileExtension)) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+
 	@RequestMapping(value = "/myPlaces", method = RequestMethod.GET)
 	public String getUserPlaces(Model model, HttpSession session) {
 		User user = (User) session.getAttribute("user");
 		if (user == null) {
-			return "index";
+			return "redirect ./index";
 		}
 		try {
 			List<PlaceDTO> placesForUser = this.placeDAO.gettAllPlacesForUser(user.getId());
@@ -197,23 +194,21 @@ public class PlaceController {
 
 	}
 
-	
-
 	/*
 	 * @RequestMapping("/save-place") public String uploadResources(
 	 * HttpServletRequest servletRequest,
 	 * 
 	 * @ModelAttribute Place place, Model model) { //Get the uploaded files and
 	 * store them List<MultipartFile> files = place.getPhotoes(); List<String>
-	 * fileNames = new ArrayList<String>(); if (null != files && files.size() >
-	 * 0) { for (MultipartFile multipartFile : files) {
+	 * fileNames = new ArrayList<String>(); if (null != files && files.size() > 0) {
+	 * for (MultipartFile multipartFile : files) {
 	 * 
 	 * String fileName = multipartFile.getOriginalFilename();
 	 * fileNames.add(fileName);
 	 * 
 	 * File imageFile = new
-	 * File(servletRequest.getServletContext().getRealPath("/image"), fileName);
-	 * try { multipartFile.transferTo(imageFile); } catch (IOException e) {
+	 * File(servletRequest.getServletContext().getRealPath("/image"), fileName); try
+	 * { multipartFile.transferTo(imageFile); } catch (IOException e) {
 	 * e.printStackTrace(); } } }
 	 * 
 	 * // Here, you can save the product details in database
@@ -227,9 +222,9 @@ public class PlaceController {
 			PlaceSearchInfo filter = placeDAO.getDefaultFilter();
 			PlaceSearchInfo editedFilter = placeDAO.getDefaultFilter();
 
-			List<Place> places= placeDAO.getAllPlacesForSearch();
-			List<String> placeTypes= placeDAO.getAllPlaceTypes();
-			Set<String> cities=cityDAO.getCities();
+			List<Place> places = placeDAO.getAllPlacesForSearch();
+			List<String> placeTypes = placeDAO.getAllPlaceTypes();
+			Set<String> cities = cityDAO.getCities();
 			System.out.println(editedFilter);
 			model.addAttribute("placeTypes", placeTypes);
 			model.addAttribute("cities", cities);
@@ -248,31 +243,59 @@ public class PlaceController {
 			return "error";
 		}
 	}
-	
-		@RequestMapping(value = "/search", method = RequestMethod.POST)
-		public String filteredPlaceSearch(Model model,@ModelAttribute("editedFilter") PlaceSearchInfo editedFilter,BindingResult result) {
-			try {
-				if (result.hasErrors()) {
-					throw new InvalidPlaceException("Invalid filter data");
-				}
-				
-				List<String> placeTypes= placeDAO.getAllPlaceTypes();
-				Set<String> cities=cityDAO.getCities();
-				PlaceSearchInfo filter = placeDAO.getDefaultFilter();
-				List<Place> places= placeDAO.getFilteredPlaces(editedFilter);
-				
-				model.addAttribute("placeTypes", placeTypes);
-				model.addAttribute("cities", cities);
-				model.addAttribute("filter", filter);
-				model.addAttribute("editedFilter", editedFilter);
-				model.addAttribute("places", places);
 
-				return "placeSearch";
-			} catch (InvalidPlaceException e) {
-				e.printStackTrace();
-				model.addAttribute("exception", e);
-				return "error";
+	@RequestMapping(value = "/search", method = RequestMethod.POST)
+	public String filteredPlaceSearch(Model model, @ModelAttribute("editedFilter") PlaceSearchInfo editedFilter,
+			BindingResult result) {
+		try {
+			if (result.hasErrors()) {
+				throw new InvalidPlaceException("Invalid filter data");
 			}
+
+			List<String> placeTypes = placeDAO.getAllPlaceTypes();
+			Set<String> cities = cityDAO.getCities();
+			PlaceSearchInfo filter = placeDAO.getDefaultFilter();
+			List<Place> places = placeDAO.getFilteredPlaces(editedFilter);
+
+			model.addAttribute("placeTypes", placeTypes);
+			model.addAttribute("cities", cities);
+			model.addAttribute("filter", filter);
+			model.addAttribute("editedFilter", editedFilter);
+			model.addAttribute("places", places);
+
+			return "placeSearch";
+		} catch (InvalidPlaceException e) {
+			e.printStackTrace();
+			model.addAttribute("exception", e);
+			return "error";
 		}
-		
+	}
+
+	@RequestMapping(value = "/showPhoto", method = RequestMethod.GET)
+	public String showPhoto(Model model, HttpServletRequest req, HttpServletResponse resp,
+			@RequestParam() String path) {
+
+		try {
+			if (path != null) {
+				File file = new File(path);
+				try (InputStream bytesFromFile = new FileInputStream(file); OutputStream out = resp.getOutputStream()) {
+
+					byte[] bytes = new byte[1024];
+
+					while ((bytesFromFile.read(bytes)) != -1) {
+						out.write(bytes);
+					}
+				}
+			}
+			return null;
+		} catch (IOException e) {
+			e.printStackTrace();
+			model.addAttribute("exception", e);
+			return "error";
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("exception", e);
+			return "error";
+		}
+	}
 }

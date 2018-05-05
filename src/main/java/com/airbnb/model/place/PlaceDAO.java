@@ -1,16 +1,19 @@
 package com.airbnb.model.place;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,21 +24,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.airbnb.exceptions.InvalidAddressException;
 import com.airbnb.exceptions.InvalidPlaceException;
-import com.airbnb.exceptions.InvalidUserException;
 import com.airbnb.model.address.Address;
 import com.airbnb.model.address.AddressDAO;
 import com.airbnb.model.db.DBConnectionTest;
 import com.airbnb.model.place.Place.PlaceType;
-import com.airbnb.model.user.User;
 
 @Component
 public class PlaceDAO implements IPlaceDAO {
 	private static final double DEFAULT_MIN_PLACE_PRICE = 20.0;
 	private static final double DEFAULT_MAX_PLACE_PRICE = 500.0;
 	private static final String DEFAULT_FILTER_ORDER = "name";
-	public static final String IMAGE_PATH = "D:\\uploaded\\dir";
+	public static final String IMAGE_PATH = "D:\\uploaded";
 	private static final String EXTENTION = ".jpg";
-	
+
 	private static final String MIN_AND_MAX_PLACE_PRICES_SQL = "SELECT MIN(price) AS minPrice, MAX(price) maxPrice from place";
 	private static final String FILTERED_PLACES_SQL = "SELECT pl.id, pl.name AS name, pl.price AS price, c.name AS city,  pt.name AS placeType FROM place AS pl INNER JOIN addresses AS adr ON(pl.address_id = adr.id) INNER JOIN cities AS c ON(c.id = adr.city_id) INNER JOIN placetype AS pt ON(pl.placeType_id = pt.id) WHERE (pl.name IS NULL OR pl.name LIKE ?) AND (pl.price IS NULL OR (pl.price >= ? AND pl.price <= ?)) AND (c.name IS NULL OR c.name LIKE ?) AND";
 	private static final String ALL_PLACE_TYPES = "SELECT * FROM placetype;";
@@ -48,9 +49,7 @@ public class PlaceDAO implements IPlaceDAO {
 	private static final String GIVE_PLACETYPE_SQL = "SELECT * FROM placetype WHERE name= ?";
 	private static final String PLACETYPE_FROM_ID_SQL = "SELECT * FROM placetype WHERE id=?";
 	private static final String ADD_PICTURES = "INSERT INTO pictures VALUES(null,?,?);";
-	
-	
-	
+	private static final String GET_PICTURES_FOR_PLACE = "SELECT pictures.path FROM pictures WHERE pictures.id = ?;";
 	private static int COUNT = 0;
 	@Autowired
 	private AddressDAO addressDAO;
@@ -63,12 +62,15 @@ public class PlaceDAO implements IPlaceDAO {
 	public PlaceDAO(DBConnectionTest dbConnection) {
 		this.dbConnection = dbConnection;
 		connection = this.dbConnection.getConnection();
-		try {
-			fillFromDB();
-		} catch (InvalidPlaceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Thread t = new Thread(() -> {
+			try {
+				Thread.sleep(500);
+				fillFromDB();
+			} catch (InvalidPlaceException | InterruptedException e) {
+				e.printStackTrace();
+			}
+		});
+		t.start();
 	}
 
 	@Override
@@ -90,10 +92,10 @@ public class PlaceDAO implements IPlaceDAO {
 			ps.executeUpdate();
 
 			ResultSet rs = ps.getGeneratedKeys();
-			rs.next();
-			place.setId(rs.getInt(1));
-
-			for (String imagePath : place.getPhotosUrls()) {
+			if (rs.next()) {
+				place.setId(rs.getInt(1));
+			}
+			for (String imagePath : place.getPhotosURLs()) {
 				ps = connection.prepareStatement(ADD_PICTURES);
 				ps.setString(1, imagePath);
 				ps.setInt(2, place.getId());
@@ -113,6 +115,105 @@ public class PlaceDAO implements IPlaceDAO {
 			}
 		}
 	}
+
+	public void addPhotoToPlace(PlaceDTO place) throws InvalidPlaceException {
+		if (place == null) {
+			throw new InvalidPlaceException("Empty place.");
+		}
+		try (PreparedStatement ps = connection.prepareStatement(GET_PICTURES_FOR_PLACE);) {
+
+			ps.setInt(2, place.getId());
+			ResultSet rs = ps.executeQuery();
+			List<String> imageURLs = new ArrayList<>();
+			while (rs.next()) {
+				String imagePath = rs.getString("path");
+
+				String base64Encoded = this.convertFromLocalPathToBase64String(imagePath);
+				// if image does not exist return empty string and continue;
+				if (base64Encoded.isEmpty()) {
+					continue;
+				}
+
+				imageURLs.add(base64Encoded);
+			}
+
+			place.setPhotosURLs(imageURLs);
+		} catch (SQLException e) {
+			throw new InvalidPlaceException("Invalid photo.");
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+			e.printStackTrace();
+			throw new InvalidPlaceException("Invalid photo url.");
+		}
+	}
+
+	private String convertFromLocalPathToBase64String(String imagePath)
+			throws FileNotFoundException, UnsupportedEncodingException {
+		File file = new File(imagePath);
+
+		if (!file.exists()) {
+			return "";
+		}
+
+		FileInputStream fis = new FileInputStream(file);
+
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		byte[] buf = new byte[1024];
+		try {
+			for (int readNum; (readNum = fis.read(buf)) != -1;) {
+				bos.write(buf, 0, readNum);
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+
+		byte[] bytes = bos.toByteArray();
+
+		byte[] encodeBase64 = Base64.getEncoder().encode(bytes);
+		String base64Encoded = new String(encodeBase64, "UTF-8");
+
+		return base64Encoded;
+	}
+
+	/*
+	 * public String getPhotoPath(int placeId) throws InvalidPlaceException { String
+	 * sql = "SELECT path FROM prictures WHERE place_id =? LIMIT 1;";
+	 * 
+	 * try (PreparedStatement ps = connection.prepareStatement(sql)) { ps.setInt(1,
+	 * placeId); ResultSet resultSet = ps.executeQuery(); if (resultSet.next()) {
+	 * return resultSet.getString("path"); } return null; } catch (SQLException e) {
+	 * throw new InvalidPlaceException("Invalid photo."); } }
+	 */
+
+	public int editPlace(Place place) throws InvalidPlaceException {
+		String sql = "UPDATE POSTS SET  name=?, busied=?,address_id = ? , placetype_id = ?, user_id = ?, price=?  WHERE id = ?;";
+
+		try (PreparedStatement ps = connection.prepareStatement(sql)) {
+			ps.setString(1, place.getName());
+			ps.setBoolean(2, place.isBusied());
+			ps.setInt(3, place.getAddressID());
+			int placeTypeId = givePlaceTypeId(place.getPlaceTypeName());
+			ps.setInt(4, placeTypeId);
+			ps.setInt(5, place.getOwnerId());
+			ps.setDouble(6, place.getPrice());
+			ps.setInt(7, place.getId());
+			return ps.executeUpdate();// return 0 if there is no change, 1 if there are changes
+		} catch (SQLException e) {
+			throw new InvalidPlaceException("Something went wrong in DB", e);
+		}
+	}
+
+	/*
+	 * public ArrayList<String> getAllPhotosForPlace(int placeId) throws
+	 * InvalidPlaceException { ArrayList<String> result = new ArrayList<>(); String
+	 * sql = "SELECT path FROM pictures WHERE place_id = ?; ";
+	 * 
+	 * try (PreparedStatement ps = connection.prepareStatement(sql)) { ps.setInt(1,
+	 * placeId); ResultSet resultSet = ps.executeQuery(); while (resultSet.next()) {
+	 * result.add(resultSet.getString("path")); }
+	 * 
+	 * return result; } catch (SQLException e) { throw new
+	 * InvalidPlaceException("No photos for this place.", e); } }
+	 */
 
 	@Override
 	public int addPlaceType(PlaceType placeType) throws InvalidPlaceException {
@@ -165,27 +266,6 @@ public class PlaceDAO implements IPlaceDAO {
 			throw new InvalidPlaceException("Invalid statement", e);
 		}
 	}
-	/*
-	 * @Override public Place placeFromId(int placeId) throws InvalidPlaceException
-	 * { try (PreparedStatement ps = connection.prepareStatement(PLACE_FROM_ID)) {
-	 * ps.setInt(1, placeId);
-	 * 
-	 * ResultSet rs = ps.executeQuery();
-	 * 
-	 * if (rs.next()) {
-	 * 
-	 * int id = rs.getInt("id"); String name = rs.getString("name"); int addressId =
-	 * rs.getInt("address_id"); boolean busied = rs.getBoolean("busied"); int
-	 * placeTypeId = rs.getInt("placeType_id"); String placeTypeName =
-	 * placeTypeFromId(placeTypeId); int userId = rs.getInt("user_id"); double price
-	 * = rs.getDouble("price"); // int address_id = rs.getInt("locations_id");
-	 * 
-	 * return new Place(id, name, busied, addressId, placeTypeName, userId,price); }
-	 * 
-	 * throw new InvalidPlaceException("There is no place with that id!"); } catch
-	 * (SQLException e) { // e.printStackTrace(); throw new
-	 * InvalidPlaceException("Invalid statement", e); } }
-	 */
 
 	@Override
 	public List<String> getAllPlaceTypes() throws InvalidPlaceException {
@@ -209,47 +289,28 @@ public class PlaceDAO implements IPlaceDAO {
 			throw new InvalidPlaceException("Oops , something went wrong. Reason: " + e.getMessage());
 		}
 	}
-	@Override
-	public String saveImageURL(MultipartFile file, int placeId) throws InvalidPlaceException {
-		// D://uploaded//dir5//5.jpg
-		BufferedInputStream bis = null;
-		BufferedOutputStream bos = null;
-		try {
-			String photoURL = IMAGE_PATH + placeId + File.separator + placeId + COUNT + EXTENTION;
-			COUNT++;
-			if (!file.isEmpty()) {
-				File dir = new File("" + placeId);
-				if (!dir.exists()) {
-					dir.mkdir();
-				}
-				File f = new File(photoURL);
-				if (!f.exists()) {
-					f.createNewFile();
-				}
 
-				bis = new BufferedInputStream(file.getInputStream());
-				bos = new BufferedOutputStream(new FileOutputStream(f));
-
-				byte[] buffer = new byte[1024];
-
-				while (bis.read(buffer) != -1) {
-					bos.write(buffer);
-				}
-
-				return photoURL;
-			}
-			throw new InvalidPlaceException("Invalid photo.");
-		} catch (IOException e) {
-			throw new InvalidPlaceException("Can't create a file.", e);
-		} finally {
-			try {
-				bis.close();
-				bos.close();
-			} catch (IOException e) {
-				throw new InvalidPlaceException("Can't create a file.", e);
-			}
-		}
-	}
+	/*
+	 * @Override public String saveImageURL(MultipartFile file, int placeId) throws
+	 * InvalidPlaceException { // D://uploaded//dir5//5.jpg BufferedInputStream bis
+	 * = null; BufferedOutputStream bos = null; try { String photoURL = IMAGE_PATH +
+	 * placeId + File.separator + placeId + COUNT + EXTENTION; COUNT++; if
+	 * (!file.isEmpty()) { File dir = new File("" + placeId); if (!dir.exists()) {
+	 * dir.mkdir(); } File f = new File(photoURL); if (!f.exists()) {
+	 * f.createNewFile(); }
+	 * 
+	 * bis = new BufferedInputStream(file.getInputStream()); bos = new
+	 * BufferedOutputStream(new FileOutputStream(f));
+	 * 
+	 * byte[] buffer = new byte[1024];
+	 * 
+	 * while (bis.read(buffer) != -1) { bos.write(buffer); }
+	 * 
+	 * return photoURL; } throw new InvalidPlaceException("Invalid photo."); } catch
+	 * (IOException e) { throw new InvalidPlaceException("Can't create a file.", e);
+	 * } finally { try { bis.close(); bos.close(); } catch (IOException e) { throw
+	 * new InvalidPlaceException("Can't create a file.", e); } } }
+	 */
 
 	@Override
 	public PlaceSearchInfo getDefaultFilter() throws InvalidPlaceException {
@@ -298,7 +359,7 @@ public class PlaceDAO implements IPlaceDAO {
 				int placeTypeID = set.getInt("placeType_id");
 				String placeTypeName = this.placeTypeFromId(placeTypeID);
 				places.add(new Place(set.getInt("id"), set.getString("name"), set.getBoolean("busied"),
-						set.getInt("address_id"), placeTypeName, set.getInt("user_id"),set.getDouble("price")));
+						set.getInt("address_id"), placeTypeName, set.getInt("user_id"), set.getDouble("price")));
 			}
 			if (places.isEmpty()) {
 				throw new InvalidPlaceException("There are no cities.");
@@ -367,7 +428,7 @@ public class PlaceDAO implements IPlaceDAO {
 			throw new InvalidPlaceException("Something went wrong in DB", e);
 		}
 	}
-	
+
 	@Override
 	public List<PlaceDTO> getAllPlaces() throws InvalidPlaceException {
 		List<PlaceDTO> result = new ArrayList<>();
@@ -388,7 +449,12 @@ public class PlaceDAO implements IPlaceDAO {
 				String city = address.getCity().getName();
 				String street = address.getStreet();
 				int streetNumber = address.getStreetNumber();
-				result.add(new PlaceDTO(id, name, placeTypeName, busied, country, city, street, streetNumber, price));
+				PlaceDTO view = new PlaceDTO(id, name, placeTypeName, busied, country, city, street, streetNumber,
+						price);
+				if (view != null) {
+					this.addPhotosToPlace(view);
+				}
+				result.add(view);
 			}
 			return result;
 		} catch (InvalidAddressException e) {
@@ -406,7 +472,7 @@ public class PlaceDAO implements IPlaceDAO {
 			throw new InvalidPlaceException("There is no place with that id!");
 		}
 	}
-	
+
 	@Override
 	public List<PlaceDTO> gettAllPlacesForUser(int userId) throws InvalidPlaceException {
 		List<PlaceDTO> result = new ArrayList<>();
@@ -428,7 +494,12 @@ public class PlaceDAO implements IPlaceDAO {
 				String city = address.getCity().getName();
 				String street = address.getStreet();
 				int streetNumber = address.getStreetNumber();
-				result.add(new PlaceDTO(id, name, placeTypeName, busied, country, city, street, streetNumber, price));
+				PlaceDTO view = new PlaceDTO(id, name, placeTypeName, busied, country, city, street, streetNumber,
+						price);
+				if (view != null) {
+					this.addPhotosToPlace(view);
+				}
+				result.add(view);
 			}
 			return result;
 		} catch (SQLException e) {
@@ -436,6 +507,55 @@ public class PlaceDAO implements IPlaceDAO {
 		} catch (InvalidAddressException e) {
 			throw new InvalidPlaceException("Invalid address.", e);
 		}
+	}
+
+	private void addPhotosToPlace(PlaceDTO place) throws InvalidPlaceException {
+		if (place == null) {
+			return;
+		}
+
+		try (PreparedStatement pr = connection.prepareStatement(GET_PICTURES_FOR_PLACE)) {
+			pr.setInt(1, place.getId());
+			ResultSet rs = pr.executeQuery();
+			List<String> imagePaths = new ArrayList<>();
+
+			while (rs.next()) {
+				String imagePath = rs.getString("path");
+
+				String base64Encoded = this.convertFromLocalPathToBase64String(imagePath);
+				// if image does not exist return empty string and continue;
+				if (base64Encoded.isEmpty()) {
+					continue;
+				}
+
+				imagePaths.add(base64Encoded);
+			}
+			int id = place.getId();
+			Place placeObject = this.placeFromId(id);
+			placeObject.setPhotosURLs(imagePaths);
+			place.setPhotosURLs(imagePaths);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new InvalidPlaceException("Something went wrong", e);
+		}
+	}
+
+	public void saveFileToDisk(Place place, MultipartFile f, String randomUUIDString) throws IOException {
+		String dirPath = IMAGE_PATH + "\\" + randomUUIDString + "\\";
+
+		File dir = new File(dirPath);
+		if (!dir.exists()) {
+			dir.mkdirs();
+		}
+
+		String fullPath = dirPath + f.getOriginalFilename();
+		File convFile = new File(fullPath);
+		convFile.createNewFile();
+		FileOutputStream fos = new FileOutputStream(convFile);
+		fos.write(f.getBytes());
+		fos.close();
+
+		place.setPhotoSrc(fullPath);
 	}
 
 }

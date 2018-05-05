@@ -25,21 +25,13 @@ public class UserController {
 	@Autowired
 	private UserDAO userDAO;
 
-	@RequestMapping(value = "/", method = {RequestMethod.GET, RequestMethod.POST})
-	public String getIndexPage() {
-		return "index";
-	}
 	
-	@RequestMapping(value = "/index", method = {RequestMethod.GET, RequestMethod.POST})
+	
+	@RequestMapping(value = {"/login", "/"}, method = {RequestMethod.GET, /*RequestMethod.POST*/})
 	public String indexPage() {
 		return "index";
 	}
 	
-	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public String loginPage() {
-		return "index";
-	}
-
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String userLogin(Model model, HttpSession session, @RequestParam String email, @RequestParam String password)
 			throws ServletException, IOException {
@@ -83,6 +75,11 @@ public class UserController {
 			@RequestParam Date bday, @RequestParam String phone, @RequestParam String password,
 			@RequestParam String confirmPassword) throws ServletException, IOException {
 		try {
+			if(userDAO.alreadyExistsUset(email)) {
+				throw new InvalidUserException("User already exists.");
+			}
+			
+			
 			Date date = bday;
 			LocalDate localDate = date.toLocalDate();
 			int month = localDate.getMonthValue();
@@ -151,8 +148,6 @@ public class UserController {
 			if (!userDAO.comparePasswords(user.getId(), oldPassword)) {
 				throw new InvalidUserException("Wrong password.");
 			}
-			// s tova proverqvam ako e vuvedena nova parola dali suvpadat dvete novi inache
-			// ako ne e vuvedena nova proverkata ostava samo za starta
 			String password = oldPassword;
 			if ((newPassword.trim().length() > 0) || (newPasswordConfirm.trim().length() > 0)) {
 				if ((newPassword.equals(newPasswordConfirm)) && User.validatePassword(newPassword)) {

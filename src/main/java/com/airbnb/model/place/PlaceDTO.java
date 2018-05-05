@@ -1,5 +1,8 @@
 package com.airbnb.model.place;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PlaceDTO {
 	private int id;
 	private String name;
@@ -10,6 +13,7 @@ public class PlaceDTO {
 	private String street;
 	private int streetNumber;
 	private double price;
+	private List<String> photosURLs;
 	
 	public PlaceDTO(int id, String name, String placeTypeName, boolean busied, String country, String city,
 			String street, int streetNumber,double price) {
@@ -21,6 +25,7 @@ public class PlaceDTO {
 		this.city = city;
 		this.street = street;
 		this.streetNumber = streetNumber;
+		this.setPhotosURLs(new ArrayList<>());
 	}
 	public int getId() {
 		return id;
@@ -76,5 +81,11 @@ public class PlaceDTO {
 	}
 	public double getPrice() {
 		return price;
+	}
+	public List<String> getPhotosURLs() {
+		return photosURLs;
+	}
+	public void setPhotosURLs(List<String> photosURLs) {
+		this.photosURLs = photosURLs;
 	}
 }

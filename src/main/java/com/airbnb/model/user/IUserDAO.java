@@ -32,4 +32,6 @@ public interface IUserDAO {
 	public List<Integer> getUserPlacesByUserId(int user_id) throws InvalidUserException;
 
 	public void addUserPlaceToUser(int placeID, User user) throws InvalidUserException;
+	
+	public boolean alreadyExistsUset(String email) throws InvalidUserException;
 }

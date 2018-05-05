@@ -4,12 +4,12 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <jsp:include page="navigation.jsp"></jsp:include>
-
+<c:set var="maxImages" value="2"/>
 <title>Add new place</title>
 <body>
 	<h3>Add new place</h3>
 	<br>
-	<form:form action="createPlace" method="post">
+	<form:form action="createPlace" method="post" enctype="multipart/form-data">
 		<table>
 			<tr>
 				<td>Place name</td>
@@ -50,34 +50,52 @@
 			<tr>
 				<td>Price :</td>
 				<td><input type="number" name="price" placeholder="Price"
-					step="any" required></td>
+					step="any" min="0" required></td>
 			</tr>
 			<tr>
 				<td>Photos</td>
 				<td>
-					<!-- <form method="POST" action="uploadFile"
+					<!-- <div class="container">
+						<input type="file" name="file" id="file" style="display: none">
+
+						Drag and Drop container
+						<div class="upload-area" id="uploadfile"
+							style="width: 70%; height: 200px; border: 2px solid lightgray; border-radius: 3px; margin: 0 auto; margin-top: 0px; text-align: center; overflow: auto;">
+							<h2
+								style="text-align: center; font-weight: normal; font-family: sans-serif; line-height: 50px; color: darkslategray;">
+								Drag and Drop images here<br />Or<br />Click to select
+							</h2>
+						</div>
+					</div> --> 
+					<%-- <form method="POST" action="uploadFile"
 						enctype="multipart/form-data">
 						File to upload: <input type="file" name="file"><br />
 						Name: <input type="text" name="name"><br /> <br /> <input
 							type="submit" value="Upload"> Press here to upload the
 						file!
-					</form> -->
-				<td></td>
-			<!-- <tr>
+					</form>  --%>
+				<!-- <td></td> -->
+				<!-- 
+				<tr>
 				<td>Select a file to upload</td>
-				<td><input type="file" name="files" /></td>
+				<td><input type="file" name="file" /></td>
 			</tr>
 			<tr>
 				<td>Select a file to upload</td>
-				<td><input type="file" name="files" /></td>
+				<td><input type="file" name="file" /></td>
 			</tr>
 			<tr>
 				<td>Select a file to upload</td>
-				<td><input type="file" name="files" /></td>
+				<td><input type="file" name="file" /></td>
 			</tr> -->
+			<c:forEach begin="0" end="${ maxImages }">
+        		<input type="hidden" name="MAX_FILE_SIZE" value="5242880" /> 
+        	    <input class="selected-images" type="file" name="files" accept="image/*" />
+			</c:forEach> 
 		</table>
 		<br>
-		<button type="submit" value="create">Add new place</button>
+		<td>
+		<button id="upload" type="submit" value="create">Add new place</button>
 	</form:form>
 </body>
 </html>
