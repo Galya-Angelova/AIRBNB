@@ -110,11 +110,11 @@ public class Place {
 		}
 	}
 
-	/*public void setPhotoSrc(String photoSrc) {
+	public void addPhotoURL(String photoSrc) {
 		if(photoSrc != null) {
 			this.photosURLs.add(photoSrc);
 		}
-	}	*/
+	}	
 	private void setPhotosUrls(List<String> photosURLs) {
 		this.photosURLs = new ArrayList<String>(photosURLs);
 	}

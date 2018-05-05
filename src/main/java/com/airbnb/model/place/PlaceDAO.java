@@ -555,7 +555,7 @@ public class PlaceDAO implements IPlaceDAO {
 		fos.write(f.getBytes());
 		fos.close();
 
-		place.setPhotoSrc(fullPath);
+		place.addPhotoURL(fullPath);
 	}
 
 }

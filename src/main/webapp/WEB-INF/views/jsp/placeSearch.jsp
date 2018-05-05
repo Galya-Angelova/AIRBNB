@@ -82,6 +82,32 @@
 	        	</div>
 	        </div>  -->
 	        	<div class="w3-col w3-container w3-margin" style="width:45%;">
+	        	<td><c:if test="${place.photosURLs.size() == 0 }">
+							<h5>
+								<b>No images. </b>
+							</h5>
+							<br>
+						</c:if></td>
+					<c:if test="${place.photosURLs.size() > 0 }">
+						<div class="et_pb_gallery_items et_post_gallery" data-per_page="3">
+							<c:forEach items="${place.photosURLs }" var="url" begin = "0" end = "0">
+								<span
+									class="et_pb_gallery_item et_pb_grid_item et_pb_bg_layout_light">
+									<span class="et_pb_gallery_image landscape"> <a
+										href="data:image/jpeg;base64,${url}"
+										title="27747975_2074584502761278_1171650822192642176_o"> <img
+											width=300px src="data:image/jpeg;base64,${url}"
+											data-lazy-src="data:image/jpeg;base64,${url}"
+											alt="27747975_2074584502761278_1171650822192642176_o"
+											class="lazyloaded">
+									</a>
+								</span>
+								</span>
+							</c:forEach>
+						</div>
+					</c:if>
+	        	
+	        	
 	            	<div class="w3-container">
 	                  <a href="place/${place.id}">
 	                  	<span class="w3-large w3-text-highway-blue"><b>${place.name}</b></span><br><br>
