@@ -100,36 +100,37 @@
 				<%-- <c:if test="${theBooleanVariable ne true}">It's false!</c:if> --%>
 				<%-- 	 <c:set var="isHost"  scope="session"  value="${user.isHost}" />--%>
 				<c:choose>
-					<c:when test="${user.isHost}">
+					<c:when test="${!user.isMyPlacesEmpty()}">
 
 						<li class="active"><c:url var="URL" value="createPlace">
-								<c:param name="param" value="${parameter}" />
+								<%-- <c:param name="param" value="${parameter}" /> --%>
 							</c:url> <a href="<c:out value="${URL}"/>">Add new place</a></li>
+						<ul class="nav navbar-nav">
+						<li class="active"><c:url var="URL" value="myPlaces">
+					<%-- 		<c:param name="param" value="${parameter}" /> --%>
+							</c:url> <a href="<c:out value="${URL}"/>">My places</a></li>
+
+						</ul>	
 					</c:when>
 					<c:otherwise>
-						<li class="active"><c:url var="URL" value="becomeHost">
-								<c:param name="param" value="${parameter}" />
+						<li class="active"><c:url var="URL" value="createPlace">
+								<%-- <c:param name="param" value="${parameter}" /> --%>
 							</c:url> <a href="<c:out value="${URL}"/>">Become a host</a></li>
 					</c:otherwise>
 				</c:choose>
 			</ul>
 
-			<ul class="nav navbar-nav">
-				<li class="active"><c:url var="URL" value="myPlaces">
-						<c:param name="param" value="${parameter}" />
-					</c:url> <a href="<c:out value="${URL}"/>">My places</a></li>
-
-			</ul>
+			
 			
 			<ul class="nav navbar-nav">
 				<li class="active"><c:url var="URL" value="visitedPlaces">
-						<c:param name="param" value="${parameter}" />
+						<%-- <c:param name="param" value="${parameter}" /> --%>
 					</c:url> <a href="<c:out value="${URL}"/>">Visited places</a></li>
 
 			</ul>
 			<ul class="nav navbar-nav">
 				<li class="active"><c:url var="URL" value="allPlaces">
-						<c:param name="param" value="${parameter}" />
+						<%-- <c:param name="param" value="${parameter}" /> --%>
 					</c:url> <a href="<c:out value="${URL}"/>">All places</a></li>
 
 			</ul>

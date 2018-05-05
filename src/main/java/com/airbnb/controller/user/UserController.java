@@ -175,20 +175,20 @@ public class UserController {
 		}
 	}
 
-	@RequestMapping(value = "/becomeHost", method = RequestMethod.GET)
-	public String becomeAHost(Model model, HttpSession session) {
-		User user = (User) session.getAttribute("user");
-		try {
-			userDAO.becomeAHost(user);
-			return "redirect:./createPlace";
-		} catch (InvalidUserException e) {
-			model.addAttribute("exception", e);
-			return "error";
-		} catch (Exception e) {
-			model.addAttribute("exception", e);
-			return "error";
-		}
-
-	}
+//	@RequestMapping(value = "/becomeHost", method = RequestMethod.GET)
+//	public String becomeAHost(Model model, HttpSession session) {
+//		User user = (User) session.getAttribute("user");
+//		try {
+//			userDAO.becomeAHost(user);
+//			return "redirect:./createPlace";
+//		} catch (InvalidUserException e) {
+//			model.addAttribute("exception", e);
+//			return "error";
+//		} catch (Exception e) {
+//			model.addAttribute("exception", e);
+//			return "error";
+//		}
+//
+//	}
 
 }

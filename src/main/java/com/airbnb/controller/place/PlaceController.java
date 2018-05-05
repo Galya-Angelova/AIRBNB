@@ -44,6 +44,7 @@ import com.airbnb.model.place.PlaceSearchInfo;
 
 import com.airbnb.model.place.PlaceDTO;
 import com.airbnb.model.user.User;
+import com.airbnb.model.user.UserDAO;
 
 @Controller
 @MultipartConfig
@@ -57,7 +58,9 @@ public class PlaceController {
 	private CountryDAO countryDAO;
 	@Autowired
 	private AddressDAO addressDAO;
-
+	@Autowired
+	private UserDAO userDAO;
+	
 	@RequestMapping(value = "/createPlace", method = RequestMethod.GET)
 	public String createPlace(Model model) {
 		try {
@@ -107,7 +110,7 @@ public class PlaceController {
 
 			Place place = new Place(0, name, false, addressId, placeTypeName, user.getId(), price);
 			place.setAddress(address);
-			user.addToMyPlaces(place);
+			
 			// String imageUrl = this.placeDAO.saveImageURL(files, place.getId());
 
 			/*
@@ -117,7 +120,8 @@ public class PlaceController {
 			 * Auto-generated catch block e.printStackTrace(); } }
 			 */
 
-			placeDAO.addPlace(place);
+			int placeID = placeDAO.addPlace(place);
+			userDAO.addUserPlaceToUser(placeID, user);
 			/*
 			 * StringJoiner sj = new StringJoiner(" , ");
 			 * 
@@ -150,7 +154,7 @@ public class PlaceController {
 			 */
 
 			model.addAttribute("place", place);
-			return "viewPlace";// or more-places
+			return "redirect:./myPlaces";// or more-places
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("exception", e);

@@ -26,6 +26,8 @@ public class UserDAO implements IUserDAO {
 
 	private static final String BECOME_A_HOST = "UPDATE users SET isHost = 1 WHERE id = ?;";
 	private static final String UPDATE_USER_PROFIL_SQL = "UPDATE users SET email = ? , firstName = ? , lastName = ? , phone = ? , password = ? WHERE id = ?;";
+	private static final String USER_PLACES_SQL="SELECT id FROM place WHERE user_id=?;";
+	private static final String USER_VISITED_PLACES_SQL="SELECT place_id FROM reservation WHERE user_id=?;";
 
 	// TODO change with DBConnection
 	@Autowired
@@ -65,10 +67,7 @@ public class UserDAO implements IUserDAO {
 
 	@Override
 	public int register(User user) throws InvalidUserException {
-		PreparedStatement ps = null;
-		try {
-//			connection.setAutoCommit(false);
-			ps = connection.prepareStatement(REGISTER_USER_SQL, Statement.RETURN_GENERATED_KEYS);
+		try (PreparedStatement ps = connection.prepareStatement(REGISTER_USER_SQL, Statement.RETURN_GENERATED_KEYS) ){
 			ps.setString(1, user.getEmail());
 			ps.setBoolean(2, user.isMale());
 			ps.setString(3, user.getFirstName());
@@ -83,28 +82,10 @@ public class UserDAO implements IUserDAO {
 			ResultSet rs = ps.getGeneratedKeys();
 			rs.next();
 
-//			connection.commit();
-
 			return rs.getInt(1);
 		} catch (SQLException e) {
 			e.printStackTrace();
-//			try {
-//				connection.rollback();
-//			} catch (SQLException e1) {
-//				e.printStackTrace();
 				throw new InvalidUserException("Invalid statement" + e.getMessage(), e);
-//			}
-//			System.out.println(e.getMessage());
-//			throw new InvalidUserException("Invalid statement, try with another credentials.Reason:" + e.getMessage(),
-//					e);
-//		} finally {
-//			try {
-//				connection.setAutoCommit(false);
-//				ps.close();
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//				throw new InvalidUserException("Invalid statement" + e.getMessage(), e);
-//			}
 		}
 	}
 
@@ -130,7 +111,7 @@ public class UserDAO implements IUserDAO {
 				String phoneNumber = rs.getString("phone");
 				// int address_id = rs.getInt("locations_id");
 				boolean isHost=rs.getBoolean("isHost");
-				return new User(id, email, password, isMale, firstName, lastName, day, month, year, phoneNumber,isHost);
+				return new User(id, email, password, isMale, firstName, lastName, day, month, year, phoneNumber,isHost,this.getVisitedPlacesByUserId(user_id),this.getUserPlacesByUserId(user_id));
 			}
 
 			throw new InvalidUserException("There is no user with that id!");
@@ -139,7 +120,44 @@ public class UserDAO implements IUserDAO {
 			throw new InvalidUserException("Invalid statement", e);
 		}
 	}
+	@Override
+	public List<Integer> getVisitedPlacesByUserId(int user_id) throws InvalidUserException  {
+		List<Integer> resault=new ArrayList<Integer>();
+		try (PreparedStatement ps = connection.prepareStatement(USER_VISITED_PLACES_SQL)) {
+			ps.setInt(1, user_id);
 
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				resault.add(rs.getInt("place_id"));
+			}
+			
+			return resault;	
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new InvalidUserException("Invalid statement", e);
+			}
+	}
+	
+	@Override
+	public List<Integer> getUserPlacesByUserId(int user_id) throws InvalidUserException  {
+		List<Integer> resault=new ArrayList<Integer>();
+		try (PreparedStatement ps = connection.prepareStatement(USER_PLACES_SQL)) {
+			ps.setInt(1, user_id);
+
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				resault.add(rs.getInt("id"));
+			}
+			
+			return resault;	
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw new InvalidUserException("Invalid statement", e);
+			}
+	}
+	
 	@Override
 	public List<Integer> getAllUsersByID() throws SQLException {
 		Statement s = connection.createStatement();
@@ -189,5 +207,9 @@ public class UserDAO implements IUserDAO {
 		}
 	}
 	
-	
+	@Override
+	public void addUserPlaceToUser(int placeID, User user) throws InvalidUserException{
+		user.addToMyPlaces(placeID);
+		this.becomeAHost(user);
+	}
 }

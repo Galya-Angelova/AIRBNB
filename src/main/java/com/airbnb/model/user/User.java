@@ -24,13 +24,14 @@ public class User {
 	//private int address_id;
 	private boolean isHost;
 	private boolean deleted;
-	private List<Place> visitedPlaces;
-	private List<Place> myPlaces;
+	private List<Integer> visitedPlaces;
+	private List<Integer> myPlaces;
 	
 	public User(String email, String password, boolean isMale) throws InvalidUserException {
 		setEmail(email);
 		createPassword(password);
 		setIsMale(isMale);
+		
 	}
 	public User(int id, String email, String password, boolean isMale, String firstName, String lastName, int day,
 			int month, int year, String phoneNumber)
@@ -42,20 +43,13 @@ public class User {
 		setBirthdate(day, month, year);
 		changePhoneNumber(phoneNumber);
 		//setAddress(address_id);
-		this.visitedPlaces = new ArrayList<>();
-		this.myPlaces = new ArrayList<>();
 	}
 	public User(int id, String email, String password, boolean isMale, String firstName, String lastName, int day,
-			int month, int year, String phoneNumber,boolean isHost)throws InvalidUserException{
+			int month, int year, String phoneNumber,boolean isHost,List<Integer> visitedPlaces,List<Integer> myPlaces)throws InvalidUserException{
 		this(id,email,password,isMale,firstName,lastName,day,month,year,phoneNumber);
 		this.isHost=isHost;
-	}
-	public void addToMyPlaces(Place place) throws InvalidUserException {
-		if(place != null) {
-			this.myPlaces.add(place);
-		}else {
-			throw new InvalidUserException("Invalid place to add.");
-		}
+		this.visitedPlaces=new ArrayList<Integer>(visitedPlaces);
+		this.myPlaces=new ArrayList<Integer>(myPlaces);
 	}
 	
 //	Setters
@@ -145,6 +139,14 @@ public class User {
 		this.deleted = false;
 	}
 
+	public void addToMyPlaces(int place_id) throws InvalidUserException {
+		if(place_id > 0) {
+			this.myPlaces.add(place_id);
+		}else {
+			throw new InvalidUserException("Invalid place to add.");
+		}
+	}
+	
 	// validations
 
 	public static boolean validateEmail(String email) {
@@ -220,7 +222,11 @@ public class User {
 	/*public int getAddress_id() {
 		return this.address_id;
 	}*/
-
+	
+	public boolean isMyPlacesEmpty(){
+		return this.myPlaces.isEmpty();
+	}
+	
 	public boolean getIsHost() {
 		return this.isHost;
 	}
