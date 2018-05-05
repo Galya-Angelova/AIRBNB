@@ -1,1 +1,7 @@
 /.metadata/
+.project
+.springBeans
+.classpath
+/target
+.settings/
+.mvn/

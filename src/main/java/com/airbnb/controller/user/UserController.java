@@ -25,6 +25,11 @@ public class UserController {
 	@Autowired
 	private UserDAO userDAO;
 
+	@RequestMapping(value = "/", method = {RequestMethod.GET, RequestMethod.POST})
+	public String getIndexPage() {
+		return "index";
+	}
+	
 	@RequestMapping(value = "/index", method = {RequestMethod.GET, RequestMethod.POST})
 	public String indexPage() {
 		return "index";
