@@ -1,10 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-    <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <jsp:include page="navigation.jsp"></jsp:include>
-
 <title>Search</title>
+</head>
 <body>
 	<h3>Search</h3>
 	<br>
@@ -70,17 +70,16 @@
 <!-- Products section -->
 <div id ="contents" class="w3-container menus w3-right" style="width:70%; margin-right:4%">
 	<h1>Filtered products</h1>
-	<c:forEach var="place" items="${places}">
+	<c:forEach var="place" items="${allPlaces}">
 	<div class="w3-container w3-border w3-round-xxlarge w3-white" style="margin-top:2%">
 		<div class="w3-row-padding">
-			<div class="w3-col w3-container w3-margin" style="width:25%;">
+			<!-- <div class="w3-col w3-container w3-margin" style="width:25%;">
 				<div class="w3-container w3-padding">
-	        		<a href="place/${place.id}">
-	        			<img title="${place.name}" class = "w3-round" style="width:100%; height:225px;">
-	        			<!-- <img src="getPic?pic=${place.mainPic}" title="${place.name}" class = "w3-round" style="width:100%; height:225px;">  -->
+	        		<a href="place/${place1.id}">
+	        			<img src="getPic?pic=${place1.mainPic}" title="${place1.name}" class = "w3-round" style="width:100%; height:225px;">
 	        		</a>
 	        	</div>
-	        </div>
+	        </div>  -->
 	        	<div class="w3-col w3-container w3-margin" style="width:45%;">
 	            	<div class="w3-container">
 	                  <a href="place/${place.id}">
@@ -88,48 +87,39 @@
 	                  </a>
 	                  
 	                  <span class="w3-medium w3-text-theme " ><b>Place type:</b>
-	                  	<span class="w3-small w3-text-black ">${place.placeType.name}</span>
+	                  	<span class="w3-small w3-text-black ">${place.placeTypeName}</span>
 	                  </span><br>
-					  <span class="w3-medium w3-text-theme "><b>Address id (in future- City):</b>
-					  	<span class="w3-small w3-text-black ">${place.addressID}</span>
-					  </span><br>
-					<!--   <span class="w3-medium w3-text-theme "><b>Rating:</b>
-					  	<div class="w3-tag w3-round w3-green w3-tiny" style="padding:3px">
-							<div class="w3-tag w3-round w3-green w3-border w3-border-white">
-								${place.Rating}
-							</div>
-						</div>
-					  </span><br>-->
-					 
-					  <span class="w3-medium w3-text-theme "><b>Address id (in future- Country):</b>
-					  	<span class="w3-small w3-text-black ">${place.addressID}</span>
-					  </span><br>
-					  
+					  <span class="w3-medium w3-text-theme "><b>Price for night:</b>
+					  	<span class="w3-small w3-text-black ">${place.price} euro</span>
+					  </span><br>					 
+					   <a href="reservation">
+	                  	<span class="w3-medium w3-text-highway-blue"><b>Make reservation</b></span>
+	                  </a>
 	              </div>
 	          </div>
-	          <div class="w3-rest w3-container w3-margin">
-	          	<span class="w3-medium w3-text-theme w3-text-black" > Pricing
-	          	<br><br>
-	          	
-
-
-	        <!--    	<span class="w3-medium w3-text-black" >Buying</span>
-				<c:choose>
-				<c:when test="${product.originalBuyCost != product.buyCost }">
-	          		<br><span class="w3-small w3-text-red">Old price: <del><fmt:formatNumber value="${product.originalBuyCost}" maxFractionDigits="2"/> <i class="fa fa-euro"></i></del></span><br>
-	          		<span class="w3-medium">New price: <fmt:formatNumber value="${product.buyCost}" maxFractionDigits="2"/> <i class="fa fa-euro"></i></span>
-	          	</c:when>
-	          	<c:otherwise>
-	          		<br><span class="w3-medium">Price: <fmt:formatNumber value="${product.buyCost}" maxFractionDigits="2"/> <i class="fa fa-euro"></i></span>
-	          	</c:otherwise>
-				</c:choose>-->
-				
-	          	
+	         <div class="w3-col w3-container w3-margin" style="width:45%;">
+	            	<div class="w3-container">
+	                 <span class="w3-medium w3-text-theme w3-text-theme" > Address:
+	          	<br>
+	                  </span>
+					  <span class="w3-medium w3-text-theme "><b>City:</b>
+					  	<span class="w3-small w3-text-black ">${place.city}</span>
+					  </span><br>					 
+					  <span class="w3-medium w3-text-theme "><b>Country:</b>
+					  	<span class="w3-small w3-text-black ">${place.country}</span>
+					  </span><br>
+					  <span class="w3-medium w3-text-theme " ><b>Street:</b>
+	                  	<span class="w3-small w3-text-black ">${place.street}</span>
+	                  </span><br>
+	                  <span class="w3-medium w3-text-theme " ><b>Street number:</b>
+	                  	<span class="w3-small w3-text-black ">${place.streetNumber}</span>
+	                  </span><br>
+	              </div>
 	          </div>
-	      </div>
 	  </div>
+	</div>
 		</c:forEach>
 	</div>
-</div>
+
 </body>
 </html>

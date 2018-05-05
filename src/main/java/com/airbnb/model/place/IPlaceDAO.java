@@ -20,11 +20,12 @@ public interface IPlaceDAO {
 	public Place placeFromId(int placeId) throws InvalidPlaceException;
 	public List<String> getAllPlaceTypes() throws InvalidPlaceException;
 	public PlaceSearchInfo getDefaultFilter() throws InvalidPlaceException;
-	public List<PlaceDTO> getAllPlaces() throws InvalidPlaceException;
-	public List<Place> getFilteredPlaces(PlaceSearchInfo filter) throws InvalidPlaceException;
-	public List<Place> getAllPlacesForSearch() throws InvalidPlaceException;
-	public void fillFromDB() throws InvalidPlaceException;
+	public Set<PlaceDTO> getAllPlaces() throws InvalidPlaceException;
+	public List<PlaceDTO> getFilteredPlaces(PlaceSearchInfo filter) throws InvalidPlaceException;
+//	public List<Place> getAllPlacesForSearch() throws InvalidPlaceException;
+	public void getAllPlacesFromDB() throws InvalidPlaceException;
 	public String saveImageURL(MultipartFile file, int placeId) throws InvalidPlaceException;
 	public List<PlaceDTO> gettAllPlacesForUser(int userId) throws InvalidPlaceException;
+	
 	
 }

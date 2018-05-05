@@ -31,7 +31,7 @@ public class ReservationController {
 		User user = (User) session.getAttribute("user");
 		if (user == null) {
 			
-			return "redirect ./../logout";
+			return "redirect: ./logout";
 		}
 		Reservation reservation = new Reservation();
 		session.setAttribute("reservation", reservation);

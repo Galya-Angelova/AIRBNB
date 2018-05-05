@@ -23,12 +23,12 @@
 				</c:url>
 				<a class="navbar-brand" href="<c:out value="${URL}"/>"> AIRBNB</a>
 			</div>
-			<%-- <ul class="nav navbar-nav">
-				<li class="active"><c:url var="URL" value="home">
-						<c:param name="param" value="${parameter}" />
-					</c:url> <a href="<c:out value="${URL}"/>">Home</a></li>
+			<ul class="nav navbar-nav">
+				<li class="active"><c:url var="URL" value="search">
+						<%-- <c:param name="param" value="${parameter}" /> --%>
+					</c:url> <a href="<c:out value="${URL}"/>">Search</a></li>
 
-			</ul> --%>
+			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li><c:url var="URL" value="register">
 						<%-- <c:param name="param" value="${parameter}" /> --%>

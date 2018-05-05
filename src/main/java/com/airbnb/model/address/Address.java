@@ -13,13 +13,15 @@ public class Address {
 	private City city;
 	private Country country;
 	
-	public Address(int id, int country_id, int city_id, String street, int streetNumber)
+	public Address(int id, int country_id, int city_id, String street, int streetNumber,City city,Country country)
 			throws InvalidAddressException {
 		setId(id);
-		setCountry(country_id);
-		setCity(city_id);
+		setCountryID(country_id);
+		setCityID(city_id);
 		setStreet(street);
 		setStreetNumber(streetNumber);
+		setCity(city);
+		setCountry(country);
 	}
 	
 //	Setters
@@ -31,7 +33,7 @@ public class Address {
 		}
 	}
 
-	private void setCountry(int country_id) throws InvalidAddressException {
+	private void setCountryID(int country_id) throws InvalidAddressException {
 		if (country_id  <=POSITIVE) {
 			throw new InvalidAddressException("Empty country.");
 		} else {
@@ -39,7 +41,7 @@ public class Address {
 		}
 	}
 
-	private void setCity(int city_id) throws InvalidAddressException {
+	private void setCityID(int city_id) throws InvalidAddressException {
 		if (city_id <=POSITIVE) {
 			throw new InvalidAddressException("Empty city.");
 		} else {
@@ -61,6 +63,13 @@ public class Address {
 		} else {
 			throw new InvalidAddressException("Invalid street number.");
 		}
+	}
+
+	private void setCity(City city) {
+		this.city = city;
+	}
+	private void setCountry(Country country) {
+		this.country = country;
 	}
 	
 //	Getters
@@ -84,16 +93,10 @@ public class Address {
 		return this.streetNumber;
 	}
 	public City getCity() {
-		return city;
+		return this.city;
 	}
 	public Country getCountry() {
-		return country;
+		return this.country;
 	}
 	
-	public void setCity(City city) {
-		this.city = city;
-	}
-	public void setCountry(Country country) {
-		this.country = country;
-	}
 }

@@ -68,7 +68,10 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/home", method = RequestMethod.GET)
-	public String homePage()  {
+	public String homePage(HttpSession session)  {
+		if (session.getAttribute("user") == null) {
+			return "redirect: ./logout";
+		}
 		 return "home";
 	}
 
@@ -127,15 +130,15 @@ public class UserController {
 
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
 	public String logout(HttpSession session) {
-
 		session.invalidate();
-
 		return "index";
-
 	}
 
 	@RequestMapping(value = "/updateSettings", method = RequestMethod.GET)
-	public String settingsPage() {
+	public String settingsPage(HttpSession session) {
+		if (session.getAttribute("user") == null) {
+			return "redirect: ./logout";
+		}
 		return "settings";
 	}
 

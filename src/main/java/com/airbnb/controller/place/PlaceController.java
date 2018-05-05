@@ -62,7 +62,10 @@ public class PlaceController {
 	private UserDAO userDAO;
 	
 	@RequestMapping(value = "/createPlace", method = RequestMethod.GET)
-	public String createPlace(Model model) {
+	public String createPlace(Model model,HttpSession session) {
+		if (session.getAttribute("user") == null) {
+			return "redirect: ./logout";
+		}
 		try {
 
 			List<String> placeTypes = placeDAO.getAllPlaceTypes();
@@ -82,9 +85,8 @@ public class PlaceController {
 			@RequestParam String street, @RequestParam int streetNumber, @RequestParam String city,
 			@RequestParam String country, @RequestParam double price, // @RequestParam("files") MultipartFile[] files,
 																		// ModelMap modelMap,
-			HttpServletRequest request) throws ServletException, IOException {
+			HttpServletRequest request,HttpSession session) throws ServletException, IOException {
 		try {
-			HttpSession session = request.getSession();
 			User user = (User) session.getAttribute("user");
 
 			int country_id = 0;
@@ -102,14 +104,11 @@ public class PlaceController {
 				city_id = cityDAO.addCity(new City(0, city));
 			}
 			City cityObject = cityDAO.cityFromId(city_id);
-			Address address = new Address(0, country_id, city_id, street, streetNumber);
-			address.setCity(cityObject);
-			address.setCountry(countryObject);
+			Address address = new Address(0, country_id, city_id, street, streetNumber,cityObject,countryObject);
 			int addressId = addressDAO.addAddress(address);
 
 
-			Place place = new Place(0, name, false, addressId, placeTypeName, user.getId(), price);
-			place.setAddress(address);
+			Place place = new Place(0, name, false, addressId, placeTypeName, user.getId(), price,address);
 			
 			// String imageUrl = this.placeDAO.saveImageURL(files, place.getId());
 
@@ -166,7 +165,7 @@ public class PlaceController {
 	public String getUserPlaces(Model model, HttpSession session) {
 		User user = (User) session.getAttribute("user");
 		if (user == null) {
-			return "index";
+			return "redirect: ./logout";
 		}
 		try {
 			List<PlaceDTO> placesForUser = this.placeDAO.gettAllPlacesForUser(user.getId());
@@ -179,23 +178,26 @@ public class PlaceController {
 			return "error";
 		}
 	}
-
-	@RequestMapping(value = "/allPlaces", method = RequestMethod.GET)
-	public String showAllPlaces(Model model, HttpSession session) {
-		try {
-			model.addAttribute("allPlaces", this.placeDAO.getAllPlaces());
-			return "allPlaces";
-		} catch (InvalidPlaceException e) {
-			e.printStackTrace();
-			model.addAttribute("exception", e);
-			return "error";
-		} catch (Exception e) {
-			e.printStackTrace();
-			model.addAttribute("exception", e);
-			return "error";
-		}
-
-	}
+//
+//	@RequestMapping(value = "/allPlaces", method = RequestMethod.GET)
+//	public String showAllPlaces(Model model, HttpSession session) {
+//		if (session.getAttribute("user") == null) {
+//			return "redirect: ./logout";
+//		}
+//		try {
+//			model.addAttribute("allPlaces", this.placeDAO.getAllPlaces());
+//			return "allPlaces";
+//		} catch (InvalidPlaceException e) {
+//			e.printStackTrace();
+//			model.addAttribute("exception", e);
+//			return "error";
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			model.addAttribute("exception", e);
+//			return "error";
+//		}
+//
+//	}
 
 	
 
@@ -222,20 +224,20 @@ public class PlaceController {
 	 */
 
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
-	public String placeSearch(Model model) {
+	public String placeSearch(Model model ) {
 		try {
 			PlaceSearchInfo filter = placeDAO.getDefaultFilter();
 			PlaceSearchInfo editedFilter = placeDAO.getDefaultFilter();
 
-			List<Place> places= placeDAO.getAllPlacesForSearch();
+			Set<PlaceDTO> allPlaces= placeDAO.getAllPlaces();
 			List<String> placeTypes= placeDAO.getAllPlaceTypes();
 			Set<String> cities=cityDAO.getCities();
-			System.out.println(editedFilter);
+			
 			model.addAttribute("placeTypes", placeTypes);
 			model.addAttribute("cities", cities);
 			model.addAttribute("filter", filter);
 			model.addAttribute("editedFilter", editedFilter);
-			model.addAttribute("places", places);
+			model.addAttribute("allPlaces", allPlaces);
 
 			return "placeSearch";
 		} catch (InvalidPlaceException e) {
@@ -259,13 +261,13 @@ public class PlaceController {
 				List<String> placeTypes= placeDAO.getAllPlaceTypes();
 				Set<String> cities=cityDAO.getCities();
 				PlaceSearchInfo filter = placeDAO.getDefaultFilter();
-				List<Place> places= placeDAO.getFilteredPlaces(editedFilter);
+				List<PlaceDTO> allPlaces= placeDAO.getFilteredPlaces(editedFilter);
 				
 				model.addAttribute("placeTypes", placeTypes);
 				model.addAttribute("cities", cities);
 				model.addAttribute("filter", filter);
 				model.addAttribute("editedFilter", editedFilter);
-				model.addAttribute("places", places);
+				model.addAttribute("allPlaces", allPlaces);
 
 				return "placeSearch";
 			} catch (InvalidPlaceException e) {

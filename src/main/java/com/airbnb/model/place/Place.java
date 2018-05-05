@@ -50,7 +50,7 @@ public class Place {
 
 	}
 
-	public Place(int id, String name, boolean busied, int addressID, String placeTypeName, int ownerId, double price)
+	public Place(int id, String name, boolean busied, int addressID, String placeTypeName, int ownerId, double price,Address address)
 			throws InvalidPlaceException {
 		setId(id);
 		setName(name);
@@ -58,7 +58,8 @@ public class Place {
 		setAddressID(addressID);
 		setPlaceType(placeTypeName);
 		setPrice(price);
-		this.ownerId = ownerId;
+		setOwnerId(ownerId);
+		setAddress(address);
 		this.photosURLs = new ArrayList<>();
 	}
 
@@ -71,7 +72,7 @@ public class Place {
 		}
 	}
 
-	public void setName(String name) throws InvalidPlaceException {
+	private void setName(String name) throws InvalidPlaceException {
 		if (name == null || (name.trim().isEmpty())) {
 			throw new InvalidPlaceException("Empty name.");
 		} else {
@@ -79,11 +80,11 @@ public class Place {
 		}
 	}
 
-	public void setBusied(boolean busied) {
+	private void setBusied(boolean busied) {
 		this.busied = busied;
 	}
 
-	public void setAddressID(int addressID) throws InvalidPlaceException {
+	private void setAddressID(int addressID) throws InvalidPlaceException {
 		if (addressID >= POSITIVE) {
 			this.addressID = addressID;
 		} else {
@@ -91,7 +92,7 @@ public class Place {
 		}
 	}
 
-	public void setPlaceType(String name) throws InvalidPlaceException {
+	private void setPlaceType(String name) throws InvalidPlaceException {
 		if (name != null) {
 			this.placeType = PlaceType.fromString(name);
 		} else {
@@ -99,7 +100,7 @@ public class Place {
 		}
 	}
 
-	public void setOwnerId(int ownerId) throws InvalidPlaceException {
+	private void setOwnerId(int ownerId) throws InvalidPlaceException {
 		if (ownerId >= POSITIVE) {
 			this.ownerId = ownerId;
 		} else {
@@ -107,11 +108,11 @@ public class Place {
 		}
 	}
 
-	public void setPhotosUrls(List<String> photosURLs) {
+	private void setPhotosUrls(List<String> photosURLs) {
 		this.photosURLs = new ArrayList<String>(photosURLs);
 	}
 
-	public void setPrice(double price) throws InvalidPlaceException {
+	private void setPrice(double price) throws InvalidPlaceException {
 		if (price >= POSITIVE) {
 			this.price = price;
 		} else {
@@ -119,7 +120,7 @@ public class Place {
 		}
 	}
 
-	public void setAddress(Address address) throws InvalidPlaceException {
+	private void setAddress(Address address) throws InvalidPlaceException {
 		if(address != null) {
 			this.address = address;
 		}else {
