@@ -259,13 +259,13 @@ public class PlaceController {
 			List<String> placeTypes = placeDAO.getAllPlaceTypes();
 			Set<String> cities = cityDAO.getCities();
 			PlaceSearchInfo filter = placeDAO.getDefaultFilter();
-			List<PlaceDTO> places = placeDAO.getFilteredPlaces(editedFilter);
+			List<PlaceDTO> allPlaces = placeDAO.getFilteredPlaces(editedFilter);
 
 			model.addAttribute("placeTypes", placeTypes);
 			model.addAttribute("cities", cities);
 			model.addAttribute("filter", filter);
 			model.addAttribute("editedFilter", editedFilter);
-			model.addAttribute("places", places);
+			model.addAttribute("allPlaces", allPlaces);
 
 			return "placeSearch";
 		} catch (InvalidPlaceException e) {

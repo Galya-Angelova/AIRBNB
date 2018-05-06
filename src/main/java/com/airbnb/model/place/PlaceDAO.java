@@ -397,7 +397,7 @@ public class PlaceDAO implements IPlaceDAO {
 			ps.setString(number++, filter.getPlaceName() != null ? "%" + filter.getPlaceName() + "%" : "%%");
 			ps.setDouble(number++, filter.getMinPriceForNight());
 			ps.setDouble(number++, filter.getMaxPriceForNight());
-			ps.setString(number++, filter.getCity().equalsIgnoreCase("All") ? "%" + filter.getCity() + "%" : "%%");
+			ps.setString(number++, filter.getCity().equalsIgnoreCase("All") ? "%%": filter.getCity());
 			for (String placeType : filter.getPlaceTypes()) {
 				ps.setString(number++, placeType);
 			}

@@ -2,7 +2,15 @@
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+<c:choose>
+	<c:when test="${user != null}">
 <jsp:include page="navigation.jsp"></jsp:include>
+</c:when>
+<c:otherwise>
+<jsp:include page="header.jsp"></jsp:include>
+</c:otherwise>
+</c:choose>
 <title>Search</title>
 </head>
 <body>
@@ -71,6 +79,14 @@
 <!-- Products section -->
 <div id ="contents" class="w3-container menus w3-right" style="width:70%; margin-right:4%">
 	<h1>Filtered products</h1>
+	<c:choose>
+	<c:when test="${allPlaces.isEmpty()}">
+<h5>
+	<b>No results found. </b>
+		</h5>
+<br>
+</c:when>
+<c:otherwise>
 	<c:forEach var="place" items="${allPlaces}">
 	<div class="w3-container w3-border w3-round-xxlarge w3-white" style="margin-top:2%">
 		<div class="w3-row-padding">
@@ -82,15 +98,15 @@
 	        	</div>
 	        </div>  -->
 	        	<div class="w3-col w3-container w3-margin" style="width:45%;">
-	        	<td><c:if test="${place.photosURLs.size() == 0 }">
+	        	<%-- <td><c:if test="${place1.photosURLs.size() == 0 }">
 							<h5>
 								<b>No images. </b>
 							</h5>
 							<br>
 						</c:if></td>
-					<c:if test="${place.photosURLs.size() > 0 }">
+					<c:if test="${place1.photosURLs.size() > 0 }">
 						<div class="et_pb_gallery_items et_post_gallery" data-per_page="3">
-							<c:forEach items="${place.photosURLs }" var="url" begin = "0" end = "0">
+							<c:forEach items="${place1.photosURLs }" var="url" begin = "0" end = "0">
 								<span
 									class="et_pb_gallery_item et_pb_grid_item et_pb_bg_layout_light">
 									<span class="et_pb_gallery_image landscape"> <a
@@ -105,7 +121,7 @@
 								</span>
 							</c:forEach>
 						</div>
-					</c:if>
+					</c:if> --%>
 	        	
 	        	
 	            	<div class="w3-container">
@@ -146,6 +162,8 @@
 	  </div>
 	</div>
 		</c:forEach>
+		</c:otherwise>
+</c:choose>
 	</div>
 
 </body>

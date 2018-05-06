@@ -27,7 +27,7 @@ public class UserController {
 
 	
 	
-	@RequestMapping(value = {"/login", "/"}, method = {RequestMethod.GET, /*RequestMethod.POST*/})
+	@RequestMapping(value = {"/login", "/","/index"}, method = {RequestMethod.GET, /*RequestMethod.POST*/})
 	public String indexPage() {
 		return "index";
 	}

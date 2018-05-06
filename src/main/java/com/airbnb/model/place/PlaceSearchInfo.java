@@ -29,7 +29,7 @@ public class PlaceSearchInfo {
 		setPlaceTypes(placeTypes);
 		setMinPriceForNight(minPriceForNight);
 		setMaxPriceForNight(maxPriceForNight);
-		setAscending(isAscending);
+		setIsAscending(isAscending);
 	}
 
 	// Setters
@@ -65,7 +65,7 @@ public class PlaceSearchInfo {
 		}
 	}
 
-	public void setAscending(boolean isAscending) {
+	public void setIsAscending(boolean isAscending) {
 		this.isAscending = isAscending;
 	}
 
