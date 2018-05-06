@@ -147,6 +147,13 @@ public class User {
 		}
 	}
 	
+	public void addToVisitedPlaces(int place_id) throws InvalidUserException {
+		if(place_id > 0) {
+			this.visitedPlaces.add(place_id);
+		}else {
+			throw new InvalidUserException("Invalid place to add.");
+		}
+	}
 	// validations
 
 	public static boolean validateEmail(String email) {
@@ -185,6 +192,7 @@ public class User {
 		String str = text.trim();
 		return ((str != null) && !(str.isEmpty()) && (str.matches("[A-Za-z ]*") && (str.equals(text))));
 	}
+	
 //	Getters
 
 	public int getId() {
@@ -230,6 +238,7 @@ public class User {
 	public boolean getIsHost() {
 		return this.isHost;
 	}
+	
 	public boolean isDeleted() {
 		return this.deleted;
 	}

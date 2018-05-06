@@ -47,7 +47,7 @@ public class Place {
 	private List<String> photosURLs;
 	private String photoSrc;
 	private MultipartFile photo;
-	
+	private boolean reservationResponse;
 	public Place() {
 
 	}
@@ -138,6 +138,10 @@ public class Place {
 	public void setPhoto(MultipartFile file) {
 		this.photo = file;
 	}
+
+	public void setReservationResponse(boolean reservationResponse) {
+		this.reservationResponse = reservationResponse;
+	}
 	
 	// Getters
 	public int getId() {
@@ -188,5 +192,9 @@ public class Place {
 
 	public void setPhotosURLs(List<String> photosURLs) {
 		this.photosURLs = photosURLs;
+	}
+	
+	public boolean getIsReservationResponse() {
+		return this.reservationResponse;
 	}
 }
