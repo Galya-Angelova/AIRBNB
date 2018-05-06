@@ -1,6 +1,7 @@
 package com.airbnb.controller.reservation;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -30,13 +31,10 @@ public class ReservationController {
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("user");
 		if (user == null) {
-			
 			return "redirect: ./logout";
 		}
 		Reservation reservation = new Reservation();
 		session.setAttribute("reservation", reservation);
-	
-		//reservationDAO.makeReservation(new Reservation(0, startDate, endDate, placeId, userId, rating))
 		return "reservation";
 	}
 	@RequestMapping(value = "/reservation", method = RequestMethod.POST)
@@ -46,12 +44,13 @@ public class ReservationController {
 		if (user == null) {
 			return "index";
 		}
-		//TODO startDate after now
-		if(endDate.toLocalDate().isBefore(startDate.toLocalDate())) {
+		LocalDate start=startDate.toLocalDate();
+		LocalDate end=endDate.toLocalDate();
+		if(end.isBefore(start)) {
 			return "reservation";
 		}
-	
-		//reservationDAO.makeReservation(new Reservation(0, startDate, endDate, placeId, userId, rating))
+//		TODO how to get the place
+//		reservationDAO.makeReservationRequest(start, end, place, user);
 		return "home";
 	}
 }

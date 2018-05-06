@@ -13,10 +13,12 @@ import org.springframework.stereotype.Component;
 
 import com.airbnb.exceptions.InvalidReservationException;
 import com.airbnb.model.db.DBConnectionTest;
+import com.airbnb.model.place.Place;
+import com.airbnb.model.user.User;
 
 @Component
 public class ReservationDAO implements IReservationDAO {
-	private static final String ADD_RESERVATION = "INSERT INTO reservation VALUES(null,?,?,?,?,0)";
+	private static final String ADD_RESERVATION = "INSERT INTO reservation VALUES(null,?,?,?,?,null)";
 	private static final String ADD_RATING = "UPDATE reservation SET rating = ? WHERE id = ?;";
 	private static final String RESERVATION_FROM_ID = "SELECT * FROM reservations WHERE id = ?;";
 	@Autowired
@@ -30,9 +32,7 @@ public class ReservationDAO implements IReservationDAO {
 	}
 	@Override
 	public int makeReservation(Reservation reservation) throws InvalidReservationException {
-		PreparedStatement ps = null;
-		try {
-			ps = connection.prepareStatement(ADD_RESERVATION, Statement.RETURN_GENERATED_KEYS);
+		try (PreparedStatement ps = connection.prepareStatement(ADD_RESERVATION, Statement.RETURN_GENERATED_KEYS)){
 			ps.setDate(1, Date.valueOf(reservation.getStartDate()));
 			ps.setDate(2, Date.valueOf(reservation.getEndDate()));
 			ps.setInt(3, reservation.getPlaceId());
@@ -44,15 +44,11 @@ public class ReservationDAO implements IReservationDAO {
 			rs.next();
 			reservation.setId(rs.getInt(1));
 
+//			TODO send email to user
+			
 			return rs.getInt(1);
 		} catch (SQLException e) {
 			throw new InvalidReservationException("Problems in DB",e);
-		}finally {
-			try {
-				ps.close();
-			} catch (SQLException e) {
-				throw new InvalidReservationException("Problems in DB",e);
-			}
 		}
 	}
 
@@ -92,5 +88,17 @@ public class ReservationDAO implements IReservationDAO {
 			throw new InvalidReservationException("Invalid statement in DB",e);
 		}
 	}
-
+	
+	@Override
+	public void makeReservationRequest(LocalDate startDate, LocalDate endDate, Place place, User user)throws InvalidReservationException{
+		synchronized (place) {
+			try {
+				place.wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		//TODO
+	}
 }

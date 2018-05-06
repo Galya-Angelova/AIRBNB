@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import com.airbnb.exceptions.InvalidUserException;
 import com.airbnb.model.db.DBConnectionTest;
+import com.airbnb.model.place.Place;
 
 @Component
 public class UserDAO implements IUserDAO {
@@ -229,5 +230,9 @@ public class UserDAO implements IUserDAO {
 		}catch(SQLException e) {
 			throw new InvalidUserException("Already exist user with this email.");
 		}
+	}
+	
+	public void makeReservationResponse(Place place){
+		
 	}
 }

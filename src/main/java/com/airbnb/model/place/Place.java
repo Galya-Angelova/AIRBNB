@@ -50,7 +50,7 @@ public class Place {
 	private List<String> photosURLs;
 	private String photoSrc;
 	//private MultipartFile photo;
-
+	private boolean reservationResponse;
 	public Place() {
 
 	}
@@ -142,8 +142,15 @@ public class Place {
 
 	/*public void setPhoto(MultipartFile file) {
 		this.photo = file;
+<<<<<<< HEAD
 	}*/
 
+	
+
+	public void setReservationResponse(boolean reservationResponse) {
+		this.reservationResponse = reservationResponse;
+	}
+	
 	// Getters
 	public int getId() {
 		return id;
@@ -202,5 +209,8 @@ public class Place {
 	
 	public void setDateOfPosting(LocalDate date) throws InvalidPlaceException{
 		this.dateOfPosting = date;
+	}
+	public boolean getIsReservationResponse() {
+		return this.reservationResponse;
 	}
 }

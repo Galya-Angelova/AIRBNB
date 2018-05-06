@@ -4,11 +4,12 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 
 import com.airbnb.exceptions.InvalidReservationException;
-import com.airbnb.exceptions.InvalidUserException;
 
 public class Reservation {
+	private static final int POSITIVE = 0;
 	private static final int MIN_RATING = 0;
 	private static final int MAX_RATING = 5;
+	
 	private int id;
 	private LocalDate startDate;
 	private LocalDate endDate;
@@ -19,24 +20,21 @@ public class Reservation {
 	public Reservation() {};
 	public Reservation(int id, LocalDate startDate, LocalDate endDate, int placeId, int userId, int rating)
 			throws InvalidReservationException {
-		this.id = id;
+		setId(id);
 		setStartDate(startDate.getDayOfMonth(), startDate.getMonthValue(), startDate.getYear());
 		setEndDate(endDate.getDayOfMonth(), endDate.getMonthValue(), endDate.getYear());
-		this.placeId = placeId;
-		this.userId = userId;
+		setPlaceId(placeId);
+		setUserId(userId);
 		setRating(rating);
 	}
 
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public LocalDate getStartDate() {
-		return startDate;
+//	Setters
+	public void setId(int id) throws InvalidReservationException {
+		if (id >= POSITIVE) {
+			this.id = id;
+		} else {
+			throw new InvalidReservationException("Invalid id for reservation.");
+		}
 	}
 
 	public void setStartDate(int day, int month, int year) throws InvalidReservationException {
@@ -46,10 +44,6 @@ public class Reservation {
 		} catch (DateTimeException e) {
 			throw new InvalidReservationException("Invalid date.");
 		}
-	}
-
-	public LocalDate getEndDate() {
-		return endDate;
 	}
 
 	public void setEndDate(int day, int month, int year) throws InvalidReservationException {
@@ -66,20 +60,20 @@ public class Reservation {
 
 	}
 
-	public int getPlaceId() {
-		return placeId;
+	public void setPlaceId(int placeId) throws InvalidReservationException {
+		if (placeId >= POSITIVE) {
+			this.placeId = placeId;
+		} else {
+			throw new InvalidReservationException("Invalid id for reservations's place.");
+		}
 	}
 
-	public void setPlaceId(int placeId) {
-		this.placeId = placeId;
-	}
-
-	public int getUserId() {
-		return userId;
-	}
-
-	public void setUserId(int userId) {
-		this.userId = userId;
+	public void setUserId(int userId) throws InvalidReservationException {
+		if (userId >= POSITIVE) {
+			this.userId = userId;
+		} else {
+			throw new InvalidReservationException("Invalid id for reservations's user.");
+		}
 	}
 
 	public void setRating(int rating) throws InvalidReservationException {
@@ -88,6 +82,27 @@ public class Reservation {
 		} else {
 			throw new InvalidReservationException("Invalid rating.");
 		}
+	}
+
+//	Getters
+	public int getId() {
+		return this.id;
+	}
+
+	public LocalDate getStartDate() {
+		return this.startDate;
+	}
+
+	public LocalDate getEndDate() {
+		return this.endDate;
+	}
+
+	public int getPlaceId() {
+		return this.placeId;
+	}
+
+	public int getUserId() {
+		return this.userId;
 	}
 
 	public int getRating() {
