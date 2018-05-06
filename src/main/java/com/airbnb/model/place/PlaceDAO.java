@@ -39,7 +39,7 @@ public class PlaceDAO implements IPlaceDAO {
 	public static final String IMAGE_PATH = "D:\\uploaded";
 	private static final String EXTENTION = ".jpg";
 
-	private static final String MIN_AND_MAX_PLACE_PRICES_SQL = "SELECT MIN(price) AS minPrice, MAX(price) maxPrice from place";
+	private static final String MIN_AND_MAX_PLACE_PRICES_SQL = "SELECT MIN(price) AS minPrice, MAX(price) maxPrice FROM place";
 	private static final String FILTERED_PLACES_SQL = "SELECT pl.id, pl.name AS name, pl.price AS price, c.name AS city,  pt.name AS placeType FROM place AS pl INNER JOIN addresses AS adr ON(pl.address_id = adr.id) INNER JOIN cities AS c ON(c.id = adr.city_id) INNER JOIN placetype AS pt ON(pl.placeType_id = pt.id) WHERE (pl.name IS NULL OR pl.name LIKE ?) AND (pl.price IS NULL OR (pl.price >= ? AND pl.price <= ?)) AND (c.name IS NULL OR c.name LIKE ?) AND";
 	private static final String ALL_PLACE_TYPES = "SELECT * FROM placetype;";
 	// private static final String ALL_PLACES = "SELECT * FROM place order by
@@ -55,7 +55,7 @@ public class PlaceDAO implements IPlaceDAO {
 	private static final String ADD_PICTURES = "INSERT INTO pictures VALUES(null,?,?);";
 	private static final String GET_PICTURES_FOR_PLACE = "SELECT pictures.path FROM pictures WHERE pictures.id = ?;";
 
-	private static int COUNT = 0;
+	//private static int COUNT = 0;
 	@Autowired
 	private AddressDAO addressDAO;
 	@Autowired
@@ -354,31 +354,6 @@ public class PlaceDAO implements IPlaceDAO {
 
 	}
 
-	/*@Override
-	 remove this?
-	public List<Place> getAllPlacesForSearch() throws InvalidPlaceException {
-		List<Place> places = new ArrayList<>();
-		Statement st;
-		try {
-			st = connection.createStatement();
-			ResultSet set = st.executeQuery(ALL_PLACES);
-			while (set.next()) {
-				int placeTypeID = set.getInt("placeType_id");
-				String placeTypeName = this.placeTypeFromId(placeTypeID);
-				places.add(new Place(set.getInt("id"), set.getString("name"), set.getBoolean("busied"),
-						set.getInt("address_id"), placeTypeName, set.getInt("user_id"), set.getDouble("price")));
-			}
-			if (places.isEmpty()) {
-				throw new InvalidPlaceException("There are no cities.");
-			}
-			return places;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new InvalidPlaceException("Oops , something went wrong. Reason: " + e.getMessage());
-		}
-	}*/
-
-
 	public List<PlaceDTO> getFilteredPlaces(PlaceSearchInfo filter) throws InvalidPlaceException {
 		List<PlaceDTO> filteredPlaces = new ArrayList<PlaceDTO>();
 		StringBuffer sql = new StringBuffer(FILTERED_PLACES_SQL);
@@ -444,7 +419,7 @@ public class PlaceDAO implements IPlaceDAO {
 	}
 
 
-	public Set<PlaceDTO> getAllPlaces() throws InvalidPlaceException {
+	public Set<PlaceDTO> getAllPlaces() throws InvalidPlaceException  {
 		Set<PlaceDTO> result = new TreeSet<PlaceDTO>((p1, p2) -> {
 			return p1.getName().compareToIgnoreCase(p2.getName());
 		});
@@ -459,7 +434,11 @@ public class PlaceDAO implements IPlaceDAO {
 			String city = address.getCity().getName();
 			String street = address.getStreet();
 			int streetNumber = address.getStreetNumber();
-			result.add(new PlaceDTO(id, name, placeTypeName, busied, country, city, street, streetNumber, price));
+			PlaceDTO view = new PlaceDTO(id, name, placeTypeName, busied, country, city, street, streetNumber, price);
+			if (view != null) {
+				this.addPhotosToPlace(view);
+			}
+			result.add(view);
 		}
 		return result;
 	}
@@ -531,8 +510,8 @@ public class PlaceDAO implements IPlaceDAO {
 				imagePaths.add(base64Encoded);
 			}
 			int id = place.getId();
-			Place placeObject = this.placeFromId(id);
-			placeObject.setPhotosURLs(imagePaths);
+			/*Place placeObject = this.placeFromId(id);
+			placeObject.setPhotosURLs(imagePaths);*/
 			place.setPhotosURLs(imagePaths);
 		} catch (Exception e) {
 			e.printStackTrace();

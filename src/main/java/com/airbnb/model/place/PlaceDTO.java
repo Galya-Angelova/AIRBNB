@@ -29,6 +29,7 @@ public class PlaceDTO {
 		setStreet(street);
 		setStreetNumber(streetNumber);
 		setPrice(price);
+		this.photosURLs = new ArrayList<>();
 	}
 	
 //	Setters
