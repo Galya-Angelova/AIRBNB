@@ -3,6 +3,8 @@ package com.airbnb.controller.user;
 import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
@@ -15,23 +17,25 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.airbnb.exceptions.InvalidUserException;
+import com.airbnb.model.place.PlaceDAO;
+import com.airbnb.model.place.PlaceDTO;
 import com.airbnb.model.user.User;
 import com.airbnb.model.user.UserDAO;
 
 @Controller
 public class UserController {
-	private static final int MAX_TIME = 1800;// seconds
+	private static final int MAX_TIME = 3600;// seconds
 
 	@Autowired
 	private UserDAO userDAO;
+	@Autowired
+	private PlaceDAO placeDAO;
 
-	
-	
-	@RequestMapping(value = {"/login", "/","/index"}, method = {RequestMethod.GET, /*RequestMethod.POST*/})
+	@RequestMapping(value = { "/login", "/", "/index" }, method = { RequestMethod.GET, /* RequestMethod.POST */ })
 	public String indexPage() {
 		return "index";
 	}
-	
+
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String userLogin(Model model, HttpSession session, @RequestParam String email, @RequestParam String password)
 			throws ServletException, IOException {
@@ -44,6 +48,17 @@ public class UserController {
 			}
 			if (user != null) {
 				session.setAttribute("user", user);
+				/*List<PlaceDTO> userPlaces = this.placeDAO.gettAllPlacesForUser(user.getId());
+				if (userPlaces != null) {
+					//session.setAttribute("userPlaces", userPlaces);
+					model.addAttribute("userPlaces", userPlaces);
+				}
+				Set<PlaceDTO> allPlaces = this.placeDAO.getAllPlaces();
+				if (allPlaces != null) {
+					//session.setAttribute("allPlaces", allPlaces);
+					model.addAttribute("allPlaces", allPlaces);
+				}*/
+				// TODO add userVisitedPlaces, reviews for places
 				session.setMaxInactiveInterval(MAX_TIME);
 				return "home";
 			} else {
@@ -60,11 +75,11 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/home", method = RequestMethod.GET)
-	public String homePage(HttpSession session)  {
+	public String homePage(HttpSession session) {
 		if (session.getAttribute("user") == null) {
 			return "redirect: ./logout";
 		}
-		 return "home";
+		return "home";
 	}
 
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
@@ -78,11 +93,10 @@ public class UserController {
 			@RequestParam Date bday, @RequestParam String phone, @RequestParam String password,
 			@RequestParam String confirmPassword) throws ServletException, IOException {
 		try {
-			if(userDAO.alreadyExistsUset(email)) {
+			if (userDAO.alreadyExistsUset(email)) {
 				throw new InvalidUserException("User already exists.");
 			}
-			
-			
+
 			Date date = bday;
 			LocalDate localDate = date.toLocalDate();
 			int month = localDate.getMonthValue();
@@ -178,20 +192,20 @@ public class UserController {
 		}
 	}
 
-//	@RequestMapping(value = "/becomeHost", method = RequestMethod.GET)
-//	public String becomeAHost(Model model, HttpSession session) {
-//		User user = (User) session.getAttribute("user");
-//		try {
-//			userDAO.becomeAHost(user);
-//			return "redirect:./createPlace";
-//		} catch (InvalidUserException e) {
-//			model.addAttribute("exception", e);
-//			return "error";
-//		} catch (Exception e) {
-//			model.addAttribute("exception", e);
-//			return "error";
-//		}
-//
-//	}
+	// @RequestMapping(value = "/becomeHost", method = RequestMethod.GET)
+	// public String becomeAHost(Model model, HttpSession session) {
+	// User user = (User) session.getAttribute("user");
+	// try {
+	// userDAO.becomeAHost(user);
+	// return "redirect:./createPlace";
+	// } catch (InvalidUserException e) {
+	// model.addAttribute("exception", e);
+	// return "error";
+	// } catch (Exception e) {
+	// model.addAttribute("exception", e);
+	// return "error";
+	// }
+	//
+	// }
 
 }

@@ -27,6 +27,6 @@ public interface IPlaceDAO {
 	public void getAllPlacesFromDB() throws InvalidPlaceException;
 	//public String saveImageURL(MultipartFile file, int placeId) throws InvalidPlaceException;
 	public List<PlaceDTO> gettAllPlacesForUser(int userId) throws InvalidPlaceException;
-	
+	public void addPhotoToPlace(PlaceDTO place) throws InvalidPlaceException;
 	
 }

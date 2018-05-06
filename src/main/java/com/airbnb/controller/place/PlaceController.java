@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -79,7 +80,7 @@ public class PlaceController {
 	public String create(Model model,HttpSession session, HttpServletRequest request, @RequestParam String name,
 			@RequestParam String country, @RequestParam String city, @RequestParam String placeTypeName,
 			@RequestParam String street, @RequestParam int streetNumber, @RequestParam double price,
-			@RequestParam("files") MultipartFile[] files) // @RequestParam("files") MultipartFile[] files,
+			@RequestParam("files") MultipartFile[] files) 
 			throws ServletException {
 
 		try {
@@ -108,7 +109,7 @@ public class PlaceController {
 			int addressId = addressDAO.addAddress(address);
 
 
-			Place place = new Place(0, name, false, addressId, placeTypeName, user.getId(), Double.valueOf(price),address);
+			Place place = new Place(0, name, false, addressId, placeTypeName, user.getId(), Double.valueOf(price),address,LocalDate.now());
 			
 
 			// String imageUrl = this.placeDAO.saveImageURL(files, place.getId());
@@ -120,7 +121,7 @@ public class PlaceController {
 					continue;
 				}
 				try {
-					this.placeDAO.saveFileToDisk(place, f, randomUUIDString);
+					this.placeDAO.saveFileToDisk(place, f,randomUUIDString);
 				} catch (IOException e) {
 					e.printStackTrace();
 					return "redirect:error";
@@ -167,8 +168,9 @@ public class PlaceController {
 		}
 		try {
 			List<PlaceDTO> placesForUser = this.placeDAO.gettAllPlacesForUser(user.getId());
+			//model.addAttribute("user",user);
 			model.addAttribute("userPlaces", placesForUser);
-
+			//session.setAttribute("userPlaces", placesForUser);
 			return "myPlaces";
 		} catch (Exception e) {
 			e.printStackTrace();

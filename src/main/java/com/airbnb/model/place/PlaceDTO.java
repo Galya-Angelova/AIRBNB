@@ -1,7 +1,9 @@
 package com.airbnb.model.place;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
 import com.airbnb.exceptions.InvalidPlaceException;
 
 public class PlaceDTO {
@@ -16,10 +18,11 @@ public class PlaceDTO {
 	private String street;
 	private int streetNumber;
 	private double price;
+	private LocalDate dateOfAdding;
 	private List<String> photosURLs;
 	
 	public PlaceDTO(int id, String name, String placeTypeName, boolean busied, String country, String city,
-			String street, int streetNumber,double price) throws InvalidPlaceException {
+			String street, int streetNumber,double price,LocalDate date) throws InvalidPlaceException {
 		setId(id);
 		setName(name);
 		setPlaceTypeName(placeTypeName);
@@ -29,6 +32,7 @@ public class PlaceDTO {
 		setStreet(street);
 		setStreetNumber(streetNumber);
 		setPrice(price);
+		this.dateOfAdding =date;
 		this.photosURLs = new ArrayList<>();
 	}
 	
@@ -142,5 +146,11 @@ public class PlaceDTO {
 	}
 	public void setPhotosURLs(List<String> photosURLs) {
 		this.photosURLs = photosURLs;
+	}
+	public String getDateOfAdding() {
+		String month = this.dateOfAdding.getMonth().name(); // will give the full name of the month
+		int day = this.dateOfAdding.getDayOfMonth();
+		int year = this.dateOfAdding.getYear();
+		return "" + day + " " + month  + " "+ year;
 	}
 }

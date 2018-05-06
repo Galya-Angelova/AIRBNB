@@ -1,12 +1,14 @@
 package com.airbnb.model.place;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import com.airbnb.exceptions.InvalidPlaceException;
 import com.airbnb.model.address.Address;
-import org.springframework.web.multipart.MultipartFile;
+
 public class Place {
 
 	public enum PlaceType {
@@ -44,16 +46,17 @@ public class Place {
 	private PlaceType placeType;
 	private int ownerId;
 	private double price;
+	private LocalDate dateOfPosting;
 	private List<String> photosURLs;
 	private String photoSrc;
-	private MultipartFile photo;
-	
+	//private MultipartFile photo;
+
 	public Place() {
 
 	}
 
-	public Place(int id, String name, boolean busied, int addressID, String placeTypeName, int ownerId, double price,Address address)
-			throws InvalidPlaceException {
+	public Place(int id, String name, boolean busied, int addressID, String placeTypeName, int ownerId, double price,
+			Address address, LocalDate date) throws InvalidPlaceException {
 		setId(id);
 		setName(name);
 		setBusied(busied);
@@ -62,6 +65,7 @@ public class Place {
 		setPrice(price);
 		setOwnerId(ownerId);
 		setAddress(address);
+		setDateOfPosting(date);
 		this.photosURLs = new ArrayList<>();
 	}
 
@@ -111,10 +115,11 @@ public class Place {
 	}
 
 	public void addPhotoURL(String photoSrc) {
-		if(photoSrc != null) {
+		if (photoSrc != null) {
 			this.photosURLs.add(photoSrc);
 		}
-	}	
+	}
+
 	private void setPhotosUrls(List<String> photosURLs) {
 		this.photosURLs = new ArrayList<String>(photosURLs);
 	}
@@ -128,17 +133,17 @@ public class Place {
 	}
 
 	private void setAddress(Address address) throws InvalidPlaceException {
-		if(address != null) {
+		if (address != null) {
 			this.address = address;
-		}else {
+		} else {
 			throw new InvalidPlaceException("Invalid address.");
 		}
 	}
-	
-	public void setPhoto(MultipartFile file) {
+
+	/*public void setPhoto(MultipartFile file) {
 		this.photo = file;
-	}
-	
+	}*/
+
 	// Getters
 	public int getId() {
 		return id;
@@ -178,6 +183,7 @@ public class Place {
 	public Address getAddress() {
 		return this.address;
 	}
+
 	public double getPrice() {
 		return this.price;
 	}
@@ -188,5 +194,13 @@ public class Place {
 
 	public void setPhotosURLs(List<String> photosURLs) {
 		this.photosURLs = photosURLs;
+	}
+
+	public LocalDate getDateOfPosting() {
+		return dateOfPosting;
+	}
+	
+	public void setDateOfPosting(LocalDate date) throws InvalidPlaceException{
+		this.dateOfPosting = date;
 	}
 }
