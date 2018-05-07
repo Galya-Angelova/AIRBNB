@@ -197,8 +197,8 @@ public class PlaceDAO implements IPlaceDAO {
 	 * throw new InvalidPlaceException("Invalid photo."); } }
 	 */
 
-	public int editPlace(Place place) throws InvalidPlaceException {
-		String sql = "UPDATE POSTS SET  name=?, busied=?,address_id = ? , placetype_id = ?, user_id = ?, price=?  WHERE id = ?;";
+	public boolean editPlace(Place place) throws InvalidPlaceException {
+		String sql = "UPDATE place SET  name=?, busied=?,address_id = ? , placetype_id = ?, user_id = ?, price=?, user_id = ?  WHERE id = ?;";
 
 		try (PreparedStatement ps = connection.prepareStatement(sql)) {
 			ps.setString(1, place.getName());
@@ -208,13 +208,26 @@ public class PlaceDAO implements IPlaceDAO {
 			ps.setInt(4, placeTypeId);
 			ps.setInt(5, place.getOwnerId());
 			ps.setDouble(6, place.getPrice());
-			ps.setInt(7, place.getId());
-			return ps.executeUpdate();// return 0 if there is no change, 1 if there are changes
+			ps.setInt(7, place.getOwnerId());
+			ps.setInt(8, place.getId());
+			
+			boolean isEdited = ( ps.executeUpdate() > 0) ? true : false;// return 0 if there is no change, 1 if there are changes
+			if(isEdited) {
+				this.updatePlaceInCache(place);
+			}
+			return isEdited;
 		} catch (SQLException e) {
 			throw new InvalidPlaceException("Something went wrong in DB", e);
 		}
 	}
 	
+	private void updatePlaceInCache(Place place) {
+		if(place != null) {
+			this.allPlaces.put(place.getId(), place);
+		}
+	}
+	
+
 	public PlaceDTO getDtoById(int id) throws InvalidPlaceException {
 		
 		try {
@@ -223,6 +236,9 @@ public class PlaceDAO implements IPlaceDAO {
 			PlaceDTO result = new PlaceDTO(id, place.getName(), place.getPlaceTypeName(), place.isBusied(),
 					address.getCountry().getName(), address.getCity().getName(), address.getStreet(), address.getStreetNumber(),
 					place.getPrice(), place.getDateOfPosting());
+			if (result != null) {
+				this.addPhotosToPlace(result);
+			}
 			return result;
 		} catch (InvalidAddressException e) {
 			e.printStackTrace();

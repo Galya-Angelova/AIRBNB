@@ -94,14 +94,39 @@
 						</div>
 					</div>
 					<input type="hidden" name="dateOfPosting" value="${place.dateOfPosting }" />
-					<!-- <div class="row row-condensed space-4">
-				<div class="col-sm-9">
-					<input type="submit" name="updateProfile" value="Update profile">
-				</div>
-			</div> -->
+				
+			<c:if test="${place.photosURLs.size() == 0 }">
+										<h5>
+											<b>No images. </b>
+										</h5>
+										<br>
+									</c:if>
+									<c:if test="${place.photosURLs.size() > 0 }">
+										<div class="et_pb_gallery_items et_post_gallery"
+											data-per_page="3">
+											<c:forEach items="${place.photosURLs }" var="url" begin="0"
+												end="3">
+												<span
+													class="et_pb_gallery_item et_pb_grid_item et_pb_bg_layout_light">
+													<span class="et_pb_gallery_image landscape"> <a
+														href="data:image/jpeg;base64,${url}"
+														title="27747975_2074584502761278_1171650822192642176_o">
+															<img width=300px src="data:image/jpeg;base64,${url}"
+															data-lazy-src="data:image/jpeg;base64,${url}"
+															alt="27747975_2074584502761278_1171650822192642176_o"
+															class="lazyloaded">
+													</a>
+												</span>
+												</span>
+											</c:forEach>
+										</div>
+									</c:if>
+									<c:forEach begin="0" end="${ 2 }">
+        		<input type="hidden" name="MAX_FILE_SIZE" value="5242880" /> 
+        	    <input class="selected-images" type="file" name="files" accept="image/*" />
+			</c:forEach> 
 					<button type="submit" class="btn btn-primary btn-large">
 						Save</button>
-					<!-- <br> <input type="submit" value="SaveProfil"> <br> -->
 				</div>
 			</form>
 
