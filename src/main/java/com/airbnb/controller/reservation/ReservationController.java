@@ -9,10 +9,14 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.airbnb.exceptions.InvalidPlaceException;
+import com.airbnb.model.place.PlaceDAO;
+import com.airbnb.model.place.PlaceDTO;
 import com.airbnb.model.reservation.Reservation;
 import com.airbnb.model.reservation.ReservationDAO;
 import com.airbnb.model.user.User;
@@ -21,36 +25,58 @@ import com.airbnb.model.user.UserDAO;
 @Controller
 public class ReservationController {
 
-	@Autowired 
+	@Autowired
 	private ReservationDAO reservationDAO;
-	@Autowired 
+	@Autowired
 	private UserDAO userDAO;
-	
-	@RequestMapping(value = "/reservation", method = RequestMethod.GET)
-	public String makeReservation(HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		User user = (User) session.getAttribute("user");
-		if (user == null) {
-			return "redirect: ./logout";
+	@Autowired
+	private PlaceDAO placeDAO;
+
+	@RequestMapping(value = "/reservation/{id}", method = RequestMethod.GET)
+	public String makeReservation(Model model,@PathVariable("id") int id, HttpServletRequest request) {
+		try {
+			HttpSession session = request.getSession();
+			User user = (User) session.getAttribute("user");
+			if (user == null) {
+				return "redirect: ./logout";
+			}
+			PlaceDTO view = placeDAO.getDtoById(id);
+			session.setAttribute("place", view);
+
+			Reservation reservation = new Reservation();
+			session.setAttribute("reservation", reservation);
+			session.setAttribute("wrongDates", false);
+			return "reservation";
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("exception", e);
+			return "error";
 		}
-		Reservation reservation = new Reservation();
-		session.setAttribute("reservation", reservation);
-		return "reservation";
 	}
+
 	@RequestMapping(value = "/reservation", method = RequestMethod.POST)
-	public String makeReservation(Model model, @RequestParam Date startDate, @RequestParam Date endDate,HttpServletRequest request) {
+	public String makeReservation(Model model, @RequestParam Date startDate, @RequestParam Date endDate, HttpServletRequest request) {
+		try {
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("user");
 		if (user == null) {
 			return "index";
 		}
-		LocalDate start=startDate.toLocalDate();
-		LocalDate end=endDate.toLocalDate();
-		if(end.isBefore(start)) {
+		LocalDate start = startDate.toLocalDate();
+		LocalDate end = endDate.toLocalDate();
+		if (end.isBefore(start)) {
+			session.setAttribute("wrongDates", true);
 			return "reservation";
 		}
-//		TODO how to get the place
-//		reservationDAO.makeReservationRequest(start, end, place, user);
+		PlaceDTO place= (PlaceDTO)session.getAttribute("place");
+		reservationDAO.makeReservation(new Reservation(0,start,end,place.getId(),user.getId(),0));
+		//	TODO send email to user
+		// TODO send email to owner
 		return "home";
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("exception", e);
+			return "error";
+		}
 	}
 }

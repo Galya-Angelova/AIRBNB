@@ -19,12 +19,13 @@
 					max="2019-05-10" required></td>
 			</tr>
 			<tr>
-			<td><input type="hidden" name="id" value="${place.id }"  required>
+			<td> <input id="id" name="id" type="hidden" value="${place.id }" />
 			</td>
 			<td>
 			place id<c:out value="${place.id }"/>
 			</td>
 			</tr>
+			<c:if test="${wrongDates}">Invalid dates! The end date must be after the start date!</c:if> 
 		</table>
 		<br> <input type="submit" value="Make reservation"> <br>
 	</form:form>

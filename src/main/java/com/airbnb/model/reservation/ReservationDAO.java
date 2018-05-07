@@ -14,12 +14,14 @@ import org.springframework.stereotype.Component;
 import com.airbnb.exceptions.InvalidReservationException;
 import com.airbnb.model.db.DBConnectionTest;
 import com.airbnb.model.place.Place;
+import com.airbnb.model.place.PlaceDTO;
 import com.airbnb.model.user.User;
 
 @Component
 public class ReservationDAO implements IReservationDAO {
-	private static final String ADD_RESERVATION = "INSERT INTO reservation VALUES(null,?,?,?,?,null)";
+	private static final String ADD_RESERVATION = "INSERT INTO reservation VALUES(null,?,?,?,?,null,?,0)";
 	private static final String ADD_RATING = "UPDATE reservation SET rating = ? WHERE id = ?;";
+	private static final String DELETE_RESERVATION = "UPDATE reservation SET deleted = 1 WHERE id = ?;";
 	private static final String RESERVATION_FROM_ID = "SELECT * FROM reservations WHERE id = ?;";
 	@Autowired
 	private DBConnectionTest dbConnection;
@@ -37,14 +39,12 @@ public class ReservationDAO implements IReservationDAO {
 			ps.setDate(2, Date.valueOf(reservation.getEndDate()));
 			ps.setInt(3, reservation.getPlaceId());
 			ps.setInt(4, reservation.getUserId());
-
+			ps.setDate(5, Date.valueOf(LocalDate.now()));
 			ps.executeUpdate();
 
 			ResultSet rs = ps.getGeneratedKeys();
 			rs.next();
 			reservation.setId(rs.getInt(1));
-
-//			TODO send email to user
 			
 			return rs.getInt(1);
 		} catch (SQLException e) {
@@ -90,15 +90,12 @@ public class ReservationDAO implements IReservationDAO {
 	}
 	
 	@Override
-	public void makeReservationRequest(LocalDate startDate, LocalDate endDate, Place place, User user)throws InvalidReservationException{
-		synchronized (place) {
-			try {
-				place.wait();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	public void deleteReservation(int reservationId) throws InvalidReservationException {
+		try(PreparedStatement ps = connection.prepareStatement(DELETE_RESERVATION)){
+			ps.setInt(1, reservationId);
+			ps.executeUpdate();
+		}catch(SQLException e) {
+			throw new InvalidReservationException("Invalid statement in DB",e);
 		}
-		//TODO
 	}
 }
