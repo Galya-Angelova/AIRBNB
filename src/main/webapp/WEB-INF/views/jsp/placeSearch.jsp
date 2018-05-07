@@ -3,6 +3,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
+
 <c:choose>
 	<c:when test="${user != null}">
 		<jsp:include page="navigation.jsp"></jsp:include>
@@ -132,10 +133,14 @@
 
 
 								<div class="w3-container">
-									<a href="place/${place.id}"> <span
+									<input type="hidden" value="${place.id }" name="id" />
+									<c:url var="URL" value="placeDetails">
+										<c:param name="id" value="${place.id}" />
+									</c:url>
+									<a href="<c:out value="${URL}"/>"> <span
 										class="w3-large w3-text-highway-blue"><b>${place.name}</b></span><br>
 										<br>
-									</a>
+									</a> <a href="<c:out value="${URL}"/>"></a>
 									<c:if test="${place.photosURLs.size() == 0 }">
 										<h5>
 											<b>No images. </b>
@@ -185,7 +190,8 @@
 											for night:</b> <span class="w3-small w3-text-black ">${place.price}
 											euro</span> </span><br> <span class="w3-medium w3-text-theme "><b>Date
 											of posting:</b> <span class="w3-small w3-text-black ">${place.dateOfPosting}
-									</span> </span><br> <br> <a href="reservation/${place.id}"> <span
+									</span> </span><br> <br> <input type="hidden" value="${place.id }"
+										name="id" /> <a href="reservation/${place.id}"> <span
 										class="w3-medium w3-text-highway-blue"><b>Make
 												reservation</b></span>
 									</a>
@@ -197,6 +203,8 @@
 			</c:otherwise>
 		</c:choose>
 	</div>
+
+
 
 </body>
 </html>

@@ -314,4 +314,25 @@ public class PlaceController {
 			return "error";
 		}
 	}
+	
+	@RequestMapping(value = "/placeDetails", method = RequestMethod.GET)
+	public String getPlaceDetails(@RequestParam("id") int id, Model model) {
+		try {
+			PlaceDTO view = this.placeDAO.getDtoById(id);
+			List<String> placeTypes = this.placeDAO.getAllPlaceTypes();
+			model.addAttribute("placeTypes", placeTypes);
+			model.addAttribute("place", view);
+			return "placeDetails";
+		} catch (InvalidPlaceException e) {
+			e.printStackTrace();
+			model.addAttribute("exception", e);
+			return "error";
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("exception", e);
+			return "error";
+		}
+
+	
+	}
 }

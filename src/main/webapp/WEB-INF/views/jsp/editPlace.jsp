@@ -4,7 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <jsp:include page="navigation.jsp"></jsp:include>
 
-<title>Places</title>
+<title>Place</title>
 </head>
 <body>
 	<c:choose>
