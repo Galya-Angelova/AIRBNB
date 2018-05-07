@@ -28,7 +28,7 @@ public class UserDAO implements IUserDAO {
 	private static final String BECOME_A_HOST = "UPDATE users SET isHost = 1 WHERE id = ?;";
 	private static final String UPDATE_USER_PROFIL_SQL = "UPDATE users SET email = ? , firstName = ? , lastName = ? , phone = ? , password = ? WHERE id = ?;";
 	private static final String USER_PLACES_SQL="SELECT id FROM place WHERE user_id=?;";
-	private static final String USER_VISITED_PLACES_SQL="SELECT place_id FROM reservation WHERE user_id=?;";
+	private static final String USER_VISITED_PLACES_SQL="SELECT place_id FROM reservation WHERE deleted = 0 AND user_id=?;";
 
 	// TODO change with DBConnection
 	@Autowired
@@ -232,7 +232,4 @@ public class UserDAO implements IUserDAO {
 		}
 	}
 	
-	public void makeReservationResponse(Place place){
-		
-	}
 }

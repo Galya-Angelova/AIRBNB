@@ -216,13 +216,12 @@ public class PlaceDAO implements IPlaceDAO {
 	}
 	
 	public PlaceDTO getDtoById(int id) throws InvalidPlaceException {
-		
 		try {
 			Place place = this.placeFromId(id);
 			Address address = this.addressDAO.addressFromId(place.getAddressID());
 			PlaceDTO result = new PlaceDTO(id, place.getName(), place.getPlaceTypeName(), place.isBusied(),
 					address.getCountry().getName(), address.getCity().getName(), address.getStreet(), address.getStreetNumber(),
-					place.getPrice(), place.getDateOfPosting());
+					place.getPrice(), place.getDateOfPosting(),place.getOwnerId());
 			return result;
 		} catch (InvalidAddressException e) {
 			e.printStackTrace();
@@ -404,7 +403,7 @@ public class PlaceDAO implements IPlaceDAO {
 				Address address = place.getAddress();
 				filteredPlaces.add(new PlaceDTO(place.getId(), place.getName(), place.getPlaceTypeName(),
 						place.isBusied(), address.getCountry().getName(), address.getCity().getName(),
-						address.getStreet(), address.getStreetNumber(), place.getPrice(), place.getDateOfPosting()));
+						address.getStreet(), address.getStreetNumber(), place.getPrice(), place.getDateOfPosting(),place.getOwnerId()));
 			}
 			return filteredPlaces;
 		} catch (SQLException e) {
@@ -425,10 +424,10 @@ public class PlaceDAO implements IPlaceDAO {
 				int addressId = set.getInt("address_id");
 				int placeTypeId = set.getInt("placeType_id");
 				String placeTypeName = placeTypeFromId(placeTypeId);
-				int ownerId = set.getInt("price");
+				int ownerId = set.getInt("user_id");
 				double price = set.getDouble("price");
 				Address address = addressDAO.addressFromId(addressId);
-				LocalDate date = set.getDate("date_of_posting").toLocalDate();
+				LocalDate date =set.getDate("date_of_posting").toLocalDate();
 				this.allPlaces.put(id,
 						new Place(id, name, busied, addressId, placeTypeName, ownerId, price, address, date));
 			}
@@ -443,7 +442,7 @@ public class PlaceDAO implements IPlaceDAO {
 
 	public Set<PlaceDTO> getAllPlaces() throws InvalidPlaceException {
 		Set<PlaceDTO> result = new TreeSet<PlaceDTO>((p1, p2) -> {
-			return p1.getId() - p2.getId();
+			return p1.getName().compareToIgnoreCase(p2.getName());
 		});
 		try {
 			Statement statement = connection.createStatement();
@@ -455,12 +454,12 @@ public class PlaceDAO implements IPlaceDAO {
 				int addressId = set.getInt("address_id");
 				int placeTypeId = set.getInt("placeType_id");
 				String placeTypeName = placeTypeFromId(placeTypeId);
-				int ownerId = set.getInt("price");
+				int ownerId = set.getInt("user_id");
 				double price = set.getDouble("price");
 				Address address = addressDAO.addressFromId(addressId);
 				LocalDate date = set.getDate("date_of_posting").toLocalDate();
 				PlaceDTO dto = new PlaceDTO(id, name, placeTypeName, busied, address.getCountry().getName(),
-						address.getCity().getName(), address.getStreet(), address.getStreetNumber(), price, date);
+						address.getCity().getName(), address.getStreet(), address.getStreetNumber(), price, date,ownerId);
 				if (dto != null) {
 					this.addPhotosToPlace(dto);
 				}
@@ -514,8 +513,8 @@ public class PlaceDAO implements IPlaceDAO {
 		try {
 			List<Integer> userPlaces= userDAO.getUserPlacesByUserId(userId);
 			for(Integer id: userPlaces) {
-				Place placeObject = this.placeFromId(id);
-				PlaceDTO dto = new PlaceDTO(id, placeObject.getName(), placeObject.getPlaceTypeName(), placeObject.isBusied(), placeObject.getAddress().getCountry().getName(),  placeObject.getAddress().getCity().getName(),  placeObject.getAddress().getStreet(),  placeObject.getAddress().getStreetNumber(), placeObject.getPrice(), placeObject.getDateOfPosting());
+				PlaceDTO dto = this.getDtoById(id);
+//				PlaceDTO dto = new PlaceDTO(id, placeObject.getName(), placeObject.getPlaceTypeName(), placeObject.isBusied(), placeObject.getAddress().getCountry().getName(),  placeObject.getAddress().getCity().getName(),  placeObject.getAddress().getStreet(),  placeObject.getAddress().getStreetNumber(), placeObject.getPrice(), placeObject.getDateOfPosting());
 				if (dto != null) {
 					this.addPhotosToPlace(dto);
 				}

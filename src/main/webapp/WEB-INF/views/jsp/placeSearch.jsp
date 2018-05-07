@@ -185,7 +185,7 @@
 											for night:</b> <span class="w3-small w3-text-black ">${place.price}
 											euro</span> </span><br> <span class="w3-medium w3-text-theme "><b>Date
 											of posting:</b> <span class="w3-small w3-text-black ">${place.dateOfPosting}
-									</span> </span><br> <br> <a href="reservation"> <span
+									</span> </span><br> <br> <a href="reservation/${place.id}"> <span
 										class="w3-medium w3-text-highway-blue"><b>Make
 												reservation</b></span>
 									</a>

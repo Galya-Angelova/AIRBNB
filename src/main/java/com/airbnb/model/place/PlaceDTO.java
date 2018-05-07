@@ -19,11 +19,12 @@ public class PlaceDTO {
 	private String street;
 	private int streetNumber;
 	private double price;
+	private int ownerId;
 	private LocalDate dateOfPosting;
 	private List<String> photosURLs;
 	
 	public PlaceDTO(int id, String name, String placeTypeName, boolean busied, String country, String city,
-			String street, int streetNumber,double price,LocalDate date) throws InvalidPlaceException {
+			String street, int streetNumber,double price,LocalDate date, int ownerId) throws InvalidPlaceException {
 		setId(id);
 		setName(name);
 		setPlaceTypeName(placeTypeName);
@@ -33,6 +34,7 @@ public class PlaceDTO {
 		setStreet(street);
 		setStreetNumber(streetNumber);
 		setPrice(price);
+		setOwnerId(ownerId);
 		this.dateOfPosting =date;
 		this.photosURLs = new ArrayList<>();
 	}
@@ -106,6 +108,14 @@ public class PlaceDTO {
 		}
 	}
 	
+	private void setOwnerId(int ownerId) throws InvalidPlaceException {
+		if (ownerId >= POSITIVE) {
+			this.ownerId = ownerId;
+		} else {
+			throw new InvalidPlaceException("Invalid id for place' owner.");
+		}
+	}
+	
 //	Getters
 	public int getId() {
 		return this.id;
@@ -133,6 +143,10 @@ public class PlaceDTO {
 	
 	public String getStreet() {
 		return this.street;
+	}
+	
+	public int getOwnerId() {
+		return ownerId;
 	}
 	
 	public int getStreetNumber() {
