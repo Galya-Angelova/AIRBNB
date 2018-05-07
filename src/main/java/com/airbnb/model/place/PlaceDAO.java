@@ -211,6 +211,13 @@ public class PlaceDAO implements IPlaceDAO {
 			ps.setInt(7, place.getOwnerId());
 			ps.setInt(8, place.getId());
 			
+			/*for (String imagePath : place.getPhotosURLs()) {
+				PreparedStatement ps2 = connection.prepareStatement(ADD_PICTURES);
+				ps2.setString(1, imagePath);
+				ps2.setInt(2, place.getId());
+				ps2.executeUpdate();
+			}*/
+			
 			boolean isEdited = ( ps.executeUpdate() > 0) ? true : false;// return 0 if there is no change, 1 if there are changes
 			if(isEdited) {
 				this.updatePlaceInCache(place);
@@ -246,19 +253,6 @@ public class PlaceDAO implements IPlaceDAO {
 		}
 		
 	}
-
-	/*
-	 * public ArrayList<String> getAllPhotosForPlace(int placeId) throws
-	 * InvalidPlaceException { ArrayList<String> result = new ArrayList<>(); String
-	 * sql = "SELECT path FROM pictures WHERE place_id = ?; ";
-	 * 
-	 * try (PreparedStatement ps = connection.prepareStatement(sql)) { ps.setInt(1,
-	 * placeId); ResultSet resultSet = ps.executeQuery(); while (resultSet.next()) {
-	 * result.add(resultSet.getString("path")); }
-	 * 
-	 * return result; } catch (SQLException e) { throw new
-	 * InvalidPlaceException("No photos for this place.", e); } }
-	 */
 
 	@Override
 	public int addPlaceType(PlaceType placeType) throws InvalidPlaceException {
@@ -334,27 +328,6 @@ public class PlaceDAO implements IPlaceDAO {
 		}
 	}
 
-	/*
-	 * @Override public String saveImageURL(MultipartFile file, int placeId) throws
-	 * InvalidPlaceException { // D://uploaded//dir5//5.jpg BufferedInputStream bis
-	 * = null; BufferedOutputStream bos = null; try { String photoURL = IMAGE_PATH +
-	 * placeId + File.separator + placeId + COUNT + EXTENTION; COUNT++; if
-	 * (!file.isEmpty()) { File dir = new File("" + placeId); if (!dir.exists()) {
-	 * dir.mkdir(); } File f = new File(photoURL); if (!f.exists()) {
-	 * f.createNewFile(); }
-	 * 
-	 * bis = new BufferedInputStream(file.getInputStream()); bos = new
-	 * BufferedOutputStream(new FileOutputStream(f));
-	 * 
-	 * byte[] buffer = new byte[1024];
-	 * 
-	 * while (bis.read(buffer) != -1) { bos.write(buffer); }
-	 * 
-	 * return photoURL; } throw new InvalidPlaceException("Invalid photo."); } catch
-	 * (IOException e) { throw new InvalidPlaceException("Can't create a file.", e);
-	 * } finally { try { bis.close(); bos.close(); } catch (IOException e) { throw
-	 * new InvalidPlaceException("Can't create a file.", e); } } }
-	 */
 
 	@Override
 	public PlaceSearchInfo getDefaultFilter() throws InvalidPlaceException {
@@ -461,7 +434,7 @@ public class PlaceDAO implements IPlaceDAO {
 		Set<PlaceDTO> result = new TreeSet<PlaceDTO>((p1, p2) -> {
 			return p1.getId() - p2.getId();
 		});
-		try {
+		/*try {
 			Statement statement = connection.createStatement();
 			ResultSet set = statement.executeQuery(GET_ALL_PLACES);
 			while (set.next()) {
@@ -471,7 +444,6 @@ public class PlaceDAO implements IPlaceDAO {
 				int addressId = set.getInt("address_id");
 				int placeTypeId = set.getInt("placeType_id");
 				String placeTypeName = placeTypeFromId(placeTypeId);
-				int ownerId = set.getInt("price");
 				double price = set.getDouble("price");
 				Address address = addressDAO.addressFromId(addressId);
 				LocalDate date = set.getDate("date_of_posting").toLocalDate();
@@ -488,8 +460,8 @@ public class PlaceDAO implements IPlaceDAO {
 		} catch (InvalidAddressException e) {
 			e.printStackTrace();
 			throw new InvalidPlaceException("Invalid address", e);
-		}
-		/*for (Place place : this.allPlaces.values()) {
+		}*/
+		for (Place place : this.allPlaces.values()) {
 			int id = place.getId();
 			String name = place.getName();
 			boolean busied = place.isBusied();
@@ -507,7 +479,7 @@ public class PlaceDAO implements IPlaceDAO {
 				this.addPhotosToPlace(view);
 			}
 			result.add(view);
-		}*/
+		}
 		
 		return result;
 	}

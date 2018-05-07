@@ -1,7 +1,6 @@
 package com.airbnb.controller.place;
 
 import java.io.IOException;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -85,39 +84,13 @@ public class PlaceController {
 			if (user == null) {
 				return "index";
 			}
-			/*
-			 * int country_id = 0; try { country_id = countryDAO.giveCountryId(country); }
-			 * catch (InvalidCountryException e) { country_id = countryDAO.addCountry(new
-			 * Country(0, country)); } Country countryObject =
-			 * countryDAO.countryFromId(country_id);
-			 * 
-			 * int city_id = 0; try { city_id = cityDAO.giveCityId(city); } catch
-			 * (InvalidCityException e) { city_id = cityDAO.addCity(new City(0, city)); }
-			 * City cityObject = cityDAO.cityFromId(city_id);
-			 * 
-			 * Address address = new Address(0, country_id, city_id, street, streetNumber,
-			 * cityObject, countryObject); int addressId = addressDAO.addAddress(address);
-			 */
+
 			int addressId = this.getAddressId(country, city, street, streetNumber);
 			Address address = this.addressDAO.addressFromId(addressId);
 			Place place = new Place(0, name, false, addressId, placeTypeName, user.getId(), Double.valueOf(price),
 					address, LocalDate.now());
 
-			// String imageUrl = this.placeDAO.saveImageURL(files, place.getId());
-
-			UUID uuid = UUID.randomUUID();
-			String randomUUIDString = uuid.toString();
-			for (MultipartFile f : files) {
-				if (f.isEmpty()) {
-					continue;
-				}
-				try {
-					this.placeDAO.saveFileToDisk(place, f, randomUUIDString);
-				} catch (IOException e) {
-					e.printStackTrace();
-					return "redirect:error";
-				}
-			}
+			savePhotos(files, place);
 
 			int placeID = placeDAO.addPlace(place);
 			userDAO.addUserPlaceToUser(placeID, user);
@@ -129,6 +102,17 @@ public class PlaceController {
 			e.printStackTrace();
 			model.addAttribute("exception", e);
 			return "error";
+		}
+	}
+
+	private void savePhotos(MultipartFile[] files, Place place) throws IOException {
+		UUID uuid = UUID.randomUUID();
+		String randomUUIDString = uuid.toString();
+		for (MultipartFile f : files) {
+			if (f.isEmpty()) {
+				continue;
+			}
+			this.placeDAO.saveFileToDisk(place, f, randomUUIDString);
 		}
 	}
 
@@ -192,26 +176,7 @@ public class PlaceController {
 			return "error";
 		}
 	}
-	//
-	// @RequestMapping(value = "/allPlaces", method = RequestMethod.GET)
-	// public String showAllPlaces(Model model, HttpSession session) {
-	// if (session.getAttribute("user") == null) {
-	// return "redirect: ./logout";
-	// }
-	// try {
-	// model.addAttribute("allPlaces", this.placeDAO.getAllPlaces());
-	// return "allPlaces";
-	// } catch (InvalidPlaceException e) {
-	// e.printStackTrace();
-	// model.addAttribute("exception", e);
-	// return "error";
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// model.addAttribute("exception", e);
-	// return "error";
-	// }
-	//
-	// }
+	
 
 	/*
 	 * @RequestMapping("/save-place") public String uploadResources(
@@ -316,9 +281,8 @@ public class PlaceController {
 			@RequestParam("id") int placeId, @RequestParam String name, @RequestParam String country,
 			@RequestParam String city, @RequestParam String placeTypeName, // @RequestParam boolean isBusied,
 			@RequestParam String street, @RequestParam int streetNumber, @RequestParam double price,
-			@RequestParam String dateOfPosting)
-	// @RequestParam("files") MultipartFile[] files) {
-	{
+			@RequestParam String dateOfPosting ) {//, @RequestParam("files") MultipartFile[] files) {
+
 		try {
 			User user = (User) session.getAttribute("user");
 
@@ -331,6 +295,9 @@ public class PlaceController {
 			LocalDate date = PlaceDTO.convertFromStringToLocalDate(dateOfPosting);
 			Place place = new Place(placeId, name, false, addressId, placeTypeName, user.getId(), price, address, date);
 			boolean isEdited = placeDAO.editPlace(place);
+			
+			//savePhotos(files, place);
+			
 			model.addAttribute("place", place);
 			if (isEdited) {
 				return "redirect: myPlaces";
@@ -346,38 +313,5 @@ public class PlaceController {
 			model.addAttribute("exception", e);
 			return "error";
 		}
-
 	}
-	/*
-	 * @RequestMapping(value = "/showPhoto", method = RequestMethod.GET) public
-	 * String showPhoto(Model model, HttpServletRequest req, HttpServletResponse
-	 * resp,
-	 * 
-	 * @RequestParam() String path) {
-	 * 
-	 * try { if (path != null) { File file = new File(path); try (InputStream
-	 * bytesFromFile = new FileInputStream(file); OutputStream out =
-	 * resp.getOutputStream()) {
-	 * 
-	 * byte[] bytes = new byte[1024];
-	 * 
-	 * while ((bytesFromFile.read(bytes)) != -1) { out.write(bytes); } } <<<<<<<
-	 * HEAD =======
-	 * 
-	 * List<String> placeTypes= placeDAO.getAllPlaceTypes(); Set<String>
-	 * cities=cityDAO.getCities(); PlaceSearchInfo filter =
-	 * placeDAO.getDefaultFilter(); List<PlaceDTO> allPlaces=
-	 * placeDAO.getFilteredPlaces(editedFilter); System.out.println(allPlaces);
-	 * model.addAttribute("placeTypes", placeTypes); model.addAttribute("cities",
-	 * cities); model.addAttribute("filter", filter);
-	 * model.addAttribute("editedFilter", editedFilter);
-	 * model.addAttribute("allPlaces", allPlaces);
-	 * 
-	 * return "placeSearch"; } catch (InvalidPlaceException e) {
-	 * e.printStackTrace(); model.addAttribute("exception", e); return "error";
-	 * >>>>>>> 286604ccdf399cd85a470a27f274de26006ca218 } return null; } catch
-	 * (IOException e) { e.printStackTrace(); model.addAttribute("exception", e);
-	 * return "error"; } catch (Exception e) { e.printStackTrace();
-	 * model.addAttribute("exception", e); return "error"; } }
-	 */
 }

@@ -9,7 +9,7 @@
 <body>
 	<c:choose>
 		<c:when test="${place != null}">
-			<form action="editPlace" method="post">
+			<form action="editPlace" method="post" enctype="multipart/form-data">
 				<div class="panel-body">
 					<div class="row row-condensed space-4">
 						<label class="text-right col-sm-3" for="place_name"> Name
