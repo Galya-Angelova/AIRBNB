@@ -1,6 +1,7 @@
 package com.airbnb.model.place;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class PlaceDTO {
 	private String street;
 	private int streetNumber;
 	private double price;
-	private LocalDate dateOfAdding;
+	private LocalDate dateOfPosting;
 	private List<String> photosURLs;
 	
 	public PlaceDTO(int id, String name, String placeTypeName, boolean busied, String country, String city,
@@ -32,7 +33,7 @@ public class PlaceDTO {
 		setStreet(street);
 		setStreetNumber(streetNumber);
 		setPrice(price);
-		this.dateOfAdding =date;
+		this.dateOfPosting =date;
 		this.photosURLs = new ArrayList<>();
 	}
 	
@@ -147,10 +148,26 @@ public class PlaceDTO {
 	public void setPhotosURLs(List<String> photosURLs) {
 		this.photosURLs = photosURLs;
 	}
-	public String getDateOfAdding() {
-		String month = this.dateOfAdding.getMonth().name(); // will give the full name of the month
-		int day = this.dateOfAdding.getDayOfMonth();
-		int year = this.dateOfAdding.getYear();
-		return "" + day + " " + month  + " "+ year;
+	public String getDateOfPosting() {
+		 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MM-yyyy");
+		 String result = formatter.format(this.dateOfPosting);
+		 return result;
+		/*String month = this.dateOfPosting.getMonth().name(); // will give the full name of the month
+		int day = this.dateOfPosting.getDayOfMonth();
+		int year = this.dateOfPosting.getYear();
+		StringBuilder sb = new StringBuilder();
+		sb.append(day);
+		sb.append(" ");
+		sb.append(month);
+		sb.append(" ");
+		sb.append(year);
+		return sb.toString();*/
+	}
+	
+	public static LocalDate convertFromStringToLocalDate(String date) {
+		 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MM-yyyy");
+		 LocalDate localDate = LocalDate.parse(date, formatter);//2016-08-16
+		 String result = formatter.format(localDate);//16-Aug-2016
+		 return localDate;
 	}
 }

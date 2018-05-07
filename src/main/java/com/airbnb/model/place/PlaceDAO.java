@@ -214,6 +214,22 @@ public class PlaceDAO implements IPlaceDAO {
 			throw new InvalidPlaceException("Something went wrong in DB", e);
 		}
 	}
+	
+	public PlaceDTO getDtoById(int id) throws InvalidPlaceException {
+		
+		try {
+			Place place = this.placeFromId(id);
+			Address address = this.addressDAO.addressFromId(place.getAddressID());
+			PlaceDTO result = new PlaceDTO(id, place.getName(), place.getPlaceTypeName(), place.isBusied(),
+					address.getCountry().getName(), address.getCity().getName(), address.getStreet(), address.getStreetNumber(),
+					place.getPrice(), place.getDateOfPosting());
+			return result;
+		} catch (InvalidAddressException e) {
+			e.printStackTrace();
+			throw new InvalidPlaceException("Invalid address",e);
+		}
+		
+	}
 
 	/*
 	 * public ArrayList<String> getAllPhotosForPlace(int placeId) throws

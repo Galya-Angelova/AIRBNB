@@ -22,7 +22,7 @@
 			<td><input type="hidden" name="id" value="${place.id }"  required>
 			</td>
 			<td>
-			<c:out value="${place.id }"/>
+			place id<c:out value="${place.id }"/>
 			</td>
 			</tr>
 		</table>
