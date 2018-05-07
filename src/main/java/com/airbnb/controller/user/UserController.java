@@ -187,7 +187,7 @@ public class UserController {
 			if(delete) {
 				return "index";
 			}
-			return "redirect : ./search";
+			return "redirect: ./search";
 		} catch (InvalidUserException e) {
 			model.addAttribute("exception", e);
 			return "error";

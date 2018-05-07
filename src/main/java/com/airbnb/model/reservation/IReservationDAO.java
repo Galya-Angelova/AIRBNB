@@ -1,6 +1,7 @@
 package com.airbnb.model.reservation;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import com.airbnb.exceptions.InvalidReservationException;
 import com.airbnb.model.place.Place;
@@ -12,5 +13,6 @@ public interface IReservationDAO {
 	public Reservation reservationFromId(int reservationId) throws InvalidReservationException;
 	public void giveRating(int rating,int reservationId) throws InvalidReservationException;
 	public void deleteReservation(int reservationId) throws InvalidReservationException;
+	public List<Reservation> getAllReservationsByHostID(int owner_id) throws InvalidReservationException;
 	
 }

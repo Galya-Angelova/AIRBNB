@@ -103,7 +103,11 @@
 						<li class="active"><c:url var="URL" value="myPlaces">
 					<%-- 		<c:param name="param" value="${parameter}" /> --%>
 							</c:url> <a href="<c:out value="${URL}"/>">My places</a></li>
-
+						</ul>	
+							<ul class="nav navbar-nav">
+						<li class="active"><c:url var="URL" value="reservations">
+					<%-- 		<c:param name="param" value="${parameter}" /> --%>
+							</c:url> <a href="<c:out value="${URL}"/>">Awaiting reservations</a></li>
 						</ul>	
 					</c:when>
 					<c:otherwise>

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 
 import com.airbnb.exceptions.InvalidReservationException;
 
+
 public class Reservation {
 	private static final int POSITIVE = 0;
 	private static final int MIN_RATING = 0;
@@ -16,9 +17,11 @@ public class Reservation {
 	private int placeId;
 	private int userId;
 	private int rating;
+	private LocalDate reservationDate;
+	private boolean deleted;
 
 	public Reservation() {};
-	public Reservation(int id, LocalDate startDate, LocalDate endDate, int placeId, int userId, int rating)
+	public Reservation(int id, LocalDate startDate, LocalDate endDate, int placeId, int userId, int rating,LocalDate reservationDate)
 			throws InvalidReservationException {
 		setId(id);
 		setStartDate(startDate.getDayOfMonth(), startDate.getMonthValue(), startDate.getYear());
@@ -26,6 +29,7 @@ public class Reservation {
 		setPlaceId(placeId);
 		setUserId(userId);
 		setRating(rating);
+		setReservationDate(reservationDate);
 	}
 
 //	Setters
@@ -83,6 +87,13 @@ public class Reservation {
 			throw new InvalidReservationException("Invalid rating.");
 		}
 	}
+	
+	public void setReservationDate(LocalDate reservationDate) {
+		this.reservationDate = reservationDate;
+	}
+	public void setIsDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
 
 //	Getters
 	public int getId() {
@@ -108,5 +119,12 @@ public class Reservation {
 	public int getRating() {
 		return this.rating;
 	}
+	public LocalDate getReservationDate() {
+		return this.reservationDate;
+	}
+	public boolean getIsDeleted() {
+		return this.deleted;
+	}
+	
 
 }

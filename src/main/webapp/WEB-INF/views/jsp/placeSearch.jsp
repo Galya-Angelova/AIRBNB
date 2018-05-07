@@ -3,7 +3,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-
 <c:choose>
 	<c:when test="${user != null}">
 		<jsp:include page="navigation.jsp"></jsp:include>
@@ -203,8 +202,5 @@
 			</c:otherwise>
 		</c:choose>
 	</div>
-
-
-
 </body>
 </html>
