@@ -42,6 +42,7 @@ public class User {
 		setLastName(lastName);
 		setBirthdate(day, month, year);
 		changePhoneNumber(phoneNumber);
+		this.myPlaces = new ArrayList<>();
 		//setAddress(address_id);
 	}
 	public User(int id, String email, String password, boolean isMale, String firstName, String lastName, int day,

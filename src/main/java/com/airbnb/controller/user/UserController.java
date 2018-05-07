@@ -93,7 +93,7 @@ public class UserController {
 			@RequestParam Date bday, @RequestParam String phone, @RequestParam String password,
 			@RequestParam String confirmPassword) throws ServletException, IOException {
 		try {
-			if (userDAO.alreadyExistsUset(email)) {
+			if (userDAO.alreadyExistsUser(email)) {
 				throw new InvalidUserException("User already exists.");
 			}
 
@@ -157,7 +157,7 @@ public class UserController {
 	// @RequestMapping(value = "/updateProfile", method = RequestMethod.POST)
 	public String changeSettings(Model model, HttpSession session, @RequestParam String email,
 			@RequestParam String phoneNumber, @RequestParam String firstName, @RequestParam String lastName,
-			@RequestParam String oldPassword, @RequestParam String newPassword,
+			@RequestParam String oldPassword, @RequestParam String newPassword,@RequestParam boolean delete,
 			@RequestParam String newPasswordConfirm) {
 		try {
 			User user = (User) session.getAttribute("user");
@@ -179,9 +179,14 @@ public class UserController {
 			int year = bday.getYear();
 			User u = new User(user.getId(), email, password, user.isMale(), firstName, lastName, day, month, year,
 					phoneNumber);
+			if(delete) {
+				u.deleteAccount();
+			}
 			userDAO.updateProfile(u);
 			session.setAttribute("user", u);
-
+			if(delete) {
+				return "index";
+			}
 			return "home";
 		} catch (InvalidUserException e) {
 			model.addAttribute("exception", e);

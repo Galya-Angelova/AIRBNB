@@ -26,9 +26,11 @@ public class UserDAO implements IUserDAO {
 	private static final String REGISTER_USER_SQL = "INSERT INTO users VALUES (null, ?, ? ,?, ?, ?, ?, false, false,?)";
 	private static final String CHECK_FOR_EXISTS_EMAIL = "SELECT count(*) FROM users WHERE email = ?;";
 	private static final String BECOME_A_HOST = "UPDATE users SET isHost = 1 WHERE id = ?;";
-	private static final String UPDATE_USER_PROFIL_SQL = "UPDATE users SET email = ? , firstName = ? , lastName = ? , phone = ? , password = ? WHERE id = ?;";
+	private static final String UPDATE_USER_PROFIL_SQL = "UPDATE users SET email = ? , firstName = ? , lastName = ? , phone = ? , password = ? , deleted= ? WHERE id = ?;";
 	private static final String USER_PLACES_SQL="SELECT id FROM place WHERE user_id=?;";
 	private static final String USER_VISITED_PLACES_SQL="SELECT place_id FROM reservation WHERE deleted = 0 AND user_id=?;";
+	private static final String DELETE_ACCOUNT = "UPDATE users SET deleted = 1 WHERE id = ?";
+	private static final String CHECK_IS_DELETED = "SELECT deleted FROM users WHERE id = ?";
 
 	// TODO change with DBConnection
 	@Autowired
@@ -53,7 +55,9 @@ public class UserDAO implements IUserDAO {
 			if (rs.next()) {
 				int id = rs.getInt("id");
 				User user = userFromId(id);
-
+				if(chekIfDeletedAccount(id)) {
+					throw new InvalidUserException("Account has been deleted.");
+				}
 				if (BCrypt.checkpw(password, user.getPassword())) {
 					return id;
 				}
@@ -63,6 +67,25 @@ public class UserDAO implements IUserDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new InvalidUserException("Invalid statement" + e.getMessage(), e);
+		}
+	}
+	
+	private boolean chekIfDeletedAccount(int id) throws InvalidUserException {
+		try(PreparedStatement ps = connection.prepareStatement(CHECK_IS_DELETED)) {
+			ps.setInt(1, id);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) {
+				int deleted = rs.getInt("deleted");
+				if(deleted == 1) {
+					return true;
+				}else {
+					return false;
+				}
+			}
+			
+			throw new InvalidUserException("No user with that id!");
+		}catch(SQLException e) {
+			throw new InvalidUserException("Something went wrong in DB");
 		}
 	}
 
@@ -200,7 +223,8 @@ public class UserDAO implements IUserDAO {
 			ps.setString(4, user.getPhoneNumber());
 			String hashed = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
 			ps.setString(5, hashed);
-			ps.setInt(6, user.getId());
+			ps.setBoolean(6,user.isDeleted());
+			ps.setInt(7, user.getId());
 			ps.executeUpdate();
 		}catch (SQLException e) {
 			e.printStackTrace();
@@ -217,7 +241,7 @@ public class UserDAO implements IUserDAO {
 	}
 
 	@Override
-	public boolean alreadyExistsUset(String email) throws InvalidUserException{
+	public boolean alreadyExistsUser(String email) throws InvalidUserException{
 		try(PreparedStatement ps = connection.prepareStatement(CHECK_FOR_EXISTS_EMAIL)){
 			ps.setString(1, email);
 			ResultSet resultSet = ps.executeQuery();
@@ -231,5 +255,5 @@ public class UserDAO implements IUserDAO {
 			throw new InvalidUserException("Already exist user with this email.");
 		}
 	}
-	
+
 }

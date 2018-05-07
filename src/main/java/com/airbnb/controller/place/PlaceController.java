@@ -330,10 +330,10 @@ public class PlaceController {
 			Address address = this.addressDAO.addressFromId(addressId);
 			LocalDate date = PlaceDTO.convertFromStringToLocalDate(dateOfPosting);
 			Place place = new Place(placeId, name, false, addressId, placeTypeName, user.getId(), price, address, date);
-			boolean isEdited = (placeDAO.editPlace(place) > 0) ? true : false;
+			boolean isEdited = placeDAO.editPlace(place);
 			model.addAttribute("place", place);
 			if (isEdited) {
-				return "myPlaces";
+				return "redirect: myPlaces";
 			} else {
 				return "editPlace";
 			}

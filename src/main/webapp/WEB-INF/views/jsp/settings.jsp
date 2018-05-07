@@ -67,11 +67,7 @@
 				</div>
 			</div>
 
-			<!-- <div class="row row-condensed space-4">
-				<div class="col-sm-9">
-					<input type="submit" name="updateProfile" value="Update profile">
-				</div>
-			</div> -->
+			 <input type="checkbox" name="delete" value="true"> Delete account<br>
 			<button type="submit" class="btn btn-primary btn-large">
 				Save</button>
 			<!-- <br> <input type="submit" value="SaveProfil"> <br> -->
