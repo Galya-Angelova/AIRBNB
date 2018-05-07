@@ -66,12 +66,14 @@ public class ReservationController {
 		}
 		LocalDate start = startDate.toLocalDate();
 		LocalDate end = endDate.toLocalDate();
-		if (end.isBefore(start)) {
+		if ((end.isBefore(start)) ||( start.isBefore(LocalDate.now()))) {
 			session.setAttribute("wrongDates", true);
 			return "reservation";
 		}
+		
 		PlaceDTO place= (PlaceDTO)session.getAttribute("place");
 		reservationDAO.makeReservation(new Reservation(0,start,end,place.getId(),user.getId(),0));
+
 		short days=(short) start.until(end, ChronoUnit.DAYS);
 		double fullPrice=place.getPrice()*days;
 		
@@ -80,7 +82,8 @@ public class ReservationController {
 		String ownerContent=String.format("%s %s with e-mail: %s, has made a reservation for: %s, place type - %s, Address: Country - %s, City - %s, Street - %s, StreetNumber - %d , for %d days and it will cost %.2f. If you want to reject the reservation you have to log in our site and go to \"Reservations\" section and then click on the \"Reject  reservation\" button on the reservation! You have 7 days to reject it or it will be automaticly completed", user.getFirstName(),user.getLastName(),user.getEmail(),place.getName(),place.getPlaceTypeName(),place.getCountry(),place.getCity(),place.getStreet(),place.getStreetNumber(),days,fullPrice);
 		MailSender.sendEmail(userDAO.userFromId(place.getOwnerId()).getEmail(), ownerContent);
 		
-		return "home";
+		return "redirect: ./search";
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("exception", e);

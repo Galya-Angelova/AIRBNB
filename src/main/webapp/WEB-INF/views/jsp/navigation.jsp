@@ -74,9 +74,9 @@
 	<nav class="navbar navbar-inverse">
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<c:url var="URL" value="home">
-					<%-- <c:param name="param" value="${parameter}" /> --%>
-				</c:url>
+				<c:url var="URL" value="search">
+					<%-- <c:param name="param" value="${parameter}" />--%>
+				</c:url> 
 				<a class="navbar-brand" href="<c:out value="${URL}"/>"> AIRBNB</a>
 			</div>
 			<ul class="nav navbar-nav">

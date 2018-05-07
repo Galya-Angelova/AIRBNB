@@ -60,7 +60,7 @@ public class UserController {
 				}*/
 				// TODO add userVisitedPlaces, reviews for places
 				session.setMaxInactiveInterval(MAX_TIME);
-				return "home";
+				return "redirect: ./search";
 			} else {
 				throw new InvalidUserException("Invalid username or password");
 			}
@@ -74,13 +74,13 @@ public class UserController {
 		}
 	}
 
-	@RequestMapping(value = "/home", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/home", method = RequestMethod.GET)
 	public String homePage(HttpSession session) {
 		if (session.getAttribute("user") == null) {
 			return "redirect: ./logout";
 		}
 		return "home";
-	}
+	}*/
 
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	public String getRegisterPage() {
@@ -187,7 +187,7 @@ public class UserController {
 			if(delete) {
 				return "index";
 			}
-			return "home";
+			return "redirect : ./search";
 		} catch (InvalidUserException e) {
 			model.addAttribute("exception", e);
 			return "error";
