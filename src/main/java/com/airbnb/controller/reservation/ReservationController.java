@@ -64,15 +64,16 @@ public class ReservationController {
 		}
 		LocalDate start = startDate.toLocalDate();
 		LocalDate end = endDate.toLocalDate();
-		if (end.isBefore(start)) {
+		if ((end.isBefore(start)) ||( start.isBefore(LocalDate.now()))) {
 			session.setAttribute("wrongDates", true);
 			return "reservation";
 		}
+		
 		PlaceDTO place= (PlaceDTO)session.getAttribute("place");
 		reservationDAO.makeReservation(new Reservation(0,start,end,place.getId(),user.getId(),0));
 		//	TODO send email to user
 		// TODO send email to owner
-		return "home";
+		return "redirect: ./search";
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("exception", e);

@@ -19,7 +19,7 @@ import com.airbnb.model.user.User;
 
 @Component
 public class ReservationDAO implements IReservationDAO {
-	private static final String ADD_RESERVATION = "INSERT INTO reservation VALUES(null,?,?,?,?,null,?,0)";
+	private static final String ADD_RESERVATION = "INSERT INTO reservation VALUES(null,?,?,?,?,0,?,0)";
 	private static final String ADD_RATING = "UPDATE reservation SET rating = ? WHERE id = ?;";
 	private static final String DELETE_RESERVATION = "UPDATE reservation SET deleted = 1 WHERE id = ?;";
 	private static final String RESERVATION_FROM_ID = "SELECT * FROM reservations WHERE id = ?;";
