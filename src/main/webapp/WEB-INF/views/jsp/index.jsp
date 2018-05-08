@@ -10,14 +10,12 @@
 	<table>
 		<tr>
 			<td>Enter email</td>
-			<td><input onchange="this.setCustomValidity(validity.valueMissing ? 'Please insert your email' : '');"
-			 id="email"  required name="email" type = "email">
+			<td><input  id="email"  required name="email" type = "email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required maxlength="45">
 			<!-- <input type="email" name="email" required></td> -->
 		</tr>
 		<tr>
 			<td>Enter password</td>
-			<td><input onchange="this.setCustomValidity(validity.valueMissing ? 'Please insert your password' : '');"
-			 id="password"  required name="password" type = "password"></td>
+			<td><input  id="password"  required name="password" type = "password"></td>
 			<!-- <input type="password" name="password" required></td> -->
 		</tr>
 	</table>
@@ -29,9 +27,9 @@
 	<a href="<c:out value="${URL}"/>">Register here</a>
 </form>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
   document.getElementById("password").setCustomValidity("Please insert your password");
-  document.getElementById("email").setCustomValidity("Please insert your email");
-</script>
+ 
+</script> -->
 </body>
 </html>

@@ -105,14 +105,14 @@ public class UserController {
 			int year = localDate.getYear();
 
 			// String phone = request.getParameter("phone");
-			System.out.println(localDate.toString());
+//			System.out.println(localDate.toString());
 			if (!password.equals(confirmPassword)) {
 				throw new InvalidUserException("Password mismatch");
 			}
 			if (!User.validatePassword(password)) {
 
 				throw new InvalidUserException(
-						"Your password should be at least 8 characters and must contains at least: one diggit, one upper case letter,one lower case letter and one special character(@#$%^&+=).");
+						"Your password should be at least 8 characters and must contains at least: one diggit, one upper case letter and one lower case letter.");
 			}
 			if (!User.validateEmail(email)) {
 				throw new InvalidUserException("You should try with valid email.");
@@ -180,7 +180,7 @@ public class UserController {
 			int month = bday.getMonthValue();
 			int year = bday.getYear();
 			User u = new User(user.getId(), email, password, user.isMale(), firstName, lastName, day, month, year,
-					phoneNumber);
+					phoneNumber,user.getIsHost(),user.getVisitedPlaces(),user.getMyPlaces());
 			userDAO.updateProfile(u);
 			session.setAttribute("user", u);
 			return "redirect: ./search";

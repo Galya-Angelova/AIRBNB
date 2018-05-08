@@ -243,5 +243,11 @@ public class User {
 	public boolean isDeleted() {
 		return this.deleted;
 	}
+	public List<Integer> getVisitedPlaces() {
+		return new ArrayList<Integer>(this.visitedPlaces);
+	}
+	public List<Integer> getMyPlaces() {
+		return new ArrayList<Integer>(this.myPlaces);
+	}
 	
 }

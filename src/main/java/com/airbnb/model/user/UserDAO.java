@@ -26,7 +26,7 @@ public class UserDAO implements IUserDAO {
 	private static final String REGISTER_USER_SQL = "INSERT INTO users VALUES (null, ?, ? ,?, ?, ?, ?, false, false,?)";
 	private static final String CHECK_FOR_EXISTS_EMAIL = "SELECT count(*) FROM users WHERE email = ?;";
 	private static final String BECOME_A_HOST = "UPDATE users SET isHost = 1 WHERE id = ?;";
-	private static final String UPDATE_USER_PROFIL_SQL = "UPDATE users SET email = ? , firstName = ? , lastName = ? , phone = ? , password = ? , deleted= ? WHERE id = ?;";
+	private static final String UPDATE_USER_PROFIL_SQL = "UPDATE users SET email = ? , firstName = ? , lastName = ? , phone = ? , password = ? WHERE id = ?;";
 	private static final String USER_PLACES_SQL="SELECT id FROM place WHERE user_id=?;";
 	private static final String USER_VISITED_PLACES_SQL="SELECT place_id FROM reservation WHERE deleted = 0 AND user_id=?;";
 	private static final String CHECK_IS_DELETED = "SELECT deleted FROM users WHERE id = ?";
@@ -222,8 +222,7 @@ public class UserDAO implements IUserDAO {
 			ps.setString(4, user.getPhoneNumber());
 			String hashed = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
 			ps.setString(5, hashed);
-			ps.setBoolean(6,user.isDeleted());
-			ps.setInt(7, user.getId());
+			ps.setInt(6, user.getId());
 			ps.executeUpdate();
 		}catch (SQLException e) {
 			e.printStackTrace();

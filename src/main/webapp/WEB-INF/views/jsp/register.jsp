@@ -10,15 +10,15 @@
 	<table>
 		<tr>
 			<td>Email</td>
-			<td><input name="email" type="email" required></td>
+			<td><input name="email" type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required maxlength="45"></td>
 		</tr>
 		<tr>
 			<td>Password</td>
-			<td><input name="password" type="password" onchange="return validatePassowrd();" title="Your password should be at least 8 characters, with at least one capital letter, at least one lowercase letter, at leat one digit and special character: '!-_@#$%^&+='"></td>
+			<td><input name="password" id ="pass" type="password" onchange="return validatePassowrd();" title="Your password should be at least 8 characters, with at least one capital letter, at least one lowercase letter and at leat one digit"></td>
 		</tr>
 		<tr>
 			<td>Confirm password</td>
-			<td><input name="confirmPassword" type="password" required></td>
+			<td><input name="confirmPassword" id ="cpass" type="password" required></td>
 		</tr>
 		<tr>
 			<td>Gender</td>
@@ -28,11 +28,11 @@
 		</tr>
 		<tr>
 			<td>First name</td>
-			<td><input name="firstName" type="text" required></td>
+			<td><input name="firstName" type="text" pattern="[A-Za-z]{1,100}" title="Not including numbers or special characters (latin letters only)" style="text-transform: capitalize;" required maxlength="100"></td>
 		</tr>
 		<tr>
 			<td>Last name</td>
-			<td><input name="lastName" type="text" required></td>
+			<td><input name="lastName" type="text" pattern="[A-Za-z]{1,100}" title="Not including numbers or special characters (latin letters only)" style="text-transform: capitalize;" required maxlength="100"></td>
 		</tr>
 		<tr>
 			<td>Birthday</td>
@@ -41,7 +41,7 @@
 		</tr>
 		<tr>
 			<td>Phone number</td>
-			<td><input type="tel" name="phone" required></td>
+			<td><input type="tel" name="phone"  pattern="08\d{8}" title="Starting with 08 and 10 symbols long"required maxlength="20"></td>
 	</table>
 	<input
 		onchange="this.setCustomValidity(validity.valueMissing ? 'Please indicate that you accept the Terms and Conditions' : '');"
@@ -68,8 +68,8 @@
 			alert("Your password should be at least 8 characters, with at least one capital letter, at least one lowercase letter, at leat one digit and special character: '!-_@#$%^&+='")
 			return false;
 		}
-	}
-	function validateForm() {
+	} 
+	/* function validateForm() {
 		
 		var email = document.getElementsByName('email')[0].value;
 		if(!email.contains('@')){
@@ -106,7 +106,8 @@
 			  var isphone = phoneRegex.test(str);
 			  alert(isphone);
 			}
-	}
+	} */
 </script>
+
 </body>
 </html>

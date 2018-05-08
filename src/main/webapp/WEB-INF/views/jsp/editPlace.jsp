@@ -20,7 +20,7 @@
 
 							<input id="placeName" name="name" size="30" type="text"
 								value="${place.name}" /> <input id="id" name="id" type="hidden"
-								value="${place.id }" />
+								value="${place.id }" maxlength="150"/>
 						</div>
 					</div>
 					<%-- <div class="row row-condensed space-4">
@@ -50,7 +50,7 @@
 						<div class="col-sm-9">
 
 							<input id="city" name="city" size="30" type="text"
-								value="${place.city}" />
+								value="${place.city}" pattern="[A-Za-z]{1,100}" title="Not including numbers or special characters (latin letters only)" style="text-transform: capitalize;" required maxlength="100"/>
 						</div>
 					</div>
 					<div class="row row-condensed space-4">
@@ -59,7 +59,7 @@
 						<div class="col-sm-9">
 
 							<input id="country" name="country" size="30" type="text"
-								value="${place.country}" />
+								value="${place.country}" pattern="[A-Za-z]{1,150}" title="Not including numbers or special characters (latin letters only)" style="text-transform: capitalize;" required maxlength="150"/>
 						</div>
 					</div>
 					<div class="row row-condensed space-4">
@@ -67,7 +67,7 @@
 							Street </label>
 						<div class="col-sm-9">
 							<input type="text" name="street" size="30"
-								value="${place.street }" required>
+								value="${place.street }" pattern="[A-Za-z]{1,150}" title="Not including numbers or special characters (latin letters only)" style="text-transform: capitalize;" required maxlength="150">
 						</div>
 					</div>
 					<div class="row row-condensed space-4">

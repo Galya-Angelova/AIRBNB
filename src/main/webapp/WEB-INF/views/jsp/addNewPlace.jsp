@@ -14,7 +14,7 @@
 			<tr>
 				<td>Place name</td>
 				<td><input type="text" name="name" placeholder="place name"
-					required></td>
+					required maxlength="150"></td>
 			</tr>
 
 			<tr>
@@ -29,7 +29,7 @@
 			<tr>
 				<td>Street:</td>
 				<td><input type="text" name="street" placeholder="Street"
-					required></td>
+					pattern="[A-Za-z]{1,150}" title="Not including numbers or special characters (latin letters only)" style="text-transform: capitalize;" required maxlength="150"></td>
 			</tr>
 			<tr>
 				<td>Street number:</td>
@@ -39,13 +39,13 @@
 			</tr>
 			<tr>
 				<td>City :</td>
-				<td><input type="text" name="city" placeholder="City" required>
+				<td><input type="text" name="city" placeholder="City" pattern="[A-Za-z]{1,100}" title="Not including numbers or special characters (latin letters only)" style="text-transform: capitalize;" required maxlength="100">
 				</td>
 			</tr>
 			<tr>
 				<td>Country :</td>
 				<td><input type="text" name="country" placeholder="Country"
-					required></td>
+					pattern="[A-Za-z]{1,150}" title="Not including numbers or special characters (latin letters only)" style="text-transform: capitalize;" required maxlength="150"></td>
 			</tr>
 			<tr>
 				<td>Price :</td>

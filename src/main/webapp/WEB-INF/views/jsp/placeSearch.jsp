@@ -48,7 +48,7 @@
 					Name</button>
 				<div id="placeNameSection" class="w3-container w3-show w3-padding ">
 					<form:input id="filterName" path="placeName" name="filterName"
-						class="w3-container w3-input" type="text" maxlength="100"
+						class="w3-container w3-input" type="text" maxlength="150"
 						placeholder="Enter place name" />
 				</div>
 			</div>

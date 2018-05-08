@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <title>Settings</title>
 <jsp:include page="navigation.jsp"></jsp:include>
@@ -15,7 +15,7 @@
 				<div class="col-sm-9">
 
 					<input id="user_email" name="email" size="30" type="email"
-						value="${user.email}" />
+						value="${user.email}" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required maxlength="45"/>
 				</div>
 			</div>
 
@@ -25,7 +25,7 @@
 				<div class="col-sm-9">
 
 					<input id="user_first_name" name="firstName" size="30" type="text"
-						value="${user.firstName}" />
+						value="${user.firstName}" pattern="[A-Za-z]{1,100}" title="Not including numbers or special characters (latin letters only)" style="text-transform: capitalize;" required maxlength="100"/>
 				</div>
 			</div>
 			<div class="row row-condensed space-4">
@@ -34,7 +34,7 @@
 				<div class="col-sm-9">
 
 					<input id="user_last_name" name="lastName" size="30" type="text"
-						value="${user.lastName}" />
+						value="${user.lastName}" pattern="[A-Za-z]{1,100}" title="Not including numbers or special characters (latin letters only)" style="text-transform: capitalize;" required maxlength="100" />
 				</div>
 			</div>
 			<div class="row row-condensed space-4">
@@ -65,7 +65,7 @@
 					Phone number </label>
 				<div class="col-sm-9">
 					<input type="tel" name="phoneNumber" size="30" title="Phone number"
-						value="${user.phoneNumber}" />
+						value="${user.phoneNumber}" pattern="08\d{8}" title="Starting with 08 and 10 symbols long"required maxlength="20"/>
 				</div>
 			</div>
 
