@@ -69,7 +69,10 @@
 				</div>
 			</div>
 
-			 <input type="checkbox" name="delete" value="true"> Delete account<br>
+			<input type="hidden" 
+										name="id" /> <a href="deleteAccount"> <span
+										class="w3-medium w3-text-highway-blue"><b>Delete account</b></span>
+									</a>
 			<button type="submit" class="btn btn-primary btn-large">
 				Save</button>
 			<!-- <br> <input type="submit" value="SaveProfil"> <br> -->

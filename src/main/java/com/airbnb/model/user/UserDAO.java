@@ -30,7 +30,7 @@ public class UserDAO implements IUserDAO {
 	private static final String USER_PLACES_SQL="SELECT id FROM place WHERE user_id=?;";
 	private static final String USER_VISITED_PLACES_SQL="SELECT place_id FROM reservation WHERE deleted = 0 AND user_id=?;";
 	private static final String CHECK_IS_DELETED = "SELECT deleted FROM users WHERE id = ?";
-
+	private static final String DELETE_ACCOUNT = "UPDATE users SET deleted = 1 WHERE id = ?;";
 	// TODO change with DBConnection
 	@Autowired
 	private DBConnectionTest dbConnection;
@@ -252,6 +252,16 @@ public class UserDAO implements IUserDAO {
 			
 		}catch(SQLException e) {
 			throw new InvalidUserException("Already exist user with this email.");
+		}
+	}
+	
+	@Override
+	public void deleteAccount(User user)throws InvalidUserException {
+		try(PreparedStatement ps = connection.prepareStatement(DELETE_ACCOUNT)){
+			ps.setInt(1, user.getId());
+			ps.executeUpdate();
+		}catch(SQLException e) {
+			throw new InvalidUserException("Invalid statement",e);
 		}
 	}
 

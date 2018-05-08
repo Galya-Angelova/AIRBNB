@@ -34,5 +34,7 @@ public interface IUserDAO {
 	public void addUserPlaceToUser(int placeID, User user) throws InvalidUserException;
 	
 	public boolean alreadyExistsUser(String email) throws InvalidUserException;
+
+	public void deleteAccount(User user) throws InvalidUserException;
 	
 }

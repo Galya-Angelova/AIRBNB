@@ -157,11 +157,13 @@ public class UserController {
 	@RequestMapping(value = "/updateSettings", method = RequestMethod.POST)
 	public String changeSettings(Model model, HttpSession session, @RequestParam String email,
 			@RequestParam String phoneNumber, @RequestParam String firstName, @RequestParam String lastName,
-			@RequestParam String oldPassword, @RequestParam String newPassword,/*@RequestParam("delete") String deleted*/
+			@RequestParam String oldPassword, @RequestParam String newPassword,
 			@RequestParam String newPasswordConfirm,HttpServletRequest request) {
 		try {
 			User user = (User) session.getAttribute("user");
-
+			if(user== null){
+				return "redirect: ./logout";
+			}
 			if (!userDAO.comparePasswords(user.getId(), oldPassword)) {
 				throw new InvalidUserException("Wrong password.");
 			}
@@ -179,15 +181,8 @@ public class UserController {
 			int year = bday.getYear();
 			User u = new User(user.getId(), email, password, user.isMale(), firstName, lastName, day, month, year,
 					phoneNumber);
-			boolean delete = Boolean.getBoolean(request.getParameter("delete"));
-			if(delete) {
-				u.deleteAccount();
-			}
 			userDAO.updateProfile(u);
 			session.setAttribute("user", u);
-			if(delete) {
-				return "index";
-			}
 			return "redirect: ./search";
 		} catch (InvalidUserException e) {
 			model.addAttribute("exception", e);
@@ -197,7 +192,20 @@ public class UserController {
 			return "error";
 		}
 	}
-
+	@RequestMapping(value = "/deleteAccount", method = RequestMethod.GET)
+	public String changeSettings(Model model, HttpSession session,HttpServletRequest request) {
+		try {
+			User user = (User) session.getAttribute("user");
+		if(user== null){
+			return "redirect: ./logout";
+		}
+		userDAO.deleteAccount(user);
+			return "redirect: ./logout";
+		}  catch (Exception e) {
+			model.addAttribute("exception", e);
+			return "error";
+		}
+	}
 	// @RequestMapping(value = "/becomeHost", method = RequestMethod.GET)
 	// public String becomeAHost(Model model, HttpSession session) {
 	// User user = (User) session.getAttribute("user");
