@@ -68,7 +68,11 @@
 				<span class="w3-small w3-text-black ">${place.price} euro</span> </span><br>
 			<span class="w3-medium w3-text-theme "><b>Date of posting:</b>
 				<span class="w3-small w3-text-black ">${place.dateOfPosting}
-			</span> </span><br> <br> <input type="hidden" value="${place.id }"
+			</span> </span><br>
+			<span class="w3-medium w3-text-theme "><b>Place rating:</b>
+				<span class="w3-small w3-text-black ">${avgRating}
+			</span></span><br>
+			 <br> <input type="hidden" value="${place.id }"
 				name="id" /> <a href="reservation/${place.id}"> <span
 				class="w3-medium w3-text-highway-blue"><b>Make
 						reservation</b></span>

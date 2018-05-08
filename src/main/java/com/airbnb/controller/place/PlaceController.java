@@ -320,8 +320,10 @@ public class PlaceController {
 		try {
 			PlaceDTO view = this.placeDAO.getDtoById(id);
 			List<String> placeTypes = this.placeDAO.getAllPlaceTypes();
+			double avgRating =this.placeDAO.getAvgRating(id);
 			model.addAttribute("placeTypes", placeTypes);
 			model.addAttribute("place", view);
+			model.addAttribute("avgRating",avgRating);
 			return "placeDetails";
 		} catch (InvalidPlaceException e) {
 			e.printStackTrace();

@@ -1,5 +1,6 @@
 package com.airbnb.model.place;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -28,5 +29,7 @@ public interface IPlaceDAO {
 	//public String saveImageURL(MultipartFile file, int placeId) throws InvalidPlaceException;
 	public List<PlaceDTO> gettAllPlacesForUser(int userId) throws InvalidPlaceException;
 	public void addPhotoToPlace(PlaceDTO place) throws InvalidPlaceException;
+	public void saveFileToDisk(Place place, MultipartFile f, String randomUUIDString) throws IOException;
+	public double getAvgRating(int id) throws InvalidPlaceException;
 	
 }

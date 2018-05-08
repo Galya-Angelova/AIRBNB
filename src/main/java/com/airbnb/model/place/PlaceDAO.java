@@ -58,7 +58,8 @@ public class PlaceDAO implements IPlaceDAO {
 	private static final String PLACETYPE_FROM_ID_SQL = "SELECT * FROM placetype WHERE id=?";
 	private static final String ADD_PICTURES = "INSERT INTO pictures VALUES(null,?,?);";
 	private static final String GET_PICTURES_FOR_PLACE = "SELECT pictures.path FROM pictures WHERE pictures.place_id = ?;";
-
+	private static final String GET_AVG_RATING = "SELECT rating FROM reservation WHERE deleted =0 AND place_id=?;";
+	
 	// private static int COUNT = 0;
 	@Autowired
 	private UserDAO userDAO;
@@ -574,7 +575,7 @@ public class PlaceDAO implements IPlaceDAO {
 		}
 */
 	}
-
+	
 	private void addPhotosToPlace(PlaceDTO place) throws InvalidPlaceException {
 		if (place == null) {
 			throw new InvalidPlaceException("Empty place.");
@@ -606,7 +607,7 @@ public class PlaceDAO implements IPlaceDAO {
 			throw new InvalidPlaceException("Something went wrong", e);
 		}
 	}
-
+	@Override
 	public void saveFileToDisk(Place place, MultipartFile f, String randomUUIDString) throws IOException {
 		String dirPath = IMAGE_PATH + "\\" + randomUUIDString + "\\";
 
@@ -623,6 +624,24 @@ public class PlaceDAO implements IPlaceDAO {
 		fos.close();
 
 		place.addPhotoURL(fullPath);
+	}
+	@Override
+	public double getAvgRating(int id)throws InvalidPlaceException {
+		try (PreparedStatement pr = connection.prepareStatement(GET_AVG_RATING)) {
+			pr.setInt(1, id);
+			ResultSet rs = pr.executeQuery();
+		double rating=0;
+		double count =0;
+			while (rs.next()) {
+				count++;
+				rating+=rs.getDouble("rating");
+			}
+			
+			return (rating/count);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new InvalidPlaceException("Something went wrong", e);
+		}
 	}
 
 }
