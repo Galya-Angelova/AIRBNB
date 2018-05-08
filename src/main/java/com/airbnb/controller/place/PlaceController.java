@@ -47,7 +47,7 @@ import com.airbnb.model.user.UserDAO;
 @Controller
 @MultipartConfig
 public class PlaceController {
-	private static final String ALLOWED_FILE_EXTENSIONS = ".png .jpeg .jpg .bmp";
+	private static final String IMAGE_EXTENSIONS = ".png .jpeg .jpg .bmp";
 	@Autowired
 	private PlaceDAO placeDAO;
 	@Autowired
@@ -133,7 +133,7 @@ public class PlaceController {
 			String[] fileParts = file.getOriginalFilename().split("\\.");
 			String fileExtension = fileParts[fileParts.length - 1];
 
-			if (!ALLOWED_FILE_EXTENSIONS.contains(fileExtension)) {
+			if (!IMAGE_EXTENSIONS.contains(fileExtension)) {
 				return false;
 			}
 		}
@@ -185,27 +185,6 @@ public class PlaceController {
 	}
 	
 
-	/*
-	 * @RequestMapping("/save-place") public String uploadResources(
-	 * HttpServletRequest servletRequest,
-	 * 
-	 * @ModelAttribute Place place, Model model) { //Get the uploaded files and
-	 * store them List<MultipartFile> files = place.getPhotoes(); List<String>
-	 * fileNames = new ArrayList<String>(); if (null != files && files.size() > 0) {
-	 * for (MultipartFile multipartFile : files) {
-	 * 
-	 * String fileName = multipartFile.getOriginalFilename();
-	 * fileNames.add(fileName);
-	 * 
-	 * File imageFile = new
-	 * File(servletRequest.getServletContext().getRealPath("/image"), fileName); try
-	 * { multipartFile.transferTo(imageFile); } catch (IOException e) {
-	 * e.printStackTrace(); } } }
-	 * 
-	 * // Here, you can save the product details in database
-	 * 
-	 * model.addAttribute("place", place); return "viewPlace"; }
-	 */
 
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
 	public String placeSearch(Model model) {
@@ -216,13 +195,15 @@ public class PlaceController {
 			Set<PlaceDTO> allPlaces = placeDAO.getAllPlaces();
 			List<String> placeTypes = placeDAO.getAllPlaceTypes();
 			Set<String> cities = cityDAO.getCities();
-
+			List<String> imgUrls = placeDAO.getAllPhotos();
+			
 			model.addAttribute("placeTypes", placeTypes);
 			model.addAttribute("cities", cities);
 			model.addAttribute("filter", filter);
 			model.addAttribute("editedFilter", editedFilter);
 			model.addAttribute("allPlaces", allPlaces);
-
+			model.addAttribute("allPhotosURLs", imgUrls);
+			
 			return "placeSearch";
 		} catch (InvalidPlaceException e) {
 			e.printStackTrace();

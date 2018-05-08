@@ -41,7 +41,6 @@ public class PlaceDAO implements IPlaceDAO {
 	private static final double DEFAULT_MAX_PLACE_PRICE = 500.0;
 	private static final String DEFAULT_FILTER_ORDER = "name";
 	public static final String IMAGE_PATH = "D:\\uploaded";
-	private static final String EXTENTION = ".jpg";
 
 	private static final String MIN_AND_MAX_PLACE_PRICES_SQL = "SELECT MIN(price) AS minPrice, MAX(price) maxPrice FROM place";
 	private static final String FILTERED_PLACES_SQL = "SELECT pl.id, pl.name AS name, pl.price AS price, c.name AS city,  pt.name AS placeType FROM place AS pl INNER JOIN addresses AS adr ON(pl.address_id = adr.id) INNER JOIN cities AS c ON(c.id = adr.city_id) INNER JOIN placetype AS pt ON(pl.placeType_id = pt.id) WHERE (pl.name IS NULL OR pl.name LIKE ?) AND (pl.price IS NULL OR (pl.price >= ? AND pl.price <= ?)) AND (c.name IS NULL OR c.name LIKE ?) AND";
@@ -49,8 +48,7 @@ public class PlaceDAO implements IPlaceDAO {
 	// private static final String ALL_PLACES = "SELECT * FROM place order by
 	// name ;";
 	private static final String GET_ALL_PLACES = "SELECT * FROM place;";
-	// private static final String PLACE_FROM_ID = "SELECT * FROM place WHERE
-	// id=?";
+	private static final String GET_ALL_PICTURES = "SELECT path FROM pictures;";
 	private static final String GET_PLACE_FOR_USER = "SELECT * FROM place WHERE user_id = ? order by name;";
 	private static final String ADD_PLACE_SQL = "INSERT INTO place VALUES (null, ?,false,?,?,?,?,?)";
 	private static final String ADD_PLACETYPE_SQL = "INSERT INTO placetype VALUES (null, ?)";
@@ -647,4 +645,23 @@ public class PlaceDAO implements IPlaceDAO {
 		}
 	}
 
+	public List<String> getAllPhotos() throws InvalidPlaceException{
+		try {
+			List<String> photos = new ArrayList<>();
+			Statement st = this.connection.createStatement();
+			ResultSet rs = st.executeQuery(GET_ALL_PICTURES);
+			while(rs.next()) {
+				String path = rs.getString("path");
+				String base64Encoded = this.convertFromLocalPathToBase64String(path);
+				if (!base64Encoded.isEmpty()) {
+					photos.add(base64Encoded);
+				}
+			}
+			return photos;
+		} catch (SQLException | FileNotFoundException | UnsupportedEncodingException e) {
+			throw new InvalidPlaceException("Something went wrong with images...",e);
+		} 
+		
+	
+	}
 }

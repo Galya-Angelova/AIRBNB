@@ -166,16 +166,6 @@ public class PlaceDTO {
 		 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MM-yyyy");
 		 String result = formatter.format(this.dateOfPosting);
 		 return result;
-		/*String month = this.dateOfPosting.getMonth().name(); // will give the full name of the month
-		int day = this.dateOfPosting.getDayOfMonth();
-		int year = this.dateOfPosting.getYear();
-		StringBuilder sb = new StringBuilder();
-		sb.append(day);
-		sb.append(" ");
-		sb.append(month);
-		sb.append(" ");
-		sb.append(year);
-		return sb.toString();*/
 	}
 	
 	public static LocalDate convertFromStringToLocalDate(String date) {
