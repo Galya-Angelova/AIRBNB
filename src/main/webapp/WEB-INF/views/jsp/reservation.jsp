@@ -3,21 +3,21 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page import="java.time.LocalDate" %>
-
+<%@ taglib prefix="sht" uri="http://www.springframework.org/tags" %>
 
 <jsp:include page="navigation.jsp"></jsp:include>
-<title>Reservation</title>
+<title><sht:message code="reservation.title"/></title>
 </head>
 <body>
 	<form:form action="reservation" method="post">
 		<table>
 			<tr>
-				<td>From: </td>
+				<td><sht:message code="reservation.from"/>: </td>
 				<td><input type="date" name="startDate" min=<%= LocalDate.now() %>
 					max=<%= LocalDate.now().plusYears(1) %> required></td>
 			</tr>
 			<tr>
-				<td>To: </td>
+				<td><sht:message code="reservation.to"/>: </td>
 				<td><input type="date" name="endDate" min=<%= LocalDate.now() %>
 					max=<%= LocalDate.now().plusYears(1) %> required></td>
 			</tr>
@@ -25,7 +25,7 @@
 			<td> <input id="id" name="id" type="hidden" value="${place.id }" />
 			</td>
 			<td>
-			place id<c:out value="${place.id }"/>
+			<sht:message code="reservation.forPlace"/>:<c:out value="${place.id }"/>
 			</td>
 			</tr>
 			<c:if test="${wrongDates}">Invalid dates! The end date must be after the start date!</c:if> 

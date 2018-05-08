@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-
+<%@ taglib prefix="sht" uri="http://www.springframework.org/tags" %>
 <html lang="en">
 <head>
 <!-- <style>
@@ -82,7 +82,7 @@
 			<ul class="nav navbar-nav">
 				<li class="active"><c:url var="URL" value="updateSettings">
 						<%-- <c:param name="param" value="${parameter}" /> --%>
-					</c:url> <a href="<c:out value="${URL}"/>">Settings</a></li>
+					</c:url> <a href="<c:out value="${URL}"/>"><sht:message code="navigation.settings"/></a></li>
 
 			</ul>
 			<ul class="nav navbar-nav">
@@ -98,22 +98,22 @@
 
 						<li class="active"><c:url var="URL" value="createPlace">
 								<%-- <c:param name="param" value="${parameter}" /> --%>
-							</c:url> <a href="<c:out value="${URL}"/>">Add new place</a></li>
+							</c:url> <a href="<c:out value="${URL}"/>"><sht:message code="addNewPlace.title"/></a></li>
 						<ul class="nav navbar-nav">
 						<li class="active"><c:url var="URL" value="myPlaces">
 					<%-- 		<c:param name="param" value="${parameter}" /> --%>
-							</c:url> <a href="<c:out value="${URL}"/>">My places</a></li>
+							</c:url> <a href="<c:out value="${URL}"/>"><sht:message code="myPlaces.title"/></a></li>
 						</ul>	
 							<ul class="nav navbar-nav">
 						<li class="active"><c:url var="URL" value="reservations">
 					<%-- 		<c:param name="param" value="${parameter}" /> --%>
-							</c:url> <a href="<c:out value="${URL}"/>">Awaiting reservations</a></li>
+							</c:url> <a href="<c:out value="${URL}"/>"><sht:message code="reservations.title"/></a></li>
 						</ul>	
 					</c:when>
 					<c:otherwise>
 						<li class="active"><c:url var="URL" value="createPlace">
 								<%-- <c:param name="param" value="${parameter}" /> --%>
-							</c:url> <a href="<c:out value="${URL}"/>">Become a host</a></li>
+							</c:url> <a href="<c:out value="${URL}"/>"><sht:message code="navigation.host"/></a></li>
 					</c:otherwise>
 				</c:choose>
 			</ul>
@@ -123,7 +123,7 @@
 			<ul class="nav navbar-nav">
 				<li class="active"><c:url var="URL" value="visitedPlaces">
 						<%-- <c:param name="param" value="${parameter}" /> --%>
-					</c:url> <a href="<c:out value="${URL}"/>">Visited places</a></li>
+					</c:url> <a href="<c:out value="${URL}"/>"><sht:message code="visitedPlaces.title"/></a></li>
 
 			</ul>
 			<%-- <ul class="nav navbar-nav">
@@ -136,7 +136,7 @@
 			<ul class="nav navbar-nav">
 				<li class="active"><c:url var="URL" value="search">
 						<%-- <c:param name="param" value="${parameter}" /> --%>
-					</c:url> <a href="<c:out value="${URL}"/>">Search</a></li>
+					</c:url> <a href="<c:out value="${URL}"/>"><sht:message code="header.search"/></a></li>
 
 			</ul>
 			
@@ -145,7 +145,7 @@
 				<li><c:url var="URL" value="logout">
 						<%-- <c:param name="param" value="${parameter}" /> --%>
 					</c:url> <a class="navbar-brand" href="<c:out value="${URL}"/>"><span
-						class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+						class="glyphicon glyphicon-log-out"></span> <sht:message code="navigation.logOut"/>Log out</a></li>
 			</ul>
 		</div>
 	</nav>

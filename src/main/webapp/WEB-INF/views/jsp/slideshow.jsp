@@ -3,6 +3,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="sht" uri="http://www.springframework.org/tags" %>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!--  <link rel="stylesheet" href="css/slideshow.css"/>  -->
 <style>
@@ -80,7 +81,7 @@ img {vertical-align: middle;}
 
 	<c:if test="${place.photosURLs.size() == 0 }">
 		<h5 style="text-align: center">
-			<b> No images. </b>
+			<b> <sht:message code="myPlaces.noImages"/>. </b>
 		</h5>
 		<br>
 	</c:if>

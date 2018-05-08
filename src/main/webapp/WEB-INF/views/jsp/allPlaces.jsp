@@ -2,49 +2,50 @@
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="sht" uri="http://www.springframework.org/tags" %>
 <jsp:include page="navigation.jsp"></jsp:include>
-<title>All places</title>
+<title><sht:message code="allPlace.title"/></title>
 </head>
 <body>
 	<c:forEach items="${ allPlaces }" var="place">
 		<form:form action="allPlaces" method="get">
 			<table>
 				<tr>
-					<td>Place name</td>
+					<td><sht:message code="addNewPlace.placeName"/></td>
 					<td><c:out value="${place.name}" /></td>
 				</tr>
 
 				<tr>
-					<td>Place type:</td>
+					<td><sht:message code="addNewPlace.placeType"/>:</td>
 					<td><c:out value="${place.placeTypeName}" /></td>
 				</tr>
 
 				<tr>
-					<td>Street:</td>
+					<td><sht:message code="addNewPlace.street"/>:</td>
 					<td><c:out value="${place.street}" /></td>
 				</tr>
 				<tr>
-					<td>Street number:</td>
+					<td><sht:message code="addNewPlace.streetNumber"/>:</td>
 					<td><c:out value="${place.streetNumber}" /></td>
 
 				</tr>
 				<tr>
-					<td>City :</td>
+					<td><sht:message code="addNewPlace.city"/> :</td>
 					<td><c:out value="${place.city}" /></td>
 				</tr>
 				<tr>
-					<td>Country :</td>
+					<td><sht:message code="addNewPlace.country"/> :</td>
 					<td><c:out value="${place.country}" /></td>
 				</tr>
 				<tr>
-					<td>Price:</td>
+					<td><sht:message code="addNewPlace.price"/>:</td>
 					<td><c:out value="${place.price}" /> BGN</td>
 				</tr>
 				<tr>
-					<td>Photos:</td>
+					<td><sht:message code="allPlace.photos"/>:</td>
 					<td><c:if test="${place.photosURLs.size() == 0 }">
 							<h5>
-								<b>No images. </b>
+								<b><sht:message code="myPlaces.noImages"/>. </b>
 							</h5>
 							<br>
 						</c:if></td>
@@ -70,7 +71,7 @@
 			<c:url var="URL" value="reservation">
 				<c:param name="param" value="${parameter}" />
 			</c:url>
-			<a href="<c:out value="${URL}"/>">Make reservation</a>
+			<a href="<c:out value="${URL}"/>"><sht:message code="details.makeReservation"/></a>
 		</form:form>
 		<br>---------------------------------------------------
 	</c:forEach>

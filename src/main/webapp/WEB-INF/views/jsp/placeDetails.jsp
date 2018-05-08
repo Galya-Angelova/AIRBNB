@@ -3,6 +3,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="sht" uri="http://www.springframework.org/tags" %>
 <c:choose>
 	<c:when test="${user != null}">
 		<jsp:include page="navigation.jsp"></jsp:include>
@@ -14,7 +15,7 @@
 <spring:url value="/webapp/static/css/gallery.css" var="galleryCss" />
 
 <link rel="stylesheet" href="css/gallery.css">
-<title>Details</title>
+<title><sht:message code="details.title"/></title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -67,40 +68,39 @@ $(document).ready(function(){
 	<div class="w3-col w3-container w3-margin" style="width: 45%;">
 
 		<div class="w3-container">
-			<span class="w3-medium w3-text-theme w3-text-theme"> Address:
+			<span class="w3-medium w3-text-theme w3-text-theme"> <sht:message code="myPlaces.address"/>:
 				<br>
-			</span> <span class="w3-medium w3-text-theme "><b>City:</b> <span
+			</span> <span class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.city"/>:</b> <span
 				class="w3-small w3-text-black ">${place.city}</span> </span><br> <span
-				class="w3-medium w3-text-theme "><b>Country:</b> <span
+				class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.country"/>:</b> <span
 				class="w3-small w3-text-black ">${place.country}</span> </span><br> <span
-				class="w3-medium w3-text-theme "><b>Street:</b> <span
+				class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.street"/>:</b> <span
 				class="w3-small w3-text-black ">${place.street}</span> </span><br> <span
-				class="w3-medium w3-text-theme "><b>Street number:</b> <span
+				class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.streetNumber"/>:</b> <span
 				class="w3-small w3-text-black ">${place.streetNumber}</span> </span><br>
-			<span class="w3-medium w3-text-theme "><b>Place type:</b> <span
+			<span class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.placeType"/>:</b> <span
 				class="w3-small w3-text-black ">${place.placeTypeName}</span> </span><br>
-			<span class="w3-medium w3-text-theme "><b>Price for night:</b>
+			<span class="w3-medium w3-text-theme "><b><sht:message code="myPlaces.priceNight"/>:</b>
 				<span class="w3-small w3-text-black ">${place.price} euro</span> </span><br>
-			<span class="w3-medium w3-text-theme "><b>Date of posting:</b>
+			<span class="w3-medium w3-text-theme "><b>D<sht:message code="myPlaces.postingDate"/>:</b>
 				<span class="w3-small w3-text-black ">${place.dateOfPosting}
 			</span> </span><br>
 			
 		<c:choose>
 			<c:when test="${avgRating != 0}">
-			<span class="w3-medium w3-text-theme "><b>Place rating:</b>
+			<span class="w3-medium w3-text-theme "><b><sht:message code="details.rating"/>:</b>
 				<span class="w3-small w3-text-black ">${avgRating}
 			</span></span><br>		
 			</c:when>
 			<c:otherwise>
-					<span class="w3-medium w3-text-theme "><b>Place rating:</b>
-				<span class="w3-small w3-text-black ">the place hasn't been rated yet
+					<span class="w3-medium w3-text-theme "><b><sht:message code="details.rating"/>:</b>
+				<span class="w3-small w3-text-black "><sht:message code="details.noRating"/>
 			</span></span><br>		
 			</c:otherwise>
 		</c:choose>	
 			 <br> <input type="hidden" value="${place.id }"
 				name="id" /> <a href="reservation/${place.id}"> <span
-				class="w3-medium w3-text-highway-blue"><b>Make
-						reservation</b></span>
+				class="w3-medium w3-text-highway-blue"><b><sht:message code="details.makeReservation"/></b></span>
 			</a>
 		</div>
 	</div>
@@ -122,7 +122,7 @@ $(document).ready(function(){
 			</div>
 
 			<div class="w3-panel">
-			<span class="w3-medium w3-text-theme "><b>Title:</b></span>
+			<span class="w3-medium w3-text-theme "><b><sht:message code="details.title"/>:</b></span>
 				<div id="placeNameSection" class="w3-container w3-show w3-padding ">
 					<form:input type="hidden" path="id"/>
 					<form:input type="hidden" path="placeId" value="${place.id }"/>
@@ -133,7 +133,7 @@ $(document).ready(function(){
 				</div>
 			</div>
 			<div class="w3-panel">
-				<span class="w3-medium w3-text-theme "><b>Content:</b></span>
+				<span class="w3-medium w3-text-theme "><b><sht:message code="details.content"/>:</b></span>
 				<div id="ContentSection" class="w3-container w3-show w3-padding ">
 					<form:textarea id="content" path="text" name="content"
 						class="w3-container w3-input" type="text" maxlength="1000"
@@ -142,26 +142,25 @@ $(document).ready(function(){
 			</div>
 		</form:form>
 	</div>
-		<c:if test="${invalidReviewData}">You can't post empty title or content!</c:if> 
-		<span class="w3-medium w3-text-theme w3-text-theme"> Reviews:
+		<span class="w3-medium w3-text-theme w3-text-theme"> <sht:message code="details.reviews"/>:
 				<br></span> 
-				<button>Show/Hide Reviews</button><br>
+				<button> <sht:message code="details.showHide"/></button><br>
 				<c:choose>
 			<c:when test="${reviews.isEmpty()}">
 				<h5>
-					<p>There is no reviews for this place. </p>
+					<p><sht:message code="details.noReviews"/>. </p>
 				</h5>
 				<br>
 			</c:when>
 			<c:otherwise>
 			<c:forEach var="entry" items="${reviews}">
-			<span class="w3-small w3-text-black "><p>Review made by:</p>
+			<span class="w3-small w3-text-black "><p> <sht:message code="details.reviewMade"/>:</p>
 				<span class="w3-medium w3-text-theme "><p>${entry.value.firstName} ${entry.value.lastName}</p>
 			</span></span>
-			<span class="w3-small w3-text-black "><p>Title:</p>
+			<span class="w3-small w3-text-black "><p> <sht:message code="details.title"/>:</p>
 				<span class="w3-medium w3-text-theme "><p>${entry.key.title}</p>
 			</span></span>
-			<span class="w3-small w3-text-black "><p>Content:</p>
+			<span class="w3-small w3-text-black "><p> <sht:message code="details.content"/>:</p>
 				<span class="w3-medium w3-text-theme "><p>${entry.key.text}</p>
 			</span></span><br>	<br> 
 			</c:forEach>

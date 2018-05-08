@@ -2,11 +2,12 @@
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="sht" uri="http://www.springframework.org/tags" %>
 <jsp:include page="navigation.jsp"></jsp:include>
 
 <link rel="stylesheet" href="css/gallery.css">
 
-<title>Place</title>
+<title><sht:message code="editPlace.place"/></title>
 </head>
 <body>
 	<c:choose>
@@ -14,7 +15,7 @@
 			<form action="editPlace" method="post" enctype="multipart/form-data">
 				<div class="panel-body">
 					<div class="row row-condensed space-4">
-						<label class="text-right col-sm-3" for="place_name"> Name
+						<label class="text-right col-sm-3" for="place_name"> <sht:message code="addNewPlace.placeName"/>
 						</label>
 						<div class="col-sm-9">
 
@@ -45,7 +46,7 @@
 						</div>
 					</div> --%>
 					<div class="row row-condensed space-4">
-						<label class="text-right col-sm-3" for="place_city"> City
+						<label class="text-right col-sm-3" for="place_city"> <sht:message code="addNewPlace.city"/>
 						</label>
 						<div class="col-sm-9">
 
@@ -55,7 +56,7 @@
 					</div>
 					<div class="row row-condensed space-4">
 						<label class="text-right col-sm-3" for="place_country">
-							Country </label>
+							<sht:message code="addNewPlace.country"/> </label>
 						<div class="col-sm-9">
 
 							<input id="country" name="country" size="30" type="text"
@@ -64,7 +65,7 @@
 					</div>
 					<div class="row row-condensed space-4">
 						<label class="text-right col-sm-3" for="place_street">
-							Street </label>
+							<sht:message code="addNewPlace.street"/> </label>
 						<div class="col-sm-9">
 							<input type="text" name="street" size="30"
 								value="${place.street }" pattern="[A-Za-z]{1,150}" title="Not including numbers or special characters (latin letters only)" style="text-transform: capitalize;" required maxlength="150">
@@ -72,7 +73,7 @@
 					</div>
 					<div class="row row-condensed space-4">
 						<label class="text-right col-sm-3" for="place_street_number">
-							Street number </label>
+							<sht:message code="addNewPlace.streetNumber"/> </label>
 						<div class="col-sm-9">
 							<input type="number" name="streetNumber" min="1" size="30"
 								value="${place.streetNumber }">
@@ -80,7 +81,7 @@
 					</div>
 					<div class="row row-condensed space-4">
 						<label class="text-right col-sm-3" for="place_type_name">
-							Place type: </label>
+							<sht:message code="addNewPlace.placeType"/>: </label>
 						<div class="col-sm-9">
 							<select name="placeTypeName">
 								<c:forEach items="${ placeTypes }" var="placeTypeName">
@@ -91,7 +92,7 @@
 					</div>
 					<div class="row row-condensed space-4">
 						<label class="text-right col-sm-3" for="place_price">
-							Price </label>
+							<sht:message code="addNewPlace.price"/> </label>
 						<div class="col-sm-9">
 							<input type="number" name="price" size="30"
 								value="${place.price}" />
@@ -134,7 +135,7 @@
         	    <input class="selected-images" type="file" name="files" accept="image/*" />
 			</c:forEach> --%>
 					<button type="submit" class="btn btn-primary btn-large"> 
-					Save
+					<sht:message code="editplace.save"/>
 					</button>
 				</div>
 			</form>

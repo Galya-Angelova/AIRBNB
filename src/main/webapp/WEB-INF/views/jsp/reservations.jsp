@@ -1,19 +1,20 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+    <%@ taglib prefix="sht" uri="http://www.springframework.org/tags" %>
 <!DOCTYPE html>
 <jsp:include page="navigation.jsp"></jsp:include>
 
-<title>Awaiting reservations</title>
+<title><sht:message code="reservations.title"/></title>
 </head>
 <body>
 <div id="contents" class="w3-container menus w3-right"
 		style="width: 70%; margin-right: 4%">
-		<h1>Awaiting reservations</h1>
+		<h1><sht:message code="reservations.title"/></h1>
 		<c:choose>
 			<c:when test="${reservations.isEmpty()}">
 				<h5>
-					<b>There is no awaiting reservations now. </b>
+					<b><sht:message code="reservations.noReservations"/>. </b>
 				</h5>
 				<br>
 			</c:when>
@@ -25,31 +26,31 @@
 
 							<div class="w3-col w3-container w3-margin" style="width: 45%;">
 								<span class="w3-medium w3-text-theme w3-text-theme">
-										Reservation details: <br>
+										<sht:message code="reservations.details"/>: <br>
 									</span> 
-									<span class="w3-medium w3-text-theme "><b>Reservation id:</b> <span
+									<span class="w3-medium w3-text-theme "><b><sht:message code="reservations.id"/>:</b> <span
 										class="w3-small w3-text-black ">${entry.key.id}</span> </span><br>
-									<span class="w3-medium w3-text-theme "><b>Start date:</b> <span
+									<span class="w3-medium w3-text-theme "><b><sht:message code="reservations.start"/>:</b> <span
 										class="w3-small w3-text-black ">${entry.key.startDate}</span> </span><br>
-									<span class="w3-medium w3-text-theme "><b>End date:</b> <span
+									<span class="w3-medium w3-text-theme "><b><sht:message code="reservations.end"/>:</b> <span
 										class="w3-small w3-text-black ">${entry.key.endDate}</span> </span><br>
-									<span class="w3-medium w3-text-theme "><b>Reservation was made on:</b> <span
+									<span class="w3-medium w3-text-theme "><b><sht:message code="reservations.madeOn"/>:</b> <span
 										class="w3-small w3-text-black ">${entry.key.reservationDate}</span> </span><br>
-										<span class="w3-medium w3-text-theme "><b>Guest's name:</b> <span
+										<span class="w3-medium w3-text-theme "><b><sht:message code="reservations.guestName"/>:</b> <span
 										class="w3-small w3-text-black ">${guests.get(loop.index).firstName} ${guests.get(loop.index).lastName}</span> </span><br>
-									<span class="w3-medium w3-text-theme "><b>Guest's e-mail address:</b> <span
+									<span class="w3-medium w3-text-theme "><b><sht:message code="reservations.guestEmail"/>:</b> <span
 										class="w3-small w3-text-black ">${guests.get(loop.index).email}</span> </span><br>
-										<span class="w3-medium w3-text-theme "><b>Guest's phone number:</b> <span
+										<span class="w3-medium w3-text-theme "><b><sht:message code="reservations.guestPhone"/>:</b> <span
 										class="w3-small w3-text-black ">${guests.get(loop.index).phoneNumber}</span> </span><br>
-									<span class="w3-medium w3-text-theme "><b>You have ${entry.key.daysForDeletion()} days to reject this reservation:</b></span><br>
+									<span class="w3-medium w3-text-theme "><b><sht:message code="reservations.youHave"/> ${entry.key.daysForDeletion()} <sht:message code="reservations.days"/>:</b></span><br>
 										<input type="hidden" value="${entry.key.id }"
 										name="id" /> <a href="reservations/${entry.key.id}"> <span
-										class="w3-medium w3-text-highway-blue"><b>Reject reservation</b></span>
+										class="w3-medium w3-text-highway-blue"><b><sht:message code="reservations.reject"/></b></span>
 									</a>
 							</div>
 							<div class="w3-col w3-container w3-margin" style="width: 45%;">
 								<span class="w3-medium w3-text-theme w3-text-theme">
-										Place details: <br></span> 
+										<sht:message code="reservations.placeDetails"/>: <br></span> 
 								<div class="w3-container">
 								<input type="hidden" value="${entry.value.id }" name="id" />
 									<c:url var="URL" value="placeDetails">
@@ -60,20 +61,17 @@
 										<br>
 									</a>
 									<span class="w3-medium w3-text-theme w3-text-theme">
-										Address: <br>
-									</span> <span class="w3-medium w3-text-theme "><b>City:</b> <span
+										<sht:message code="myPlaces.address"/>: <br>
+									</span> <span class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.city"/>:</b> <span
 										class="w3-small w3-text-black ">${entry.value.city}</span> </span><br>
-									<span class="w3-medium w3-text-theme "><b>Country:</b> <span
+									<span class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.country"/>:</b> <span
 										class="w3-small w3-text-black ">${entry.value.country}</span> </span><br>
-									<span class="w3-medium w3-text-theme "><b>Street:</b> <span
+									<span class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.street"/>:</b> <span
 										class="w3-small w3-text-black ">${entry.value.street}</span> </span><br>
-									<span class="w3-medium w3-text-theme "><b>Street
-											number:</b> <span class="w3-small w3-text-black ">${entry.value.streetNumber}</span>
-									</span><br> <span class="w3-medium w3-text-theme "><b>Place
-											type:</b> <span class="w3-small w3-text-black ">${entry.value.placeTypeName}</span>
-									</span><br> <span class="w3-medium w3-text-theme "><b>Price
-											for night:</b> <span class="w3-small w3-text-black ">${entry.value.price}
-											euro</span> </span><br> 
+									<span class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.streetNumber"/>:</b> <span class="w3-small w3-text-black ">${entry.value.streetNumber}</span>
+									</span><br> <span class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.placeType"/>:</b> <span class="w3-small w3-text-black ">${entry.value.placeTypeName}</span>
+									</span><br> <span class="w3-medium w3-text-theme "><b><sht:message code="myPlaces.priceNight"/>:</b> <span class="w3-small w3-text-black ">${entry.value.price}
+											<sht:message code="myPlaces.euro"/></span> </span><br> 
 								</div>
 							</div>
 						</div>

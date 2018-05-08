@@ -2,7 +2,7 @@
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-
+<%@ taglib prefix="sht" uri="http://www.springframework.org/tags" %>
 <c:choose>
 	<c:when test="${user != null}">
 		<jsp:include page="navigation.jsp"></jsp:include>
@@ -11,7 +11,7 @@
 		<jsp:include page="header.jsp"></jsp:include>
 	</c:otherwise>
 </c:choose>
-<title>Search</title>
+<title><sht:message code="header.search"/></title>
 </head>
 <body>
 	<jsp:include page="slideshow.jsp"><jsp:param name="allPhotosURLs" value="${allPhotosURLs}" />
@@ -19,7 +19,7 @@
 	</jsp:include>
 
 	<div align="center">
-		<h3>Search</h3>
+		<h3><sht:message code="header.search"/></h3>
 	</div>
 	<br>
 	<div id="filters"
@@ -31,27 +31,26 @@
 				<input class="w3-margin" type="submit" value="Filter" />
 				<button type="button"
 					onclick="openOrCloseSection('orderingSection')"
-					class="w3-small w3-btn w3-block w3-theme-d6  w3-left-align">Ordering</button>
+					class="w3-small w3-btn w3-block w3-theme-d6  w3-left-align"><sht:message code="search.order"/></button>
 				<div id="orderingSection" class="w3-container w3-show w3-padding ">
 					<form:select path="orderedBy" id="orderedBySelector"
 						class="w3-select w3-border w3-round-xxlarge" name="option">
-						<form:option value="name">Alphabetically</form:option>
-						<form:option value="price">By Price</form:option>
-						<form:option value="city">By city(alphabetically)</form:option>
-						<form:option value="placeType">By place type</form:option>
+						<form:option value="name"><sht:message code="search.alphabetically"/></form:option>
+						<form:option value="price"><sht:message code="search.byPrice"/></form:option>
+						<form:option value="city"><sht:message code="search.byCity"/></form:option>
+						<form:option value="placeType"><sht:message code="search.byPlaceType"/></form:option>
 					</form:select>
 					<form:radiobutton path="isAscending" value="true" />
-					Ascending<br>
+					<sht:message code="search.asc"/><br>
 					<form:radiobutton path="isAscending" value="false" />
-					Descending<br>
+					<sht:message code="search.desc"/><br>
 				</div>
 			</div>
 
 			<div class="w3-panel">
 				<button type="button"
 					onclick="openOrCloseSection('placeNameSection')"
-					class="w3-small w3-btn w3-block w3-theme-d6  w3-left-align">Place
-					Name</button>
+					class="w3-small w3-btn w3-block w3-theme-d6  w3-left-align"><sht:message code="addNewPlace.placeName"/></button>
 				<div id="placeNameSection" class="w3-container w3-show w3-padding ">
 					<form:input id="filterName" path="placeName" name="filterName"
 						class="w3-container w3-input" type="text" maxlength="150"
@@ -62,12 +61,12 @@
 			<div class="w3-panel">
 				<button type="button"
 					onclick="openOrCloseSection('cityNameSection')"
-					class="w3-small w3-container w3-btn w3-block w3-theme-d6 w3-left-align">City
-					Name</button>
+					class="w3-small w3-container w3-btn w3-block w3-theme-d6 w3-left-align"><sht:message code="addNewPlace.city"/>
+					</button>
 				<div id="cityNameSection" class="w3-container w3-show  w3-padding ">
 					<form:select path="city" id="citySelector"
 						class="w3-select w3-border w3-round-xxlarge" name="option">
-						<form:option value="All">All</form:option>
+						<form:option value="All"><sht:message code="search.all"/></form:option>
 						<form:options items="${cities}" />
 					</form:select>
 				</div>
@@ -75,10 +74,10 @@
 
 			<div class="w3-panel">
 				<button type="button" onclick="openOrCloseSection('priceSection')"
-					class="w3-small w3-container w3-btn w3-block w3-theme-d6 w3-left-align">Price</button>
+					class="w3-small w3-container w3-btn w3-block w3-theme-d6 w3-left-align"><sht:message code="addNewPlace.price"/>Price</button>
 				<div id="priceSection" class="w3-container w3-show  w3-padding ">
 					<div class="slidecontainer">
-						<span>Min: <span id="minPriceForNight">${editedFilter.minPriceForNight}</span></span>
+						<span><sht:message code="search.min"/>: <span id="minPriceForNight">${editedFilter.minPriceForNight}</span></span>
 						<form:input path="minPriceForNight" type="range"
 							min="${filter.minPriceForNight}" max="${filter.maxPriceForNight}"
 							value="${editedFilter.minPriceForNight}" class="slider"
@@ -86,7 +85,7 @@
 							oninput="getSliderValue('minPriceSlider','minPriceForNight')" />
 					</div>
 					<div class="slidecontainer">
-						<span>Max: <span id="maxPriceForNight">${editedFilter.maxPriceForNight}</span></span>
+						<span><sht:message code="search.max"/>: <span id="maxPriceForNight">${editedFilter.maxPriceForNight}</span></span>
 						<form:input path="maxPriceForNight" type="range"
 							min="${filter.minPriceForNight}" max="${filter.maxPriceForNight}"
 							value="${editedFilter.maxPriceForNight}" class="slider"
@@ -99,8 +98,7 @@
 			<div class="w3-panel">
 				<button type="button"
 					onclick="openOrCloseSection('placeTypesSection')"
-					class="w3-small w3-container w3-btn w3-block w3-theme-d6 w3-left-align">Place
-					Type</button>
+					class="w3-small w3-container w3-btn w3-block w3-theme-d6 w3-left-align"><sht:message code="addNewPlace.placeType"/></button>
 				<div id="placeTypesSection"
 					class="w3-container w3-show  w3-padding ">
 					<form:checkboxes path="placeTypes" items="${placeTypes}"
@@ -113,11 +111,11 @@
 	<!-- Products section -->
 	<div id="contents" class="w3-container menus w3-right"
 		style="width: 70%; margin-right: 4%">
-		<h1>Filtered products</h1>
+		<h1><sht:message code="search.filtered"/></h1>
 		<c:choose>
 			<c:when test="${allPlaces.isEmpty()}">
 				<h5>
-					<b>No results found. </b>
+					<b><sht:message code="myPlaces.noResults"/>. </b>
 				</h5>
 				<br>
 			</c:when>
@@ -148,7 +146,7 @@
 									</a> <a href="<c:out value="${URL}"/>"></a>
 									<c:if test="${place.photosURLs.size() == 0 }">
 										<h5>
-											<b>No images. </b>
+											<b><sht:message code="myPlaces.noImages"/>. </b>
 										</h5>
 										<br>
 									</c:if>
@@ -180,25 +178,20 @@
 
 								<div class="w3-container">
 									<span class="w3-medium w3-text-theme w3-text-theme">
-										Address: <br>
-									</span> <span class="w3-medium w3-text-theme "><b>City:</b> <span
+										<sht:message code="myPlaces.address"/>: <br>
+									</span> <span class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.city"/>:</b> <span
 										class="w3-small w3-text-black ">${place.city}</span> </span><br>
-									<span class="w3-medium w3-text-theme "><b>Country:</b> <span
+									<span class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.country"/>:</b> <span
 										class="w3-small w3-text-black ">${place.country}</span> </span><br>
-									<span class="w3-medium w3-text-theme "><b>Street:</b> <span
+									<span class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.street"/>:</b> <span
 										class="w3-small w3-text-black ">${place.street}</span> </span><br>
-									<span class="w3-medium w3-text-theme "><b>Street
-											number:</b> <span class="w3-small w3-text-black ">${place.streetNumber}</span>
-									</span><br> <span class="w3-medium w3-text-theme "><b>Place
-											type:</b> <span class="w3-small w3-text-black ">${place.placeTypeName}</span>
-									</span><br> <span class="w3-medium w3-text-theme "><b>Price
-											for night:</b> <span class="w3-small w3-text-black ">${place.price}
-											euro</span> </span><br> <span class="w3-medium w3-text-theme "><b>Date
-											of posting:</b> <span class="w3-small w3-text-black ">${place.dateOfPosting}
+									<span class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.streetNumber"/>:</b> <span class="w3-small w3-text-black ">${place.streetNumber}</span>
+									</span><br> <span class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.placeType"/>:</b> <span class="w3-small w3-text-black ">${place.placeTypeName}</span>
+									</span><br> <span class="w3-medium w3-text-theme "><b><sht:message code="myPlaces.priceNight"/>:</b> <span class="w3-small w3-text-black ">${place.price}
+											<sht:message code="myPlaces.euro"/></span> </span><br> <span class="w3-medium w3-text-theme "><b><sht:message code="myPlaces.postingDate"/>:</b> <span class="w3-small w3-text-black ">${place.dateOfPosting}
 									</span> </span><br> <br> <input type="hidden" value="${place.id }"
 										name="id" /> <a href="reservation/${place.id}"> <span
-										class="w3-medium w3-text-highway-blue"><b>Make
-												reservation</b></span>
+										class="w3-medium w3-text-highway-blue"><b><sht:message code="details.makeReservation"/></b></span>
 									</a>
 								</div>
 							</div>

@@ -2,19 +2,20 @@
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="sht" uri="http://www.springframework.org/tags" %>
 <jsp:include page="navigation.jsp"></jsp:include>
-<title>My places</title>
+<title><sht:message code="myPlaces.title"/></title>
 </head>
 <body>
 
 <div id="contents" class="w3-container menus w3-right"
 		style="width: 70%; margin-right: 4%">
-		<h1>My places</h1>
+		<h1><sht:message code="myPlaces.title"/></h1>
 		<c:choose>
 			<c:when test="${userPlaces.isEmpty()}">
 				<h5>
 				"${place.id }"
-					<b>No results found. </b>
+					<b><sht:message code="myPlaces.noResults"/>. </b>
 				</h5>
 				<br>
 			</c:when>
@@ -32,7 +33,7 @@
 										<br>
 									<c:if test="${place.photosURLs.size() == 0 }">
 										<h5>
-											<b>No images. </b>
+											<b><sht:message code="myPlaces.noImages"/>. </b>
 										</h5>
 										<br>
 									</c:if>
@@ -64,21 +65,18 @@
 
 								<div class="w3-container">
 									<span class="w3-medium w3-text-theme w3-text-theme">
-										Address: <br>
-									</span> <span class="w3-medium w3-text-theme "><b>City:</b> <span
+										<sht:message code="myPlaces.address"/>: <br>
+									</span> <span class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.city"/>:</b> <span
 										class="w3-small w3-text-black ">${place.city}</span> </span><br>
-									<span class="w3-medium w3-text-theme "><b>Country:</b> <span
+									<span class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.country"/>:</b> <span
 										class="w3-small w3-text-black ">${place.country}</span> </span><br>
-									<span class="w3-medium w3-text-theme "><b>Street:</b> <span
+									<span class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.street"/>:</b> <span
 										class="w3-small w3-text-black ">${place.street}</span> </span><br>
-									<span class="w3-medium w3-text-theme "><b>Street
-											number:</b> <span class="w3-small w3-text-black ">${place.streetNumber}</span>
-									</span><br> <span class="w3-medium w3-text-theme "><b>Place
-											type:</b> <span class="w3-small w3-text-black ">${place.placeTypeName}</span>
-									</span><br> <span class="w3-medium w3-text-theme "><b>Price
-											for night:</b> <span class="w3-small w3-text-black ">${place.price}
-											euro</span> </span><br>
-											 <span class="w3-medium w3-text-theme "><b>Date of posting:</b> <span class="w3-small w3-text-black ">${place.dateOfPosting}
+									<span class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.streetNumber"/>:</b> <span class="w3-small w3-text-black ">${place.streetNumber}</span>
+									</span><br> <span class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.placeType"/>:</b> <span class="w3-small w3-text-black ">${place.placeTypeName}</span>
+									</span><br> <span class="w3-medium w3-text-theme "><b><sht:message code="myPlaces.priceNight"/>:</b> <span class="w3-small w3-text-black ">${place.price}
+											<sht:message code="myPlaces.euro"/></span> </span><br>
+											 <span class="w3-medium w3-text-theme "><b><sht:message code="myPlaces.postingDate"/>:</b> <span class="w3-small w3-text-black ">${place.dateOfPosting}
 											</span> </span><br>
 											<input type="hidden" value = "${place.id }" name = "id"/>
 											<c:url var="URL" value="editPlace">

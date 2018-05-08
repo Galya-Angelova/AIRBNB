@@ -2,13 +2,13 @@
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-
+<%@ taglib prefix="sht" uri="http://www.springframework.org/tags" %>
 <!-- Gallery -->
 
-	<h2 style="text-align: center">Gallery</h2>
+	<h2 style="text-align: center"><sht:message code="gallery.title"/></h2>
 	<c:if test="${place.photosURLs.size() == 0 }">
 		<h5 style="text-align: center">
-			<b> No images. </b>
+			<b><sht:message code="myPlaces.noImages"/>. </b>
 		</h5>
 		<br>
 	</c:if>

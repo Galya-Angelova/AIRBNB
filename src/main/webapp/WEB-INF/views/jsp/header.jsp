@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="sht" uri="http://www.springframework.org/tags" %>
 <html lang="en">
 <head>
 <link rel="shortcut icon" type="image/png" href="img/favicon.ico"/>
@@ -45,18 +46,21 @@
 			<ul class="nav navbar-nav">
 				<li class="active"><c:url var="URL" value="search">
 						<%-- <c:param name="param" value="${parameter}" /> --%>
-					</c:url> <a href="<c:out value="${URL}"/>">Search</a></li>
+					</c:url> <a href="<c:out value="${URL}"/>"><sht:message code="header.search"/></a></li>
 
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li><c:url var="URL" value="register">
 						<%-- <c:param name="param" value="${parameter}" /> --%>
 					</c:url> <a href="<c:out value="${URL}"/>"><span
-						class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+						class="glyphicon glyphicon-user"></span> <sht:message code="header.sign"/></a></li>
 				<li><c:url var="URL" value="login">
 						<%-- <c:param name="param" value="${parameter}" /> --%>
 					</c:url> <a href="<c:out value="${URL}"/>"><span
-						class="glyphicon glyphicon-log-in"></span> Login</a></li>
+						class="glyphicon glyphicon-log-in"></span> <sht:message code="header.login"/></a></li>
+					
+						<a href="?language=en">English</a>
+						<a href="?language=es">Espanol</a>
 			</ul>
 		</div>
 	</nav>
