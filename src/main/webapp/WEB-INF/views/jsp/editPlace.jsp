@@ -4,6 +4,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <jsp:include page="navigation.jsp"></jsp:include>
 
+<link rel="stylesheet" href="css/gallery.css">
+
 <title>Place</title>
 </head>
 <body>
@@ -41,9 +43,10 @@
 							<input id="city" name="city" size="30"
 								type="text" value="${place.city}" />
 						</div>
-					</div> --%><div class="row row-condensed space-4">
-						<label class="text-right col-sm-3" for="place_city">
-							City </label>
+					</div> --%>
+					<div class="row row-condensed space-4">
+						<label class="text-right col-sm-3" for="place_city"> City
+						</label>
 						<div class="col-sm-9">
 
 							<input id="city" name="city" size="30" type="text"
@@ -63,26 +66,27 @@
 						<label class="text-right col-sm-3" for="place_street">
 							Street </label>
 						<div class="col-sm-9">
-							<input type="text" name="street" size="30" value="${place.street }"
-								 required>
+							<input type="text" name="street" size="30"
+								value="${place.street }" required>
 						</div>
 					</div>
 					<div class="row row-condensed space-4">
 						<label class="text-right col-sm-3" for="place_street_number">
 							Street number </label>
 						<div class="col-sm-9">
-							<input type="number" name="streetNumber" min = "1" size="30" value = "${place.streetNumber }">
+							<input type="number" name="streetNumber" min="1" size="30"
+								value="${place.streetNumber }">
 						</div>
 					</div>
 					<div class="row row-condensed space-4">
 						<label class="text-right col-sm-3" for="place_type_name">
-							Place type:  </label>
+							Place type: </label>
 						<div class="col-sm-9">
 							<select name="placeTypeName">
-						<c:forEach items="${ placeTypes }" var="placeTypeName">
-							<option value="${placeTypeName}">${ placeTypeName }</option>
-						</c:forEach>
-				</select>
+								<c:forEach items="${ placeTypes }" var="placeTypeName">
+									<option value="${placeTypeName}">${ placeTypeName }</option>
+								</c:forEach>
+							</select>
 						</div>
 					</div>
 					<div class="row row-condensed space-4">
@@ -93,9 +97,10 @@
 								value="${place.price}" />
 						</div>
 					</div>
-					<input type="hidden" name="dateOfPosting" value="${place.dateOfPosting }" />
-				
-			<c:if test="${place.photosURLs.size() == 0 }">
+					<input type="hidden" name="dateOfPosting"
+						value="${place.dateOfPosting }" />
+
+					<%-- <c:if test="${place.photosURLs.size() == 0 }">
 										<h5>
 											<b>No images. </b>
 										</h5>
@@ -120,13 +125,17 @@
 												</span>
 											</c:forEach>
 										</div>
-									</c:if>
-									<c:forEach begin="0" end="${ 2 }">
-        		<input type="hidden" name="MAX_FILE_SIZE" value="5242880" /> 
+									</c:if> --%>
+					<jsp:include page="photoGallery.jsp">
+						<jsp:param name="place" value="${place}" />
+					</jsp:include>
+					<%--		<c:forEach begin="0" end="${ 2 }">
+        		 <input type="hidden" name="MAX_FILE_SIZE" value="5242880" /> 
         	    <input class="selected-images" type="file" name="files" accept="image/*" />
 			</c:forEach> 
-					<button type="submit" class="btn btn-primary btn-large">
-						Save</button>
+					<button type="submit" class="btn btn-primary btn-large"> --%>
+					Save
+					</button>
 				</div>
 			</form>
 
