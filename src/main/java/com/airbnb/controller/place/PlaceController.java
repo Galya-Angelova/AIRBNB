@@ -3,7 +3,9 @@ package com.airbnb.controller.place;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import javax.servlet.ServletException;
@@ -12,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -35,6 +38,9 @@ import com.airbnb.model.place.Place;
 import com.airbnb.model.place.PlaceDAO;
 import com.airbnb.model.place.PlaceDTO;
 import com.airbnb.model.place.PlaceSearchInfo;
+import com.airbnb.model.reservation.Reservation;
+import com.airbnb.model.review.Review;
+import com.airbnb.model.review.ReviewDAO;
 import com.airbnb.model.user.User;
 import com.airbnb.model.user.UserDAO;
 
@@ -52,7 +58,9 @@ public class PlaceController {
 	private AddressDAO addressDAO;
 	@Autowired
 	private UserDAO userDAO;
-
+	@Autowired
+	private ReviewDAO reviewDAO;
+	
 	@RequestMapping(value = "/createPlace", method = RequestMethod.GET)
 	public String createPlace(Model model, HttpSession session) {
 		if (session.getAttribute("user") == null) {
@@ -161,7 +169,6 @@ public class PlaceController {
 	public String getUserPlaces(Model model, HttpSession session) {
 		User user = (User) session.getAttribute("user");
 		if (user == null) {
-
 			return "redirect: ./logout";
 		}
 		try {
@@ -300,7 +307,7 @@ public class PlaceController {
 			
 			model.addAttribute("place", place);
 			if (isEdited) {
-				return "redirect: myPlaces";
+				return "redirect:/myPlaces";
 			} else {
 				return "editPlace";
 			}
@@ -320,10 +327,20 @@ public class PlaceController {
 		try {
 			PlaceDTO view = this.placeDAO.getDtoById(id);
 			List<String> placeTypes = this.placeDAO.getAllPlaceTypes();
-			double avgRating =this.placeDAO.getAvgRating(id);
+			double rating =this.placeDAO.getAvgRating(id);
+			double avgRating = Math.round(rating * 100.0) / 100.0;
+			Map<Review, User> reviews = new TreeMap<Review, User>((r1, r2) -> {
+				return r2.getId() - r1.getId();
+			});
+			List<Review> reviewsList= reviewDAO.getAllReviewsForPlace(id);
+			for (Review review : reviewsList) {
+				reviews.put(review, userDAO.userFromId(review.getUserId()));
+			}
 			model.addAttribute("placeTypes", placeTypes);
 			model.addAttribute("place", view);
 			model.addAttribute("avgRating",avgRating);
+			model.addAttribute("reviews",reviews);
+			model.addAttribute("newReview",new Review());
 			return "placeDetails";
 		} catch (InvalidPlaceException e) {
 			e.printStackTrace();
@@ -334,7 +351,29 @@ public class PlaceController {
 			model.addAttribute("exception", e);
 			return "error";
 		}
-
+	}
 	
+	@RequestMapping(value = "/placeDetails", method = RequestMethod.POST)
+	public String addReviewToPlaceDetail(Model model, @ModelAttribute("newReview") Review review,
+			BindingResult result,HttpSession session) {
+		try {
+			if (result.hasErrors()) {
+				throw new InvalidPlaceException("Invalid review data");
+			}
+			User user= (User) session.getAttribute("user");
+			if (user == null) {
+				return "redirect:/placeDetails?id="+review.getPlaceId();
+			}
+			reviewDAO.createReview(review);
+			return "redirect:/placeDetails?id="+review.getPlaceId();
+		} catch (InvalidPlaceException e) {
+			e.printStackTrace();
+			model.addAttribute("exception", e);
+			return "error";
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("exception", e);
+			return "error";
+		}
 	}
 }

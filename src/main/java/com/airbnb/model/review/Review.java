@@ -9,12 +9,16 @@ public class Review {
 	private String title;
 	private String text;
 	private int placeId;
+	private int userId;
 	
-	public Review(int id, String title, String text, int placeId) {
-		this.id = id;
-		this.title = title;
-		this.text = text;
-		this.placeId = placeId;
+	public Review(){}
+	
+	public Review(int id, String title, String text, int placeId,int userId) throws InvalidReviewException {
+		setId(id);
+		setTitle(title);
+		setText(text);
+		setPlaceId(placeId);
+		setUserId(userId);
 	}
 
 //	Setters
@@ -42,7 +46,7 @@ public class Review {
 		}
 	}
 
-	public void setPlace(int placeId) throws InvalidReviewException {
+	public void setPlaceId(int placeId) throws InvalidReviewException {
 		if (placeId >= POSITIVE) {
 			this.placeId = placeId;
 		} else {
@@ -50,6 +54,13 @@ public class Review {
 		}
 	}
 	
+	public void setUserId(int userId) throws InvalidReviewException {
+		if (userId >= POSITIVE) {
+			this.userId = userId;
+		} else {
+			throw new InvalidReviewException("Invalid id for review's user.");
+		}
+	}
 //	Getters
 	public int getId() {
 		return this.id;
@@ -63,8 +74,11 @@ public class Review {
 		return this.text;
 	}
 
-	public int getPlace() {
+	public int getPlaceId() {
 		return this.placeId;
 	}
-
+	
+	public int getUserId() {
+		return this.userId;
+	}
 }

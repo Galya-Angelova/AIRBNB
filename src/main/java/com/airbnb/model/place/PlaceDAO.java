@@ -636,8 +636,11 @@ public class PlaceDAO implements IPlaceDAO {
 				count++;
 				rating+=rs.getDouble("rating");
 			}
-			
-			return (rating/count);
+			if(rating>0){
+				return (rating/count);
+			}else{
+				return 0;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new InvalidPlaceException("Something went wrong", e);
