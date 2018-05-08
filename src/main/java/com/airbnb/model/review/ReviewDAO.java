@@ -5,23 +5,28 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.airbnb.exceptions.InvalidReviewException;
 import com.airbnb.model.db.DBConnectionTest;
+import com.airbnb.model.reservation.Reservation;
 
 @Component
 public class ReviewDAO implements IReviewDAO {
 
+	private static final String GET_ALL_REVIEWS_FOR_PLACE = "SELECT * FROM review WHERE place_id=? ORDER BY id DESC;";
 	// private static final String INSERT_REVIEW = "INSERT INTO review
 	// values(null,'Title','Text',1);";
-	private static final String INSERT_REVIEW = "INSERT INTO review values(null,?,?,((SELECT place.id FROM place WHERE place.name = ?));";
+	private static final String INSERT_REVIEW = "INSERT INTO review values(null,?,?,?,?);";
 	/*@Autowired
 	private static DBConnectionTest dbConnection;
 	private static Connection connection;
-
+SELECT * FROM review WHERE place_id=1;
 	static {
 		try {
 			dbConnection = new DBConnectionTest();
@@ -44,40 +49,47 @@ public class ReviewDAO implements IReviewDAO {
 		connection = this.dbConnection.getConnection();
 	}
 	@Override
-	public int createReview(String title, String text, String placeName) throws InvalidReviewException {
-		if (title != null && text != null && placeName != null
-				&& !(title.isEmpty() || text.isEmpty() || placeName.isEmpty())) {
+	public int createReview(Review review) throws InvalidReviewException {
 			try (PreparedStatement ps = connection.prepareStatement(INSERT_REVIEW, Statement.RETURN_GENERATED_KEYS)) {
-//				connection.setAutoCommit(false);
-				ps.setString(1, title);
-				ps.setString(2, text);
-				ps.setString(3, placeName);
-
+				ps.setString(1, review.getTitle());
+				ps.setString(2, review.getText());
+				ps.setInt(3, review.getPlaceId());
+				ps.setInt(4, review.getUserId());
+				
+				ps.executeUpdate();
+				
 				ResultSet rs = ps.getGeneratedKeys();
 				rs.next();
-
-//				connection.commit();
-//				ps.close();
 
 				return rs.getInt(1);
 
 			}catch (SQLException e) {
-//				try {
-//					connection.rollback();
-//				} catch (SQLException e1) {
-//					throw new InvalidReviewException("Oops something went wrong.", e1);
-//				}
+				e.printStackTrace();
 				throw new InvalidReviewException("Invalid statement", e);
-//			}finally {
-//				try {
-//					connection.setAutoCommit(false);
-//				} catch (SQLException e) {
-//					throw new InvalidReviewException("Set auto commit false error", e);
-//				}
 			}
-		}else {
-			throw new InvalidReviewException("Please insert title, text and place name.");
+	}
+	
+	@Override
+	public List<Review> getAllReviewsForPlace(int place_id) throws InvalidReviewException{
+		List<Review> reviews = new ArrayList<Review>();
+		try (PreparedStatement ps = connection.prepareStatement(GET_ALL_REVIEWS_FOR_PLACE)) {
+			ps.setInt(1, place_id);
+
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+
+				int id = rs.getInt("id");
+				String title= rs.getString("title");
+				String text= rs.getString("text");
+				int placeId = rs.getInt("place_id");
+				int userId = rs.getInt("user_id");
+				
+				reviews.add(new Review(id, title, text, placeId, userId));
+			}
+			return reviews;
+		}catch (SQLException e) {
+			throw new InvalidReviewException("Invalid statement", e);
 		}
 	}
-
+	
 }

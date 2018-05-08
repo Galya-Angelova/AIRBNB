@@ -3,14 +3,29 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<jsp:include page="navigation.jsp"></jsp:include>
+<c:choose>
+	<c:when test="${user != null}">
+		<jsp:include page="navigation.jsp"></jsp:include>
+	</c:when>
+	<c:otherwise>
+		<jsp:include page="header.jsp"></jsp:include>
+	</c:otherwise>
+</c:choose>
 <spring:url value="/webapp/static/css/gallery.css" var="galleryCss" />
 
 <link rel="stylesheet" href="css/gallery.css">
 <title>Details</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    $("button").click(function(){
+        $("p").toggle();
+    });
+});
+</script>
+</head>
 <body>
 	<div class="w3-col w3-container w3-margin" style="width: 45%;">
 
@@ -69,9 +84,19 @@
 			<span class="w3-medium w3-text-theme "><b>Date of posting:</b>
 				<span class="w3-small w3-text-black ">${place.dateOfPosting}
 			</span> </span><br>
+			
+		<c:choose>
+			<c:when test="${avgRating != 0}">
 			<span class="w3-medium w3-text-theme "><b>Place rating:</b>
 				<span class="w3-small w3-text-black ">${avgRating}
-			</span></span><br>
+			</span></span><br>		
+			</c:when>
+			<c:otherwise>
+					<span class="w3-medium w3-text-theme "><b>Place rating:</b>
+				<span class="w3-small w3-text-black ">the place hasn't been rated yet
+			</span></span><br>		
+			</c:otherwise>
+		</c:choose>	
 			 <br> <input type="hidden" value="${place.id }"
 				name="id" /> <a href="reservation/${place.id}"> <span
 				class="w3-medium w3-text-highway-blue"><b>Make
@@ -80,7 +105,70 @@
 		</div>
 	</div>
 	
-	
+	<div class="w3-col w3-container w3-margin" style="width: 45%;">
+		<div class="w3-container">
+		
+		
+		
+		
+		
+		<div id="review"
+		class="w3-container w3-white w3-round-xxlarge menus"
+		style="margin-left: 2%;">
+		<form:form modelAttribute="newReview">
+
+			<div class="w3-panel">
+				<input class="w3-margin" type="submit" value="Add review" />
+			</div>
+
+			<div class="w3-panel">
+			<span class="w3-medium w3-text-theme "><b>Title:</b></span>
+				<div id="placeNameSection" class="w3-container w3-show w3-padding ">
+					<form:input type="hidden" path="id"/>
+					<form:input type="hidden" path="placeId" value="${place.id }"/>
+					<form:input type="hidden" path="userId" value="${sessionScope.user.id }"/>
+					<form:input id="title" path="title" name="title"
+						class="w3-container w3-input" type="text" maxlength="100"
+						placeholder="Enter Title here" />
+				</div>
+			</div>
+			<div class="w3-panel">
+				<span class="w3-medium w3-text-theme "><b>Content:</b></span>
+				<div id="ContentSection" class="w3-container w3-show w3-padding ">
+					<form:textarea id="content" path="text" name="content"
+						class="w3-container w3-input" type="text" maxlength="1000"
+						placeholder="Enter Content here" rows="5" cols="44" />
+				</div>
+			</div>
+		</form:form>
+	</div>
+		<c:if test="${invalidReviewData}">You can't post empty title or content!</c:if> 
+		<span class="w3-medium w3-text-theme w3-text-theme"> Reviews:
+				<br></span> 
+				<button>Show/Hide Reviews</button><br>
+				<c:choose>
+			<c:when test="${reviews.isEmpty()}">
+				<h5>
+					<p>There is no reviews for this place. </p>
+				</h5>
+				<br>
+			</c:when>
+			<c:otherwise>
+			<c:forEach var="entry" items="${reviews}">
+			<span class="w3-small w3-text-black "><p>Review made by:</p>
+				<span class="w3-medium w3-text-theme "><p>${entry.value.firstName} ${entry.value.lastName}</p>
+			</span></span>
+			<span class="w3-small w3-text-black "><p>Title:</p>
+				<span class="w3-medium w3-text-theme "><p>${entry.key.title}</p>
+			</span></span>
+			<span class="w3-small w3-text-black "><p>Content:</p>
+				<span class="w3-medium w3-text-theme "><p>${entry.key.text}</p>
+			</span></span><br>	<br> 
+			</c:forEach>
+				</c:otherwise>
+		</c:choose>
+		</div>
+	</div>
 
 	<jsp:include page="photoGallery.jsp">
 		<jsp:param name="place" value="${place}"/>

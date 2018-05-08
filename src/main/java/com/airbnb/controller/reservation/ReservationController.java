@@ -204,7 +204,7 @@ public class ReservationController {
 			Reservation reservation = reservationDAO.reservationFromId(id);
 			LocalDate sevenDaysPeriod = reservation.getEndDate().minusDays(7);
 			if (sevenDaysPeriod.isBefore(LocalDate.now())) {
-				return "redirect:/reservations";
+				return "redirect:/visitedPlaces";
 			}
 			reservationDAO.deleteReservation(id);
 			short days = (short) reservation.getStartDate().until(reservation.getEndDate(), ChronoUnit.DAYS);
