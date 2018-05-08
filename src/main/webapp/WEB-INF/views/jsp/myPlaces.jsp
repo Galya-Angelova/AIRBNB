@@ -23,22 +23,13 @@
 					<div class="w3-container w3-border w3-round-xxlarge w3-white"
 						style="margin-top: 2%">
 						<div class="w3-row-padding">
-							<!-- <div class="w3-col w3-container w3-margin" style="width:25%;">
-				<div class="w3-container w3-padding">
-	        		<a href="place/${place1.id}">
-	        			<img src="getPic?pic=${place1.mainPic}" title="${place1.name}" class = "w3-round" style="width:100%; height:225px;">
-	        		</a>
-	        	</div>
-	        </div>  -->
+							
 							<div class="w3-col w3-container w3-margin" style="width: 45%;">
 
-
-
 								<div class="w3-container">
-									<a href="place/${place.id}"> <span
-										class="w3-large w3-text-highway-blue"><b>${place.name}</b></span><br>
+									<%-- <a href="place/${place.id}"> <span
+										class="w3-large w3-text-highway-blue"> --%><b>${place.name}</b></span><br>
 										<br>
-									</a>
 									<c:if test="${place.photosURLs.size() == 0 }">
 										<h5>
 											<b>No images. </b>
@@ -94,9 +85,6 @@
 		<c:param name="id" value="${place.id}" /> 
 	</c:url>
 	<a href="<c:out value="${URL}"/>">Edit place</a>
-									<!-- <br> <a href="editPlace"> <span
-										class="w3-medium w3-text-highway-blue"><b>Edit place</b></span>
-									</a> -->
 								</div>
 							</div>
 						</div>
@@ -106,70 +94,5 @@
 		</c:choose>
 	</div>
 
-	<%-- <br>
-	<c:forEach items="${ userPlaces }" var="place">
-		<form:form action="myPlaces" method="get">
-			<table>
-				<tr>
-					<td>Place name</td>
-					<td><c:out value="${place.name}" /></td>
-				</tr>
-
-				<tr>
-					<td>Place type:</td>
-					<td><c:out value="${place.placeTypeName}" /></td>
-				</tr>
-
-				<tr>
-					<td>Street:</td>
-					<td><c:out value="${place.street}" /></td>
-				</tr>
-				<tr>
-					<td>Street number:</td>
-					<td><c:out value="${place.streetNumber}" /></td>
-
-				</tr>
-				<tr>
-					<td>City :</td>
-					<td><c:out value="${place.city}" /></td>
-				</tr>
-				<tr>
-					<td>Country :</td>
-					<td><c:out value="${place.country}" /></td>
-				</tr>
-				<tr>
-					<td>Price:</td>
-					<td><c:out value="${place.price}" /> BGN</td>
-				</tr>
-				<tr>
-					<td>Photos:</td>
-					<td><c:if test="${place.photosURLs.size() == 0 }">
-							<h5>
-								<b>No images. </b>
-							</h5>
-							<br>
-						</c:if></td>
-					<c:if test="${place.photosURLs.size() > 0 }">
-						<div class="et_pb_gallery_items et_post_gallery" data-per_page="3">
-							<c:forEach items="${place.photosURLs }" var="url">
-								<span
-									class="et_pb_gallery_item et_pb_grid_item et_pb_bg_layout_light">
-									<span class="et_pb_gallery_image landscape"> <a
-										href="data:image/jpeg;base64,${url}"
-										title="27747975_2074584502761278_1171650822192642176_o"> <img
-											width=300px src="data:image/jpeg;base64,${url}"
-											data-lazy-src="data:image/jpeg;base64,${url}"
-											alt="27747975_2074584502761278_1171650822192642176_o"
-											class="lazyloaded">
-									</a>
-								</span>
-								</span>
-							</c:forEach>
-						</div>
-					</c:if>
-			</table>
-		</form:form>
-		<br>-------------------------------------------------------------------
-	</c:forEach> --%>
 </body>
 </html>

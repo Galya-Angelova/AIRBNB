@@ -4,7 +4,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <jsp:include page="navigation.jsp"></jsp:include>
-<c:set var="maxImages" value="2"/>
+<c:set var="maxImages" value="3"/>
 <title>Add new place</title>
 <body>
 	<h3>Add new place</h3>
@@ -53,44 +53,18 @@
 					step="any" min="0" required></td>
 			</tr>
 			<tr>
-				<td>Photos</td>
+				<td></td>
 				<td>
-					<!-- <div class="container">
-						<input type="file" name="file" id="file" style="display: none">
-
-						Drag and Drop container
-						<div class="upload-area" id="uploadfile"
-							style="width: 70%; height: 200px; border: 2px solid lightgray; border-radius: 3px; margin: 0 auto; margin-top: 0px; text-align: center; overflow: auto;">
-							<h2
-								style="text-align: center; font-weight: normal; font-family: sans-serif; line-height: 50px; color: darkslategray;">
-								Drag and Drop images here<br />Or<br />Click to select
-							</h2>
-						</div>
-					</div> --> 
-					<%-- <form method="POST" action="uploadFile"
-						enctype="multipart/form-data">
-						File to upload: <input type="file" name="file"><br />
-						Name: <input type="text" name="name"><br /> <br /> <input
-							type="submit" value="Upload"> Press here to upload the
-						file!
-					</form>  --%>
-				<!-- <td></td> -->
-				<!-- 
-				<tr>
-				<td>Select a file to upload</td>
-				<td><input type="file" name="file" /></td>
-			</tr>
-			<tr>
-				<td>Select a file to upload</td>
-				<td><input type="file" name="file" /></td>
-			</tr>
-			<tr>
-				<td>Select a file to upload</td>
-				<td><input type="file" name="file" /></td>
-			</tr> -->
-			<c:forEach begin="0" end="${ maxImages }">
-        		<input type="hidden" name="MAX_FILE_SIZE" value="5242880" /> 
+					
+			<b>Choose thumbnail: </b>
+			<input type="hidden" name="MAX_FILE_SIZE" value="5242880" /> 
         	    <input class="selected-images" type="file" name="files" accept="image/*" />
+        		<input type="hidden" name="MAX_FILE_SIZE" value="5242880" /> 
+        		<b>Choose photos</b>
+			<c:forEach begin="0" end="${ maxImages }" varStatus="loop">
+			
+        	    <input class="selected-images" type="file" name="files" accept="image/*" />
+        	    
 			</c:forEach> 
 		</table>
 		<br>

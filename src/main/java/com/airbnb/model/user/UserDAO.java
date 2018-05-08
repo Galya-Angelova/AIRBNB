@@ -29,7 +29,6 @@ public class UserDAO implements IUserDAO {
 	private static final String UPDATE_USER_PROFIL_SQL = "UPDATE users SET email = ? , firstName = ? , lastName = ? , phone = ? , password = ? , deleted= ? WHERE id = ?;";
 	private static final String USER_PLACES_SQL="SELECT id FROM place WHERE user_id=?;";
 	private static final String USER_VISITED_PLACES_SQL="SELECT place_id FROM reservation WHERE deleted = 0 AND user_id=?;";
-	private static final String DELETE_ACCOUNT = "UPDATE users SET deleted = 1 WHERE id = ?";
 	private static final String CHECK_IS_DELETED = "SELECT deleted FROM users WHERE id = ?";
 
 	// TODO change with DBConnection

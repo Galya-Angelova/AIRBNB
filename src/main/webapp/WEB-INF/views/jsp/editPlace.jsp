@@ -132,8 +132,8 @@
 					<%--		<c:forEach begin="0" end="${ 2 }">
         		 <input type="hidden" name="MAX_FILE_SIZE" value="5242880" /> 
         	    <input class="selected-images" type="file" name="files" accept="image/*" />
-			</c:forEach> 
-					<button type="submit" class="btn btn-primary btn-large"> --%>
+			</c:forEach> --%>
+					<button type="submit" class="btn btn-primary btn-large"> 
 					Save
 					</button>
 				</div>

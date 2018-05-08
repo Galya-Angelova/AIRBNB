@@ -10,11 +10,15 @@
 	<table>
 		<tr>
 			<td>Enter email</td>
-			<td><input type="email" name="email" required></td>
+			<td><input onchange="this.setCustomValidity(validity.valueMissing ? 'Please insert your email' : '');"
+			 id="email"  required name="email" type = "email">
+			<!-- <input type="email" name="email" required></td> -->
 		</tr>
 		<tr>
 			<td>Enter password</td>
-			<td><input type="password" name="password" required></td>
+			<td><input onchange="this.setCustomValidity(validity.valueMissing ? 'Please insert your password' : '');"
+			 id="password"  required name="password" type = "password"></td>
+			<!-- <input type="password" name="password" required></td> -->
 		</tr>
 	</table>
 	<input type="submit" value="Login"><br> Don't have an
@@ -24,5 +28,10 @@
 	</c:url>
 	<a href="<c:out value="${URL}"/>">Register here</a>
 </form>
+
+<script type="text/javascript">
+  document.getElementById("password").setCustomValidity("Please insert your password");
+  document.getElementById("email").setCustomValidity("Please insert your email");
+</script>
 </body>
 </html>

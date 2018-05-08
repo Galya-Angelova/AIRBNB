@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -154,11 +155,10 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/updateSettings", method = RequestMethod.POST)
-	// @RequestMapping(value = "/updateProfile", method = RequestMethod.POST)
 	public String changeSettings(Model model, HttpSession session, @RequestParam String email,
 			@RequestParam String phoneNumber, @RequestParam String firstName, @RequestParam String lastName,
-			@RequestParam String oldPassword, @RequestParam String newPassword,@RequestParam boolean delete,
-			@RequestParam String newPasswordConfirm) {
+			@RequestParam String oldPassword, @RequestParam String newPassword,/*@RequestParam("delete") String deleted*/
+			@RequestParam String newPasswordConfirm,HttpServletRequest request) {
 		try {
 			User user = (User) session.getAttribute("user");
 
@@ -179,6 +179,7 @@ public class UserController {
 			int year = bday.getYear();
 			User u = new User(user.getId(), email, password, user.isMale(), firstName, lastName, day, month, year,
 					phoneNumber);
+			boolean delete = Boolean.getBoolean(request.getParameter("delete"));
 			if(delete) {
 				u.deleteAccount();
 			}
