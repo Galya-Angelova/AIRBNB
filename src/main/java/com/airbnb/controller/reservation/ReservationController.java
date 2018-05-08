@@ -83,21 +83,9 @@ public class ReservationController {
 				return "reservation";
 			}
 
-			int reservationId = reservationDAO
+			reservationDAO
 					.makeReservation(new Reservation(0, start, end, place.getId(), user.getId(), 0, LocalDate.now()));
-			Thread t = new Thread(() -> {
-				while (true) {
-					try {
-						Thread.sleep(24 * 60 * 60 * 1000);
-						if (end.isBefore(LocalDate.now())) {
-							reservationDAO.deleteReservation(reservationId);
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			});
-			t.start();
+
 			short days = (short) start.until(end, ChronoUnit.DAYS);
 			double fullPrice = place.getPrice() * days;
 
@@ -132,7 +120,7 @@ public class ReservationController {
 				return r2.getId() - r1.getId();
 			});
 			List<Reservation> reservationsList = reservationDAO.getAllReservationsByHostID(user.getId());
-			List<User> guests=new ArrayList<User>();
+			List<User> guests = new ArrayList<User>();
 			for (Reservation reservation : reservationsList) {
 				guests.add(userDAO.userFromId(reservation.getUserId()));
 				PlaceDTO place = placeDAO.getDtoById(reservation.getPlaceId());
@@ -140,7 +128,7 @@ public class ReservationController {
 			}
 
 			model.addAttribute("reservations", reservations);
-			model.addAttribute("guests",guests);
+			model.addAttribute("guests", guests);
 			return "reservations";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -178,4 +166,77 @@ public class ReservationController {
 		}
 	}
 
+	@RequestMapping(value = "/visitedPlaces", method = RequestMethod.GET)
+	public String getVisitedPlaces(Model model, HttpSession session) {
+		try {
+			User user = (User) session.getAttribute("user");
+			if (user == null) {
+				return "redirect: ./logout";
+			}
+			Map<Reservation, PlaceDTO> visitedPlaces = new TreeMap<Reservation, PlaceDTO>((r1, r2) -> {
+				return r2.getId() - r1.getId();
+			});
+			List<Reservation> reservationsList = reservationDAO.getAllVisitedPlacesByID(user.getId());
+			List<User> hosts = new ArrayList<User>();
+			for (Reservation reservation : reservationsList) {
+				PlaceDTO place = placeDAO.getDtoById(reservation.getPlaceId());
+				hosts.add(userDAO.userFromId(place.getOwnerId()));
+				visitedPlaces.put(reservation, place);
+			}
+
+			model.addAttribute("visitedPlaces", visitedPlaces);
+			model.addAttribute("hosts", hosts);
+			return "visitedPlaces";
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("exception", e);
+			return "error";
+		}
+	}
+
+	@RequestMapping(value = "/visitedPlacesCancel/{id}", method = RequestMethod.GET)
+	public String cancelReservations(Model model, @PathVariable("id") int id, HttpSession session) {
+		try {
+			User user = (User) session.getAttribute("user");
+			if (user == null) {
+				return "redirect: ./logout";
+			}
+			Reservation reservation = reservationDAO.reservationFromId(id);
+			LocalDate sevenDaysPeriod = reservation.getEndDate().minusDays(7);
+			if (sevenDaysPeriod.isBefore(LocalDate.now())) {
+				return "redirect:/reservations";
+			}
+			reservationDAO.deleteReservation(id);
+			short days = (short) reservation.getStartDate().until(reservation.getEndDate(), ChronoUnit.DAYS);
+			PlaceDTO place = placeDAO.getDtoById(reservation.getPlaceId());
+			String hostContent = String.format(
+					"CANCELED RESERVATION ! The reservation for: %s, place type - %s, Address: Country - %s, City - %s, Street - %s, StreetNumber - %d , for %d days has been canceled by the guest.",
+					place.getName(), place.getPlaceTypeName(), place.getCountry(), place.getCity(), place.getStreet(),
+					place.getStreetNumber(), days);
+			User u = userDAO.userFromId(place.getOwnerId());
+			MailSender.sendEmail(u.getEmail(), hostContent);
+			return "redirect:/visitedPlaces";
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("exception", e);
+			return "error";
+		}
+	}
+	
+	@RequestMapping(value = "/visitedPlacesRate/{id}", method = RequestMethod.POST)
+	public String rateReservations(Model model, @PathVariable("id") int id,@RequestParam int rating, HttpSession session) {
+		try {
+			User user = (User) session.getAttribute("user");
+			if (user == null) {
+				return "redirect: ./logout";
+			}
+			reservationDAO.giveRating(rating, id);
+			
+			return "redirect:/visitedPlaces";
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("exception", e);
+			return "error";
+		}
+	}
 }

@@ -14,5 +14,6 @@ public interface IReservationDAO {
 	public void giveRating(int rating,int reservationId) throws InvalidReservationException;
 	public void deleteReservation(int reservationId) throws InvalidReservationException;
 	public List<Reservation> getAllReservationsByHostID(int owner_id) throws InvalidReservationException;
+	public List<Reservation> getAllVisitedPlacesByID(int guest_id) throws InvalidReservationException;
 	
 }
