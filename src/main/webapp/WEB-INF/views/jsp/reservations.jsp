@@ -18,7 +18,7 @@
 				<br>
 			</c:when>
 			<c:otherwise>
-				<c:forEach var="entry" items="${reservations}">
+				<c:forEach var="entry" items="${reservations}" varStatus="loop">
 					<div class="w3-container w3-border w3-round-xxlarge w3-white"
 						style="margin-top: 2%">
 						<div class="w3-row-padding">
@@ -32,13 +32,21 @@
 										class="w3-small w3-text-black ">${entry.key.endDate}</span> </span><br>
 									<span class="w3-medium w3-text-theme "><b>Reservation was made on:</b> <span
 										class="w3-small w3-text-black ">${entry.key.reservationDate}</span> </span><br>
+										<span class="w3-medium w3-text-theme "><b>Guest's name:</b> <span
+										class="w3-small w3-text-black ">${guests.get(loop.index).firstName} ${guests.get(loop.index).lastName}</span> </span><br>
+									<span class="w3-medium w3-text-theme "><b>Guest's e-mail address:</b> <span
+										class="w3-small w3-text-black ">${guests.get(loop.index).email}</span> </span><br>
+										<span class="w3-medium w3-text-theme "><b>Guest's phone number:</b> <span
+										class="w3-small w3-text-black ">${guests.get(loop.index).phoneNumber}</span> </span><br>
+									<span class="w3-medium w3-text-theme "><b>You have ${entry.key.daysForDeletion()} days to reject this reservation:</b></span><br>
 										<input type="hidden" value="${entry.key.id }"
 										name="id" /> <a href="reservations/${entry.key.id}"> <span
 										class="w3-medium w3-text-highway-blue"><b>Reject reservation</b></span>
 									</a>
 							</div>
 							<div class="w3-col w3-container w3-margin" style="width: 45%;">
-
+								<span class="w3-medium w3-text-theme w3-text-theme">
+										Place details: <br></span> 
 								<div class="w3-container">
 								<a href="<c:out value="${URL}"/>"> <span
 										class="w3-large w3-text-highway-blue"><b>${entry.value.name}</b></span><br>

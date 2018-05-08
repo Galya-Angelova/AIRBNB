@@ -2,6 +2,7 @@ package com.airbnb.model.reservation;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 import com.airbnb.exceptions.InvalidReservationException;
 
@@ -32,6 +33,14 @@ public class Reservation {
 		setReservationDate(reservationDate);
 	}
 
+	public int daysForDeletion(){
+		if (LocalDate.now().isBefore(this.reservationDate.plusDays(7))) {
+			return (int) LocalDate.now().until(this.reservationDate.plusDays(7), ChronoUnit.DAYS);
+		}else{
+			return 0;
+		}
+	}
+	
 //	Setters
 	public void setId(int id) throws InvalidReservationException {
 		if (id >= POSITIVE) {

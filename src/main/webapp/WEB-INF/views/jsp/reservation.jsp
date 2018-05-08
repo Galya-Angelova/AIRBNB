@@ -29,6 +29,7 @@
 			</td>
 			</tr>
 			<c:if test="${wrongDates}">Invalid dates! The end date must be after the start date!</c:if> 
+			<c:if test="${sameUser}">You are the owner of that place!</c:if> 
 		</table>
 		<br> <input type="submit" value="Make reservation"> <br>
 	</form:form>

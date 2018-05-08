@@ -24,7 +24,7 @@ public class ReservationDAO implements IReservationDAO {
 	private static final String ADD_RESERVATION = "INSERT INTO reservation VALUES(null,?,?,?,?,0,?,0)";
 	private static final String ADD_RATING = "UPDATE reservation SET rating = ? WHERE id = ?;";
 	private static final String DELETE_RESERVATION = "UPDATE reservation SET deleted = 1 WHERE id = ?;";
-	private static final String RESERVATION_FROM_ID = "SELECT * FROM reservations WHERE id = ?;";
+	private static final String RESERVATION_FROM_ID = "SELECT * FROM reservation WHERE id = ?;";
 	private static final String RESERVATIONS_FOR_BY_HOST_ID = "SELECT r.id,r.startDate,r.endDate,r.place_id,r.user_id AS guest_id,r.reservationDate,p.user_id AS host_id FROM reservation AS r INNER JOIN place AS p ON(r.place_id = p.id) WHERE r.deleted=0 AND p.user_id=?;";
 	@Autowired
 	private DBConnectionTest dbConnection;
