@@ -14,7 +14,13 @@
 <title>Search</title>
 </head>
 <body>
-	<h3>Search</h3>
+	<jsp:include page="slideshow.jsp"><jsp:param name="allPhotosURLs" value="${allPhotosURLs}" />
+		<jsp:param name="place" value="${place}" />
+	</jsp:include>
+
+	<div align="center">
+		<h3>Search</h3>
+	</div>
 	<br>
 	<div id="filters"
 		class="w3-container w3-white w3-round-xxlarge menus w3-left"
