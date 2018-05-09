@@ -17,7 +17,7 @@
 <form class="login100-form validate-form" action="login" method="post">
 	<div class="login-wrap">
 		<div class="login-html">
-			<input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Sign In</label>
+			<input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab"><sht:message code="header.login"/></label>
 		<input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab"></label>
 			<div class="login-form">
 				<br>
@@ -26,16 +26,16 @@
 				<br>
 				<div class="sign-in-htm">
 					<div class="group">
-						<label for="email" class="label">Email</label> <input id="email"
-							name="email" type="text" class="input">
+						<label for="email" class="label"><sht:message code="login.email"/></label> <input id="email"
+							name="email" type="email" class="input" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required maxlength="45">
 					</div>
 					<div class="group">
-						<label for="password" class="label">Password</label> <input
+						<label for="password" class="label"><sht:message code="login.password"/></label> <input
 							id="password" name="password" type="password" class="input"
 							data-type="password">
 					</div>
 					<div class="group">
-						<input type="submit" class="button" value="Sign In">
+						<input type="submit" class="button" value="Login">
 					</div>
 				</div>
 

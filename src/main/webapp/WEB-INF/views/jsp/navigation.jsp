@@ -3,42 +3,6 @@
 <%@ taglib prefix="sht" uri="http://www.springframework.org/tags" %>
 <html lang="en">
 <head>
-<!-- <style>
-.dropdown:hover .dropdown-content {
-	display: block;
-}
-
-.navbar a:hover, .dropdown:hover .dropbtn {
-	background-color: black;
-}
-
-.dropdown-content {
-	display: none;
-	position: absolute;
-	background-color: #f9f9f9;
-	min-width: 160px;
-	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-	z-index: 1;
-}
-
-.dropdown-content a {
-	float: none;
-	color: black;
-	padding: 12px 16px;
-	text-decoration: none;
-	display: block;
-	text-align: left;
-}
-
-.dropdown-content a:hover {
-	background-color: #ddd;
-}
-
-.dropdown:hover .dropdown-content {
-	display: block;
-}
-</style> -->
-
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -87,32 +51,26 @@
 			</ul>
 			<ul class="nav navbar-nav">
 
-				<%-- 		<li class="active"><c:url var="URL" value="createPlace">
-								<c:param name="param" value="${parameter}" />
-							</c:url> <a href="<c:out value="${URL}"/>">Add new place</a></li> --%>
-
-				<%-- <c:if test="${theBooleanVariable ne true}">It's false!</c:if> --%>
-				<%-- 	 <c:set var="isHost"  scope="session"  value="${user.isHost}" />--%>
 				<c:choose>
 					<c:when test="${!user.isMyPlacesEmpty()}">
 
 						<li class="active"><c:url var="URL" value="createPlace">
-								<%-- <c:param name="param" value="${parameter}" /> --%>
+								
 							</c:url> <a href="<c:out value="${URL}"/>"><sht:message code="addNewPlace.title"/></a></li>
 						<ul class="nav navbar-nav">
 						<li class="active"><c:url var="URL" value="myPlaces">
-					<%-- 		<c:param name="param" value="${parameter}" /> --%>
+					
 							</c:url> <a href="<c:out value="${URL}"/>"><sht:message code="myPlaces.title"/></a></li>
 						</ul>	
 							<ul class="nav navbar-nav">
 						<li class="active"><c:url var="URL" value="reservations">
-					<%-- 		<c:param name="param" value="${parameter}" /> --%>
+					
 							</c:url> <a href="<c:out value="${URL}"/>"><sht:message code="reservations.title"/></a></li>
 						</ul>	
 					</c:when>
 					<c:otherwise>
 						<li class="active"><c:url var="URL" value="createPlace">
-								<%-- <c:param name="param" value="${parameter}" /> --%>
+								
 							</c:url> <a href="<c:out value="${URL}"/>"><sht:message code="navigation.host"/></a></li>
 					</c:otherwise>
 				</c:choose>
@@ -122,20 +80,14 @@
 			
 			<ul class="nav navbar-nav">
 				<li class="active"><c:url var="URL" value="visitedPlaces">
-						<%-- <c:param name="param" value="${parameter}" /> --%>
+						
 					</c:url> <a href="<c:out value="${URL}"/>"><sht:message code="visitedPlaces.title"/></a></li>
 
 			</ul>
-			<%-- <ul class="nav navbar-nav">
-				<li class="active"><c:url var="URL" value="allPlaces">
-						<c:param name="param" value="${parameter}" />
-					</c:url> <a href="<c:out value="${URL}"/>">All places</a></li>
-
-			</ul>  --%>
 			
 			<ul class="nav navbar-nav">
 				<li class="active"><c:url var="URL" value="search">
-						<%-- <c:param name="param" value="${parameter}" /> --%>
+						
 					</c:url> <a href="<c:out value="${URL}"/>"><sht:message code="header.search"/></a></li>
 
 			</ul>
@@ -143,9 +95,15 @@
 			<ul class="nav navbar-nav navbar-right">
 
 				<li><c:url var="URL" value="logout">
-						<%-- <c:param name="param" value="${parameter}" /> --%>
+						
 					</c:url> <a class="navbar-brand" href="<c:out value="${URL}"/>"><span
 						class="glyphicon glyphicon-log-out"></span> <sht:message code="navigation.logOut"/></a></li>
+						<a href="search?language=en">
+						<img src="img/enFlag.jpg" style="height: 20px; width:20px;"/>
+						</a>
+						<a href="search?language=es">
+						<img src="img/esFlag.png" style="height: 20px; width:20px;"/>
+						</a>
 			</ul>
 		</div>
 	</nav>

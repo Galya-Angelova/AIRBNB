@@ -8,13 +8,13 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -98,7 +98,7 @@ public class PlaceController {
 			Place place = new Place(0, name, false, addressId, placeTypeName, user.getId(), Double.valueOf(price),
 					address, LocalDate.now());
 
-			savePhotos(files, place);
+			savePhotos(files, place,request);
 
 			int placeID = placeDAO.addPlace(place);
 			userDAO.addUserPlaceToUser(placeID, user);
@@ -113,22 +113,32 @@ public class PlaceController {
 		}
 	}
 
-	private void savePhotos(MultipartFile[] files, Place place) throws IOException {
+	private void savePhotos(MultipartFile[] files, Place place,HttpServletRequest request) throws IOException {
 		UUID uuid = UUID.randomUUID();
 		String randomUUIDString = uuid.toString();
+		if(isValid(files, request)) {
 		for (MultipartFile f : files) {
 			if (f.isEmpty()) {
 				continue;
 			}
 			this.placeDAO.saveFileToDisk(place, f, randomUUIDString);
 		}
+		}
 	}
 
-	private boolean isValid(MultipartFile[] files) {
+	private boolean isValid(MultipartFile[] files,HttpServletRequest request) {
 		for (MultipartFile file : files) {
 			if (file.isEmpty()) {
 				continue;
 			}
+			ServletContext context = request.getServletContext();
+			String fileName = file.getOriginalFilename();
+			String mimeType = context.getMimeType(fileName);
+			if (!mimeType.startsWith("image/")) {
+			    // It's not  an image.
+				return false;
+			}
+			
 
 			String[] fileParts = file.getOriginalFilename().split("\\.");
 			String fileExtension = fileParts[fileParts.length - 1];
@@ -173,9 +183,7 @@ public class PlaceController {
 		}
 		try {
 			List<PlaceDTO> placesForUser = this.placeDAO.gettAllPlacesForUser(user.getId());
-			// model.addAttribute("user",user);
 			model.addAttribute("userPlaces", placesForUser);
-			// session.setAttribute("userPlaces", placesForUser);
 			return "myPlaces";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -284,7 +292,6 @@ public class PlaceController {
 			Place place = new Place(placeId, name, false, addressId, placeTypeName, user.getId(), price, address, date);
 			boolean isEdited = placeDAO.editPlace(place);
 			
-			//savePhotos(files, place);
 			
 			model.addAttribute("place", place);
 			if (isEdited) {

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.airbnb.exceptions.InvalidCityException;
 import com.airbnb.exceptions.InvalidPlaceException;
-import com.airbnb.model.db.DBConnectionTest;
+import com.airbnb.model.db.DBConnection;
 
 @Component
 public class CityDAO implements ICityDAO{
@@ -23,11 +23,11 @@ public class CityDAO implements ICityDAO{
 	private static final String ALL_CITIES_SQL = "SELECT name FROM cities;";
 	
 	@Autowired
-	private  DBConnectionTest dbConnection;
+	private  DBConnection dbConnection;
 	private  Connection connection;
 	
 	@Autowired
-	public CityDAO(DBConnectionTest dbConnection) {
+	public CityDAO(DBConnection dbConnection) {
 		this.dbConnection = dbConnection;
 		connection = this.dbConnection.getConnection();
 	}

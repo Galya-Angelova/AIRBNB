@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,38 +12,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.airbnb.exceptions.InvalidReviewException;
-import com.airbnb.model.db.DBConnectionTest;
-import com.airbnb.model.reservation.Reservation;
+import com.airbnb.model.db.DBConnection;
 
 @Component
 public class ReviewDAO implements IReviewDAO {
 
 	private static final String GET_ALL_REVIEWS_FOR_PLACE = "SELECT * FROM review WHERE place_id=? ORDER BY id DESC;";
-	// private static final String INSERT_REVIEW = "INSERT INTO review
-	// values(null,'Title','Text',1);";
 	private static final String INSERT_REVIEW = "INSERT INTO review values(null,?,?,?,?);";
-	/*@Autowired
-	private static DBConnectionTest dbConnection;
-	private static Connection connection;
-SELECT * FROM review WHERE place_id=1;
-	static {
-		try {
-			dbConnection = new DBConnectionTest();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public ReviewDAO() {
-		connection = ReviewDAO.dbConnection.getConnection();
-	}
-*/
+	
 	@Autowired
-	private  DBConnectionTest dbConnection;
+	private  DBConnection dbConnection;
 	private  Connection connection;
 	
 	@Autowired
-	public ReviewDAO(DBConnectionTest dbConnection) {
+	public ReviewDAO(DBConnection dbConnection) {
 		this.dbConnection = dbConnection;
 		connection = this.dbConnection.getConnection();
 	}

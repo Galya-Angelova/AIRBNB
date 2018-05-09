@@ -16,7 +16,7 @@
 	<div >
 	<form class="login100-form validate-form" action="register" method="post">
 		<div class="login-html"  style="height: 150%;">
-		<label style="color: white;"  for="tab-2" class="tab">Sign Up</label>
+		<label style="color: white;"  for="tab-2" class="tab"><sht:message code="header.sign"/></label>
 			<div class="login-form">
 				<div>
 					<div class="group">

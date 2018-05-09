@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.airbnb.exceptions.InvalidReservationException;
-import com.airbnb.model.db.DBConnectionTest;
-import com.airbnb.model.place.Place;
-import com.airbnb.model.place.PlaceDTO;
-import com.airbnb.model.user.User;
+import com.airbnb.model.db.DBConnection;
 
 @Component
 public class ReservationDAO implements IReservationDAO {
@@ -29,11 +26,11 @@ public class ReservationDAO implements IReservationDAO {
 	private static final String RESERVATIONS_FOR_BY_GUEST_ID = "SELECT * FROM reservation where deleted = 0 AND user_id=? ORDER BY id DESC;";
 	
 	@Autowired
-	private DBConnectionTest dbConnection;
+	private DBConnection dbConnection;
 	private Connection connection;
 
 	@Autowired
-	public ReservationDAO(DBConnectionTest dbConnection) {
+	public ReservationDAO(DBConnection dbConnection) {
 		this.dbConnection = dbConnection;
 		connection = this.dbConnection.getConnection();
 	}

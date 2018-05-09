@@ -12,28 +12,23 @@ import org.springframework.stereotype.Component;
 import com.airbnb.exceptions.InvalidAddressException;
 import com.airbnb.exceptions.InvalidCityException;
 import com.airbnb.exceptions.InvalidCountryException;
-import com.airbnb.model.db.DBConnectionTest;
+import com.airbnb.model.db.DBConnection;
 
 @Component
 public class AddressDAO implements IAddressDAO{
-//	private static final int EMPTY = 0;
-//	private static final String ADD_CITY = "INSERT INTO cities VALUES(null,?)";
-//	private static final String ADD_COUNTRY = "INSERT INTO countries VALUES(null,?);";
-//	private static final String CHECK_COUNTRY = "SELECT count(*) FROM countries WHERE countries.name = ?;";
-//	private static final String CHECK_CITY = "SELECT count(*) FROM cities WHERE cities.name = ?;";
+	private static final String CHECK_CITY = "SELECT count(*) FROM cities WHERE cities.name = ?;";
 	private static final String ADDRESS_FROM_ID_SQL = "SELECT * FROM addresses WHERE id=?";
 	private static final String ADD_ADDRESS_SQL = "INSERT INTO addresses VALUES (null, ?, ?, ?, ?)";
-//	private static final String GET_LOCATION_ID_FROM_CITY_AND_COUNTRY = "SELECT * FROM locations JOIN countries ON locations.country_id = countries.id JOIN cities ON locations.city_id = cities.id WHERE cities.name = ? and countries.name = ?;";
 	@Autowired
 	private CityDAO cityDAO;
 	@Autowired
 	private CountryDAO countryDAO;
 	@Autowired
-	private  DBConnectionTest dbConnection;
+	private  DBConnection dbConnection;
 	private  Connection connection;
 	
 	@Autowired
-	public AddressDAO(DBConnectionTest dbConnection) {
+	public AddressDAO(DBConnection dbConnection) {
 		this.dbConnection=dbConnection;
 		connection = this.dbConnection.getConnection();
 	}
@@ -45,12 +40,17 @@ public class AddressDAO implements IAddressDAO{
 			ps.setInt(2, address.getStreetNumber());
 			ps.setInt(3, address.getCountryId());
 			ps.setInt(4, address.getCityId());
+			
 			ps.executeUpdate();
 
 			ResultSet rs = ps.getGeneratedKeys();
-			rs.next();
+			if(rs.next()) {
+				return rs.getInt(1);
+			}else {
+				throw new InvalidAddressException("Invalid address");
+			}
 
-			return rs.getInt(1);
+			
 		} catch (SQLException e) {
 			 e.printStackTrace();
 			throw new InvalidAddressException("Invalid statement", e);

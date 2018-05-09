@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.airbnb.exceptions.InvalidUserException;
+import com.airbnb.model.db.DBConnection;
 import com.airbnb.model.db.DBConnectionTest;
 import com.airbnb.model.place.Place;
 
@@ -33,12 +34,12 @@ public class UserDAO implements IUserDAO {
 	private static final String DELETE_ACCOUNT = "UPDATE users SET deleted = 1 WHERE id = ?;";
 	// TODO change with DBConnection
 	@Autowired
-	private DBConnectionTest dbConnection;
+	private DBConnection dbConnection;
 
 	private Connection connection;
 
 	@Autowired
-	public UserDAO(DBConnectionTest dbConnection) {
+	public UserDAO(DBConnection dbConnection) {
 		this.dbConnection = dbConnection;
 		connection = this.dbConnection.getConnection();
 	}

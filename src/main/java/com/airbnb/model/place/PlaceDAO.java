@@ -53,7 +53,7 @@ public class PlaceDAO implements IPlaceDAO {
 	private static final String PLACETYPE_FROM_ID_SQL = "SELECT * FROM placetype WHERE id=?";
 	private static final String ADD_PICTURES = "INSERT INTO pictures VALUES(null,?,?);";
 	private static final String GET_PICTURES_FOR_PLACE = "SELECT pictures.path FROM pictures WHERE pictures.place_id = ?;";
-	private static final String GET_AVG_RATING = "SELECT rating FROM reservation WHERE deleted =0 AND place_id=?;";
+	private static final String GET_AVG_RATING = "SELECT rating FROM reservation WHERE deleted =0 AND place_id=? AND rating !=0;";
 	
 	// private static int COUNT = 0;
 	@Autowired

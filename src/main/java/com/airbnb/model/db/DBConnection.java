@@ -35,18 +35,6 @@ ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		DB_PASSWORD = prop.getProperty("DB_PASSWORD");
 	}
 
-	/*private DBConnection() throws ClassNotFoundException, SQLException {
-		Class.forName("com.mysql.jdbc.Driver");
-		connection = DriverManager.getConnection("jdbc:mysql://" + HOST + ":" + PORT + DB_NAME, DB_USERNAME,
-				DB_PASSWORD);
-	}
-	private static final String DB_NAME = "/airbnb";
-	private static final String HOST = "localhost";
-	private static final String PORT = "3306";
-	private static final String DB_USERNAME = "root";
-	private static final String DB_PASSWORD = "1234t";
-	private Connection connection;
-*/
 	public DBConnection() throws DBException {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");

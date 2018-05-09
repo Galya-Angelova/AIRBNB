@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.airbnb.exceptions.InvalidCountryException;
-import com.airbnb.model.db.DBConnectionTest;
+import com.airbnb.model.db.DBConnection;
 
 @Component
 public class CountryDAO implements ICountryDAO{
@@ -18,35 +18,18 @@ public class CountryDAO implements ICountryDAO{
 	private static final String GIVE_COUNTRY_SQL = "SELECT * FROM countries WHERE name= ?";
 	private static final String COUNTRY_FROM_ID_SQL = "SELECT * FROM countries WHERE id=?";
 
-	/*@Autowired
-	private static DBConnectionTest dbConnection;
-
-	private static Connection connection = dbConnection.getConnection();*/
+	
 	@Autowired
-	private  DBConnectionTest dbConnection;
+	private  DBConnection dbConnection;
 	private  Connection connection;
 	
 	@Autowired
-	public CountryDAO(DBConnectionTest dbConnection) {
+	public CountryDAO(DBConnection dbConnection) {
 		this.dbConnection = dbConnection;
 		connection = this.dbConnection.getConnection();
 	}
 
-//	@Override
-//	public int addCountry(String country) throws InvalidCountryException {
-//		try (PreparedStatement ps = connection.prepareStatement(ADD_COUNTRY_SQL, Statement.RETURN_GENERATED_KEYS)) {
-//			ps.setString(1, country);
-//			ps.executeUpdate();
-//
-//			ResultSet rs = ps.getGeneratedKeys();
-//			rs.next();
-//
-//			return rs.getInt(1);
-//		} catch (SQLException e) {
-//			// e.printStackTrace();
-//			throw new InvalidCountryException("Invalid statement", e);
-//		}
-//	}
+
 	
 	@Override
 	public int addCountry(Country country) throws InvalidCountryException {

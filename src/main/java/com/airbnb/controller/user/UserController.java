@@ -25,14 +25,14 @@ import com.airbnb.model.user.UserDAO;
 
 @Controller
 public class UserController {
-	private static final int MAX_TIME = 3600;// seconds
+	private static final int MAX_TIME = 4600;// seconds
 
 	@Autowired
 	private UserDAO userDAO;
 	@Autowired
 	private PlaceDAO placeDAO;
 
-	@RequestMapping(value = { "/login", "/", "/index" }, method = { RequestMethod.GET, /* RequestMethod.POST */ })
+	@RequestMapping(value = { "/login", "/", "/index" }, method = { RequestMethod.GET })
 	public String indexPage() {
 		return "index";
 	}
@@ -49,17 +49,7 @@ public class UserController {
 			}
 			if (user != null) {
 				session.setAttribute("user", user);
-				/*List<PlaceDTO> userPlaces = this.placeDAO.gettAllPlacesForUser(user.getId());
-				if (userPlaces != null) {
-					//session.setAttribute("userPlaces", userPlaces);
-					model.addAttribute("userPlaces", userPlaces);
-				}
-				Set<PlaceDTO> allPlaces = this.placeDAO.getAllPlaces();
-				if (allPlaces != null) {
-					//session.setAttribute("allPlaces", allPlaces);
-					model.addAttribute("allPlaces", allPlaces);
-				}*/
-				// TODO add userVisitedPlaces, reviews for places
+				
 				session.setMaxInactiveInterval(MAX_TIME);
 				return "redirect: ./search";
 			} else {
@@ -75,13 +65,6 @@ public class UserController {
 		}
 	}
 
-	/*@RequestMapping(value = "/home", method = RequestMethod.GET)
-	public String homePage(HttpSession session) {
-		if (session.getAttribute("user") == null) {
-			return "redirect: ./logout";
-		}
-		return "home";
-	}*/
 
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	public String getRegisterPage() {
@@ -104,8 +87,6 @@ public class UserController {
 			int day = localDate.getDayOfMonth();
 			int year = localDate.getYear();
 
-			// String phone = request.getParameter("phone");
-//			System.out.println(localDate.toString());
 			if (!password.equals(confirmPassword)) {
 				throw new InvalidUserException("Password mismatch");
 			}
@@ -206,20 +187,4 @@ public class UserController {
 			return "error";
 		}
 	}
-	// @RequestMapping(value = "/becomeHost", method = RequestMethod.GET)
-	// public String becomeAHost(Model model, HttpSession session) {
-	// User user = (User) session.getAttribute("user");
-	// try {
-	// userDAO.becomeAHost(user);
-	// return "redirect:./createPlace";
-	// } catch (InvalidUserException e) {
-	// model.addAttribute("exception", e);
-	// return "error";
-	// } catch (Exception e) {
-	// model.addAttribute("exception", e);
-	// return "error";
-	// }
-	//
-	// }
-
 }
