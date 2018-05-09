@@ -3,6 +3,9 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="sht" uri="http://www.springframework.org/tags" %>
+<link rel="stylesheet" href="css/toTop.css"/>
+<button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
+
 <c:choose>
 	<c:when test="${user != null}">
 		<jsp:include page="navigation.jsp"></jsp:include>
@@ -207,5 +210,23 @@
 			</c:otherwise>
 		</c:choose>
 	</div>
+	<script>
+// When the user scrolls down 20px from the top of the document, show the button
+window.onscroll = function() {scrollFunction()};
+
+function scrollFunction() {
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        document.getElementById("myBtn").style.display = "block";
+    } else {
+        document.getElementById("myBtn").style.display = "none";
+    }
+}
+
+// When the user clicks on the button, scroll to the top of the document
+function topFunction() {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+}
+</script>
 </body>
 </html>

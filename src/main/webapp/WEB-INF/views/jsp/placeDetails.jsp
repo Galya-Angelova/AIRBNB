@@ -47,7 +47,7 @@ $(document).ready(function(){
 				<c:param name="id" value="${place.id}" />
 			</c:url>
 			<a href="<c:out value="${URL}"/>"> <span
-				class="w3-large w3-text-highway-blue"><b>${place.name}</b></span><br>
+				class="w3-large w3-text-highway-blue"><b><c:out value="${place.name}"/>"></b></span><br>
 				<br>
 			</a> <a href="<c:out value="${URL}"/>"></a>
 		</div>
@@ -58,19 +58,19 @@ $(document).ready(function(){
 			<span class="w3-medium w3-text-theme w3-text-theme"> <sht:message code="myPlaces.address"/>:
 				<br>
 			</span> <span class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.city"/>:</b> <span
-				class="w3-small w3-text-black ">${place.city}</span> </span><br> <span
+				class="w3-small w3-text-black "><c:out value="${place.city}"/>"></span> </span><br> <span
 				class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.country"/>:</b> <span
-				class="w3-small w3-text-black ">${place.country}</span> </span><br> <span
+				class="w3-small w3-text-black "><c:out value="${place.country}"/>"></span> </span><br> <span
 				class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.street"/>:</b> <span
-				class="w3-small w3-text-black ">${place.street}</span> </span><br> <span
+				class="w3-small w3-text-black "><c:out value="${place.street}"/>"></span> </span><br> <span
 				class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.streetNumber"/>:</b> <span
-				class="w3-small w3-text-black ">${place.streetNumber}</span> </span><br>
+				class="w3-small w3-text-black "><c:out value="${place.streetNumber}"/>"></span> </span><br>
 			<span class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.placeType"/>:</b> <span
-				class="w3-small w3-text-black ">${place.placeTypeName}</span> </span><br>
+				class="w3-small w3-text-black "><c:out value="${place.placeTypeName}"/>"></span> </span><br>
 			<span class="w3-medium w3-text-theme "><b><sht:message code="myPlaces.priceNight"/>:</b>
-				<span class="w3-small w3-text-black ">${place.price} euro</span> </span><br>
+				<span class="w3-small w3-text-black "><c:out value="${place.price}"/>"> euro</span> </span><br>
 			<span class="w3-medium w3-text-theme "><b><sht:message code="myPlaces.postingDate"/>:</b>
-				<span class="w3-small w3-text-black ">${place.dateOfPosting}
+				<span class="w3-small w3-text-black "><c:out value="${place.dateOfPosting}"/>">
 			</span> </span><br>
 			
 		<c:choose>
@@ -103,7 +103,7 @@ $(document).ready(function(){
 			<td> <input id="id" name="id" type="hidden" value="${place.id }" />
 			</td>
 			<td>
-			<sht:message code="reservation.forPlace"/>:<c:out value="${place.id }"/>
+			<%-- <sht:message code="reservation.forPlace"/>:<c:out value="${place.id }"/> --%>
 			</td>
 			</tr>
 			<c:if test="${wrongDates}">Invalid dates! The end date must be after the start date!</c:if> 
