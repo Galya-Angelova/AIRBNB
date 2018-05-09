@@ -4,6 +4,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="sht" uri="http://www.springframework.org/tags" %>
+<%@ page import="java.time.LocalDate" %>
 <c:choose>
 	<c:when test="${user != null}">
 		<jsp:include page="navigation.jsp"></jsp:include>
@@ -25,6 +26,14 @@ $(document).ready(function(){
         $("p").toggle();
     });
 });
+$(document).ready(function(){
+	$("#dates").toggle();
+    $("#toggleDates").click(function(){
+      
+        $("#dates").toggle();
+    });
+});
+
 </script>
 </head>
 <body>
@@ -82,7 +91,7 @@ $(document).ready(function(){
 				class="w3-small w3-text-black ">${place.placeTypeName}</span> </span><br>
 			<span class="w3-medium w3-text-theme "><b><sht:message code="myPlaces.priceNight"/>:</b>
 				<span class="w3-small w3-text-black ">${place.price} euro</span> </span><br>
-			<span class="w3-medium w3-text-theme "><b>D<sht:message code="myPlaces.postingDate"/>:</b>
+			<span class="w3-medium w3-text-theme "><b><sht:message code="myPlaces.postingDate"/>:</b>
 				<span class="w3-small w3-text-black ">${place.dateOfPosting}
 			</span> </span><br>
 			
@@ -98,10 +107,41 @@ $(document).ready(function(){
 			</span></span><br>		
 			</c:otherwise>
 		</c:choose>	
-			 <br> <input type="hidden" value="${place.id }"
-				name="id" /> <a href="reservation/${place.id}"> <span
-				class="w3-medium w3-text-highway-blue"><b><sht:message code="details.makeReservation"/></b></span>
-			</a>
+		<button id='toggleDates'> <sht:message code="placeDetails.chooseDates"/></button><br>
+		<form:form action="placeDetails/${place.id}" method="post">
+		<table id="dates">
+			<tr>
+				<td><sht:message code="reservation.from"/>: </td>
+				<td><input type="date" name="startDate" min=<%= LocalDate.now() %>
+					max=<%= LocalDate.now().plusYears(1) %> required></td>
+			</tr>
+			<tr>
+				<td><sht:message code="reservation.to"/>: </td>
+				<td><input type="date" name="endDate" min=<%= LocalDate.now() %>
+					max=<%= LocalDate.now().plusYears(1) %> required></td>
+			</tr>
+			<tr>
+			<td> <input id="id" name="id" type="hidden" value="${place.id }" />
+			</td>
+			<td>
+			<sht:message code="reservation.forPlace"/>:<c:out value="${place.id }"/>
+			</td>
+			</tr>
+			<c:if test="${wrongDates}">Invalid dates! The end date must be after the start date!</c:if> 
+			<c:if test="${sameUser}">You are the owner of that place!</c:if> 
+			<tr>
+			<td>
+			<br> <input type="submit" value="Make reservation"> <br> 
+			</td>
+			</tr>
+		</table>
+		
+		 
+	</form:form>
+			 <%--  <br> <input type="hidden" value="${place.id }"
+				name="id" /> <a href="placeDetails/${place.id}"> <span
+				class="w3-medium w3-text-highway-blue"><p><sht:message code="details.makeReservation"/></p></span>
+			</a>  --%>
 		</div>
 	</div>
 	
@@ -129,7 +169,7 @@ $(document).ready(function(){
 					<form:input type="hidden" path="userId" value="${sessionScope.user.id }"/>
 					<form:input id="title" path="title" name="title"
 						class="w3-container w3-input" type="text" maxlength="100"
-						placeholder="Enter Title here" />
+						placeholder="Enter Title here" required="required"/>
 				</div>
 			</div>
 			<div class="w3-panel">
@@ -137,7 +177,7 @@ $(document).ready(function(){
 				<div id="ContentSection" class="w3-container w3-show w3-padding ">
 					<form:textarea id="content" path="text" name="content"
 						class="w3-container w3-input" type="text" maxlength="1000"
-						placeholder="Enter Content here" rows="5" cols="44" />
+						placeholder="Enter Content here" rows="5" cols="44" required="required" />
 				</div>
 			</div>
 		</form:form>

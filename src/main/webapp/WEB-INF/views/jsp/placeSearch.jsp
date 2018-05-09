@@ -190,9 +190,15 @@
 									</span><br> <span class="w3-medium w3-text-theme "><b><sht:message code="myPlaces.priceNight"/>:</b> <span class="w3-small w3-text-black ">${place.price}
 											<sht:message code="myPlaces.euro"/></span> </span><br> <span class="w3-medium w3-text-theme "><b><sht:message code="myPlaces.postingDate"/>:</b> <span class="w3-small w3-text-black ">${place.dateOfPosting}
 									</span> </span><br> <br> <input type="hidden" value="${place.id }"
-										name="id" /> <a href="reservation/${place.id}"> <span
-										class="w3-medium w3-text-highway-blue"><b><sht:message code="details.makeReservation"/></b></span>
-									</a>
+										name="id" />
+										
+										<c:url var="URL" value="placeDetails">
+										<c:param name="id" value="${place.id}" />
+									</c:url>
+									<a href="<c:out value="${URL}"/>"> <span
+										class="w3-large w3-text-highway-blue"><b>View details</b></span><br>
+										<br>
+									</a> <a href="<c:out value="${URL}"/>"></a>
 								</div>
 							</div>
 						</div>

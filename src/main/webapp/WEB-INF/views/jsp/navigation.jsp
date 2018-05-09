@@ -145,7 +145,7 @@
 				<li><c:url var="URL" value="logout">
 						<%-- <c:param name="param" value="${parameter}" /> --%>
 					</c:url> <a class="navbar-brand" href="<c:out value="${URL}"/>"><span
-						class="glyphicon glyphicon-log-out"></span> <sht:message code="navigation.logOut"/>Log out</a></li>
+						class="glyphicon glyphicon-log-out"></span> <sht:message code="navigation.logOut"/></a></li>
 			</ul>
 		</div>
 	</nav>

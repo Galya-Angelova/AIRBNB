@@ -4,8 +4,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import com.airbnb.exceptions.InvalidPlaceException;
 import com.airbnb.model.address.Address;
 
@@ -193,11 +191,11 @@ public class Place {
 	}
 
 	public List<String> getPhotosURLs() {
-		return photosURLs;
+		return new ArrayList<String>(this.photosURLs);
 	}
 
 	public void setPhotosURLs(List<String> photosURLs) {
-		this.photosURLs = photosURLs;
+		this.photosURLs = new ArrayList<String>(photosURLs);
 	}
 
 	public LocalDate getDateOfPosting() {

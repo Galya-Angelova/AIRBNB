@@ -304,8 +304,13 @@ public class PlaceController {
 	}
 	
 	@RequestMapping(value = "/placeDetails", method = RequestMethod.GET)
-	public String getPlaceDetails(@RequestParam("id") int id, Model model) {
+	public String getPlaceDetails(@RequestParam("id") int id, Model model, HttpSession session) {
 		try {
+			User user = (User) session.getAttribute("user");
+			if (user == null) {
+				return "redirect:/logout";
+			}
+			
 			PlaceDTO view = this.placeDAO.getDtoById(id);
 			List<String> placeTypes = this.placeDAO.getAllPlaceTypes();
 			double rating =this.placeDAO.getAvgRating(id);
@@ -317,6 +322,12 @@ public class PlaceController {
 			for (Review review : reviewsList) {
 				reviews.put(review, userDAO.userFromId(review.getUserId()));
 			}
+			
+			Reservation reservation = new Reservation();
+			session.setAttribute("reservation", reservation);
+			session.setAttribute("wrongDates", false);
+			session.setAttribute("sameUser", false);
+			
 			model.addAttribute("placeTypes", placeTypes);
 			model.addAttribute("place", view);
 			model.addAttribute("avgRating",avgRating);
@@ -346,7 +357,7 @@ public class PlaceController {
 				return "redirect:/placeDetails?id="+review.getPlaceId();
 			}
 			reviewDAO.createReview(review);
-			return "redirect:/placeDetails?id="+review.getPlaceId();
+			return "redirect: ./placeDetails?id="+review.getPlaceId();
 		} catch (InvalidPlaceException e) {
 			e.printStackTrace();
 			model.addAttribute("exception", e);
@@ -356,5 +367,10 @@ public class PlaceController {
 			model.addAttribute("exception", e);
 			return "error";
 		}
+	}
+	
+	@ModelAttribute("newReview")
+	public Review createStubReview() {
+		return new Review();
 	}
 }

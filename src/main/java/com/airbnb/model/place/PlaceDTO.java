@@ -157,10 +157,10 @@ public class PlaceDTO {
 		return this.price;
 	}
 	public List<String> getPhotosURLs() {
-		return photosURLs;
+		return new ArrayList<String>(this.photosURLs);
 	}
 	public void setPhotosURLs(List<String> photosURLs) {
-		this.photosURLs = photosURLs;
+		this.photosURLs = new ArrayList<String>(photosURLs);
 	}
 	public String getDateOfPosting() {
 		 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MM-yyyy");
