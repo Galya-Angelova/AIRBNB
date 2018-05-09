@@ -22,8 +22,9 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
 $(document).ready(function(){
-    $("button").click(function(){
-        $("p").toggle();
+	 $("#reviews").toggle();
+    $("#showReview").click(function(){
+        $("#reviews").toggle();
     });
 });
 $(document).ready(function(){
@@ -49,29 +50,6 @@ $(document).ready(function(){
 				class="w3-large w3-text-highway-blue"><b>${place.name}</b></span><br>
 				<br>
 			</a> <a href="<c:out value="${URL}"/>"></a>
-
-			<%-- <c:if test="${place.photosURLs.size() > 0 }">
-										<div class="et_pb_gallery_items et_post_gallery"
-											data-per_page="3">
-											<c:forEach items="${place.photosURLs }" var="url" begin="0"
-												end="3">
-												<span
-													class="et_pb_gallery_item et_pb_grid_item et_pb_bg_layout_light">
-													<span class="et_pb_gallery_image landscape"> <a
-														href="data:image/jpeg;base64,${url}"
-														title="27747975_2074584502761278_1171650822192642176_o">
-															<img width=300px src="data:image/jpeg;base64,${url}"
-															data-lazy-src="data:image/jpeg;base64,${url}"
-															alt="27747975_2074584502761278_1171650822192642176_o"
-															class="lazyloaded">
-													</a>
-												</span>
-												</span>
-											</c:forEach>
-										</div>
-									</c:if> --%>
-
-
 		</div>
 	</div>
 	<div class="w3-col w3-container w3-margin" style="width: 45%;">
@@ -107,6 +85,7 @@ $(document).ready(function(){
 			</span></span><br>		
 			</c:otherwise>
 		</c:choose>	
+		
 		<button id='toggleDates'> <sht:message code="placeDetails.chooseDates"/></button><br>
 		<form:form action="placeDetails/${place.id}" method="post">
 		<table id="dates">
@@ -138,19 +117,11 @@ $(document).ready(function(){
 		
 		 
 	</form:form>
-			 <%--  <br> <input type="hidden" value="${place.id }"
-				name="id" /> <a href="placeDetails/${place.id}"> <span
-				class="w3-medium w3-text-highway-blue"><p><sht:message code="details.makeReservation"/></p></span>
-			</a>  --%>
 		</div>
 	</div>
 	
 	<div class="w3-col w3-container w3-margin" style="width: 45%;">
-		<div class="w3-container">
-		
-		
-		
-		
+		<div class="w3-container">	
 		
 		<div id="review"
 		class="w3-container w3-white w3-round-xxlarge menus"
@@ -184,7 +155,7 @@ $(document).ready(function(){
 	</div>
 		<span class="w3-medium w3-text-theme w3-text-theme"> <sht:message code="details.reviews"/>:
 				<br></span> 
-				<button> <sht:message code="details.showHide"/></button><br>
+				<button id = "showReview"> <sht:message code="details.showHide"/></button><br>
 				<c:choose>
 			<c:when test="${reviews.isEmpty()}">
 				<h5>
@@ -193,17 +164,21 @@ $(document).ready(function(){
 				<br>
 			</c:when>
 			<c:otherwise>
+			<div id = "reviews" >
 			<c:forEach var="entry" items="${reviews}">
+			
 			<span class="w3-small w3-text-black "><p> <sht:message code="details.reviewMade"/>:</p>
 				<span class="w3-medium w3-text-theme "><p>${entry.value.firstName} ${entry.value.lastName}</p>
 			</span></span>
 			<span class="w3-small w3-text-black "><p> <sht:message code="details.title"/>:</p>
-				<span class="w3-medium w3-text-theme "><p>${entry.key.title}</p>
+				<span class="w3-medium w3-text-theme "><p><c:out value="${entry.key.title}"/></p>
 			</span></span>
 			<span class="w3-small w3-text-black "><p> <sht:message code="details.content"/>:</p>
-				<span class="w3-medium w3-text-theme "><p>${entry.key.text}</p>
+				<span class="w3-medium w3-text-theme "><p><c:out value="${entry.key.text}"/></p>
 			</span></span><br>	<br> 
+			
 			</c:forEach>
+			</div>
 				</c:otherwise>
 		</c:choose>
 		</div>
