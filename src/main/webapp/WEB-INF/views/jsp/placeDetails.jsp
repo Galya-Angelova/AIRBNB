@@ -68,7 +68,7 @@ $(document).ready(function(){
 			<span class="w3-medium w3-text-theme "><b><sht:message code="addNewPlace.placeType"/>:</b> <span
 				class="w3-small w3-text-black ">${place.placeTypeName}</span> </span><br>
 			<span class="w3-medium w3-text-theme "><b><sht:message code="myPlaces.priceNight"/>:</b>
-				<span class="w3-small w3-text-black ">${place.price} euro</span> </span><br>
+				<span class="w3-small w3-text-black ">${place.price} <sht:message code="myPlaces.euro"/></span> </span><br>
 			<span class="w3-medium w3-text-theme "><b><sht:message code="myPlaces.postingDate"/>:</b>
 				<span class="w3-small w3-text-black ">${place.dateOfPosting}
 			</span> </span><br>
@@ -106,8 +106,8 @@ $(document).ready(function(){
 			<sht:message code="reservation.forPlace"/>:<c:out value="${place.id }"/>
 			</td>
 			</tr>
-			<c:if test="${wrongDates}">Invalid dates! The end date must be after the start date!</c:if> 
-			<c:if test="${sameUser}">You are the owner of that place!</c:if> 
+			<c:if test="${wrongDates}"><sht:message code="details.invalidDates"/>!</c:if> 
+			<c:if test="${sameUser}"><sht:message code="details.ownerError"/>!</c:if> 
 			<tr>
 			<td>
 			<br> <input type="submit" value="Make reservation"> <br> 

@@ -196,7 +196,7 @@
 										<c:param name="id" value="${place.id}" />
 									</c:url>
 									<a href="<c:out value="${URL}"/>"> <span
-										class="w3-large w3-text-highway-blue"><b>View details</b></span><br>
+										class="w3-large w3-text-highway-blue"><b><sht:message code="myPlaces.viewDetails"/></b></span><br>
 										<br>
 									</a> <a href="<c:out value="${URL}"/>"></a>
 								</div>

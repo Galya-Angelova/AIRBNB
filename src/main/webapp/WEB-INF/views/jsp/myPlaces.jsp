@@ -82,7 +82,7 @@
 											<c:url var="URL" value="editPlace">
 		<c:param name="id" value="${place.id}" /> 
 	</c:url>
-	<a href="<c:out value="${URL}"/>">Edit place</a>
+	<a href="<c:out value="${URL}"/>"><sht:message code="myPlaces.editPlace"/></a>
 								</div>
 							</div>
 						</div>

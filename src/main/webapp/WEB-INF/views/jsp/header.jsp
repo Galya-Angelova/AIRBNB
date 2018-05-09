@@ -59,8 +59,12 @@
 					</c:url> <a href="<c:out value="${URL}"/>"><span
 						class="glyphicon glyphicon-log-in"></span> <sht:message code="header.login"/></a></li>
 					
-						<a href="?language=en">English</a>
-						<a href="?language=es">Espanol</a>
+						<a href="?language=en">
+						<img src="img/enFlag.jpg" />
+						</a>
+						<a href="?language=es">
+						<img src="img/esFlag.png" />
+						</a>
 			</ul>
 		</div>
 	</nav>
