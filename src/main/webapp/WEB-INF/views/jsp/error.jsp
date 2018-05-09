@@ -14,9 +14,6 @@
 		<%=e.getMessage()%></h2>
 	<img src="img/error.png" />
 	<br>
-	<%-- <c:url var="URL" value="index">
-		<c:param name="param" value="${parameter}" />
-	</c:url>
-	<a href="<c:out value="${URL}"/>">Back to login</a> --%>
+	
 </body>
 </html>
