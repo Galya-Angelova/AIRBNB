@@ -31,7 +31,7 @@ import com.airbnb.exceptions.InvalidPlaceException;
 import com.airbnb.exceptions.InvalidUserException;
 import com.airbnb.model.address.Address;
 import com.airbnb.model.address.AddressDAO;
-import com.airbnb.model.db.DBConnectionTest;
+import com.airbnb.model.db.DBConnection;
 import com.airbnb.model.place.Place.PlaceType;
 import com.airbnb.model.user.UserDAO;
 
@@ -45,11 +45,8 @@ public class PlaceDAO implements IPlaceDAO {
 	private static final String MIN_AND_MAX_PLACE_PRICES_SQL = "SELECT MIN(price) AS minPrice, MAX(price) maxPrice FROM place";
 	private static final String FILTERED_PLACES_SQL = "SELECT pl.id, pl.name AS name, pl.price AS price, c.name AS city,  pt.name AS placeType FROM place AS pl INNER JOIN addresses AS adr ON(pl.address_id = adr.id) INNER JOIN cities AS c ON(c.id = adr.city_id) INNER JOIN placetype AS pt ON(pl.placeType_id = pt.id) WHERE (pl.name IS NULL OR pl.name LIKE ?) AND (pl.price IS NULL OR (pl.price >= ? AND pl.price <= ?)) AND (c.name IS NULL OR c.name LIKE ?) AND";
 	private static final String ALL_PLACE_TYPES = "SELECT * FROM placetype;";
-	// private static final String ALL_PLACES = "SELECT * FROM place order by
-	// name ;";
 	private static final String GET_ALL_PLACES = "SELECT * FROM place;";
 	private static final String GET_ALL_PICTURES = "SELECT path FROM pictures;";
-	private static final String GET_PLACE_FOR_USER = "SELECT * FROM place WHERE user_id = ? order by name;";
 	private static final String ADD_PLACE_SQL = "INSERT INTO place VALUES (null, ?,false,?,?,?,?,?)";
 	private static final String ADD_PLACETYPE_SQL = "INSERT INTO placetype VALUES (null, ?)";
 	private static final String GIVE_PLACETYPE_SQL = "SELECT * FROM placetype WHERE name= ?";
@@ -64,7 +61,7 @@ public class PlaceDAO implements IPlaceDAO {
 	@Autowired
 	private AddressDAO addressDAO;
 	@Autowired
-	private DBConnectionTest dbConnection;
+	private DBConnection dbConnection;
 	private Connection connection;
 	//placeId -> Place object
 	private Map<Integer, Place> allPlaces = new TreeMap<>((i1, i2) -> {
@@ -72,7 +69,7 @@ public class PlaceDAO implements IPlaceDAO {
 	});
 
 	@Autowired
-	public PlaceDAO(DBConnectionTest dbConnection) {
+	public PlaceDAO(DBConnection dbConnection) {
 		this.dbConnection = dbConnection;
 		connection = this.dbConnection.getConnection();
 		Thread t = new Thread(() -> {
@@ -186,15 +183,6 @@ public class PlaceDAO implements IPlaceDAO {
 		return base64Encoded;
 	}
 
-	/*
-	 * public String getPhotoPath(int placeId) throws InvalidPlaceException { String
-	 * sql = "SELECT path FROM prictures WHERE place_id =? LIMIT 1;";
-	 * 
-	 * try (PreparedStatement ps = connection.prepareStatement(sql)) { ps.setInt(1,
-	 * placeId); ResultSet resultSet = ps.executeQuery(); if (resultSet.next()) {
-	 * return resultSet.getString("path"); } return null; } catch (SQLException e) {
-	 * throw new InvalidPlaceException("Invalid photo."); } }
-	 */
 
 	public boolean editPlace(Place place) throws InvalidPlaceException {
 		String sql = "UPDATE place SET  name=?, busied=?,address_id = ? , placetype_id = ?, user_id = ?, price=?, user_id = ?  WHERE id = ?;";
@@ -265,7 +253,6 @@ public class PlaceDAO implements IPlaceDAO {
 
 			return rs.getInt(1);
 		} catch (SQLException e) {
-			// e.printStackTrace();
 			throw new InvalidPlaceException("Invalid statement", e);
 		}
 	}
@@ -282,7 +269,6 @@ public class PlaceDAO implements IPlaceDAO {
 
 			throw new InvalidPlaceException("There is no place type with that name in the database");
 		} catch (SQLException e) {
-			// e.printStackTrace();
 			throw new InvalidPlaceException("Invalid statement", e);
 		}
 	}
@@ -301,7 +287,6 @@ public class PlaceDAO implements IPlaceDAO {
 			}
 			throw new InvalidPlaceException("There is no place type with that id!");
 		} catch (SQLException e) {
-			// e.printStackTrace();
 			throw new InvalidPlaceException("Invalid statement", e);
 		}
 	}
@@ -434,37 +419,7 @@ public class PlaceDAO implements IPlaceDAO {
 		Set<PlaceDTO> result = new TreeSet<PlaceDTO>((p1, p2) -> {
 			return p1.getName().compareToIgnoreCase(p2.getName());
 		});
-		/*try {
-			Statement statement = connection.createStatement();
-			ResultSet set = statement.executeQuery(GET_ALL_PLACES);
-			while (set.next()) {
-				int id = set.getInt("id");
-				String name = set.getString("name");
-				boolean busied = set.getBoolean("busied");
-				int addressId = set.getInt("address_id");
-				int placeTypeId = set.getInt("placeType_id");
-				String placeTypeName = placeTypeFromId(placeTypeId);
-<<<<<<< HEAD
-=======
-				int ownerId = set.getInt("user_id");
->>>>>>> cb45a1965c7481b7d2117d9bf52afb5d1355e5f9
-				double price = set.getDouble("price");
-				Address address = addressDAO.addressFromId(addressId);
-				LocalDate date = set.getDate("date_of_posting").toLocalDate();
-				PlaceDTO dto = new PlaceDTO(id, name, placeTypeName, busied, address.getCountry().getName(),
-						address.getCity().getName(), address.getStreet(), address.getStreetNumber(), price, date,ownerId);
-				if (dto != null) {
-					this.addPhotosToPlace(dto);
-				}
-				result.add(dto);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new InvalidPlaceException("Something went wrong in DB", e);
-		} catch (InvalidAddressException e) {
-			e.printStackTrace();
-			throw new InvalidPlaceException("Invalid address", e);
-		}*/
+		
 		for (Place place : this.allPlaces.values()) {
 			int id = place.getId();
 			String name = place.getName();
@@ -508,7 +463,6 @@ public class PlaceDAO implements IPlaceDAO {
 			List<Integer> userPlaces= userDAO.getUserPlacesByUserId(userId);
 			for(Integer id: userPlaces) {
 				PlaceDTO dto = this.getDtoById(id);
-//				PlaceDTO dto = new PlaceDTO(id, placeObject.getName(), placeObject.getPlaceTypeName(), placeObject.isBusied(), placeObject.getAddress().getCountry().getName(),  placeObject.getAddress().getCity().getName(),  placeObject.getAddress().getStreet(),  placeObject.getAddress().getStreetNumber(), placeObject.getPrice(), placeObject.getDateOfPosting());
 				if (dto != null) {
 					this.addPhotosToPlace(dto);
 				}
@@ -520,58 +474,7 @@ public class PlaceDAO implements IPlaceDAO {
 		}
 		return result;
 
-		/*
-		 * for (Place place : this.allPlaces.values()) { if (place.getOwnerId() ==
-		 * userId) { int id = place.getId(); String name = place.getName(); boolean
-		 * busied = place.isBusied(); String placeTypeName = place.getPlaceTypeName();
-		 * double price = place.getPrice(); Address address = place.getAddress(); String
-		 * country = address.getCountry().getName(); String city =
-		 * address.getCity().getName(); String street = address.getStreet(); int
-		 * streetNumber = address.getStreetNumber(); LocalDate date =
-		 * place.getDateOfPosting(); PlaceDTO view = new PlaceDTO(id, name,
-		 * placeTypeName, busied, country, city, street, streetNumber, price, date); if
-		 * (view != null) { this.addPhotosToPlace(view); } result.add(view); } } return
-		 * result;
-		 */
-
-		/*try (PreparedStatement ps = connection.prepareStatement(GET_PLACE_FOR_USER)) {
-			ps.setInt(1, userId);
-			ResultSet rs = ps.executeQuery();
-
-			while (rs.next()) {
-
-				int id = rs.getInt("id");
-				String name = rs.getString("name");
-				int addressId = rs.getInt("address_id");
-				boolean busied = rs.getBoolean("busied");
-				int placeTypeId = rs.getInt("placeType_id");
-				String placeTypeName = placeTypeFromId(placeTypeId);
-				double price = rs.getDouble("price");
-				Address address = this.addressDAO.addressFromId(addressId);
-				String country = address.getCountry().getName();
-				String city = address.getCity().getName();
-				String street = address.getStreet();
-				int streetNumber = address.getStreetNumber();
-				LocalDate date = rs.getDate("date_of_posting").toLocalDate();
-				PlaceDTO view = new PlaceDTO(id, name, placeTypeName, busied, country, city, street, streetNumber,
-						price, date);
-				if (view != null) {
-					this.addPhotosToPlace(view);
-				}
-				result.add(view);
-			}
-
-			return result;
-		} catch (
-
-		SQLException e) {
-			e.printStackTrace();
-			throw new InvalidPlaceException("Something went wrong", e);
-		} catch (InvalidAddressException e) {
-			e.printStackTrace();
-			throw new InvalidPlaceException("Something went wrong with address", e);
-		}
-*/
+		
 	}
 	
 	private void addPhotosToPlace(PlaceDTO place) throws InvalidPlaceException {
@@ -594,11 +497,7 @@ public class PlaceDAO implements IPlaceDAO {
 				}
 
 			}
-			// int id = place.getId();
-			/*
-			 * Place placeObject = this.placeFromId(id);
-			 * placeObject.setPhotosURLs(imagePaths);
-			 */
+			
 			place.setPhotosURLs(imagePaths);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -661,7 +560,5 @@ public class PlaceDAO implements IPlaceDAO {
 		} catch (SQLException | FileNotFoundException | UnsupportedEncodingException e) {
 			throw new InvalidPlaceException("Something went wrong with images...",e);
 		} 
-		
-	
 	}
 }
