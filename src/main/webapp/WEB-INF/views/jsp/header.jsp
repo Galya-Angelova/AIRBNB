@@ -76,10 +76,10 @@
 						class="glyphicon glyphicon-log-in"></span> <sht:message code="header.login"/></a></li>
 					
 						<a href="?language=en">
-						<img src="img/enFlag.jpg" />
+						<img src="img/enFlag.jpg" style="height: 20px; width:20px;"/>
 						</a>
 						<a href="?language=es">
-						<img src="img/esFlag.png" />
+						<img src="img/esFlag.png" style="height: 20px; width:20px;"/>
 						</a>
 			</ul>
 		</div>

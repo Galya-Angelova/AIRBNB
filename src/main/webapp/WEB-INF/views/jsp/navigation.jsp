@@ -98,6 +98,12 @@
 						
 					</c:url> <a class="navbar-brand" href="<c:out value="${URL}"/>"><span
 						class="glyphicon glyphicon-log-out"></span> <sht:message code="navigation.logOut"/></a></li>
+						<a href="search?language=en">
+						<img src="img/enFlag.jpg" style="height: 20px; width:20px;"/>
+						</a>
+						<a href="search?language=es">
+						<img src="img/esFlag.png" style="height: 20px; width:20px;"/>
+						</a>
 			</ul>
 		</div>
 	</nav>
