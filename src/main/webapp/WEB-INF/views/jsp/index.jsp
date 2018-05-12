@@ -32,7 +32,7 @@
 					<div class="group">
 						<label for="password" class="label"><sht:message code="login.password"/></label> <input
 							id="password" name="password" type="password" class="input"
-							data-type="password">
+							data-type="password" required>
 					</div>
 					<div class="group">
 						<input type="submit" class="button" value="Login">

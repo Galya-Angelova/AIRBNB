@@ -77,12 +77,12 @@ public class ReservationController {
 			LocalDate end = endDate.toLocalDate();
 			if ((end.isBefore(start)) || (start.isBefore(LocalDate.now()))) {
 				session.setAttribute("wrongDates", true);
-				return "redirect: placeDetails";
+				return "redirect: ../search";
 			}
 			PlaceDTO place= placeDAO.getDtoById(id);
 					if (user.getId() == place.getOwnerId()) {
 				session.setAttribute("sameUser", true);
-				return "redirect: placeDetails";
+				return "redirect: ../search";
 			}
 
 			reservationDAO

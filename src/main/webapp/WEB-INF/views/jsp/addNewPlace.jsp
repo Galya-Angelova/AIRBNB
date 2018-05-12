@@ -30,7 +30,7 @@
 			<tr>
 				<td><sht:message code="addNewPlace.street"/>:</td>
 				<td><input type="text" name="street" placeholder="Street"
-					pattern="[A-Za-z]{1,150}" title="Not including numbers or special characters (latin letters only)" style="text-transform: capitalize;" required maxlength="150"></td>
+					title="Not including numbers or special characters (latin letters only)" style="text-transform: capitalize;" required maxlength="150"></td>
 			</tr>
 			<tr>
 				<td><sht:message code="addNewPlace.streetNumber"/>:</td>

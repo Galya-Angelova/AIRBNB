@@ -131,11 +131,11 @@ public class PlaceController {
 			if (file.isEmpty()) {
 				continue;
 			}
-			ServletContext context = request.getServletContext();
+		
 			String fileName = file.getOriginalFilename();
-			String mimeType = context.getMimeType(fileName);
-			if (!mimeType.startsWith("image/")) {
-			    // It's not  an image.
+			
+			if (!file.getContentType().startsWith("image/")) {
+				System.out.println("ne e img");
 				return false;
 			}
 			
@@ -245,6 +245,10 @@ public class PlaceController {
 
 			return "placeSearch";
 		} catch (InvalidPlaceException e) {
+			e.printStackTrace();
+			model.addAttribute("exception", e);
+			return "error";
+		}catch (Exception e) {
 			e.printStackTrace();
 			model.addAttribute("exception", e);
 			return "error";
@@ -361,7 +365,7 @@ public class PlaceController {
 			}
 			User user= (User) session.getAttribute("user");
 			if (user == null) {
-				return "redirect:/placeDetails?id="+review.getPlaceId();
+				return "redirect: ./logout";
 			}
 			reviewDAO.createReview(review);
 			return "redirect: ./placeDetails?id="+review.getPlaceId();
